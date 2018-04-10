@@ -1,0 +1,17 @@
+name: SimpleSidebar
+main: com.gmail.flintintoe.simpleSidebar.SimpleSidebar
+version: 0.1.0-SNAPSHOT
+author: xFlarinFlint
+
+depend: []
+softdepend: [Vault, WorldGaurd]
+
+commands:
+  sidebar:
+    usage: /sidebar
+    description: Sidebar player commands
+  adminsidebar:
+    usage: /adminsidebar
+    description: Sidebar admin commands
+
+permissions:
