@@ -1,2 +1,2 @@
-# simpleSidebar
-A WIP Sidebar plugin that allows customizable sidebars
+# Test branch
+Most likely will crash. Use at your own risk.
