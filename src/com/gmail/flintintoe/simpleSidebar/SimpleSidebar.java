@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.simpleSidebar;
 
-import com.gmail.flintintoe.simpleSidebar.Command.AdminCommand;
-import com.gmail.flintintoe.simpleSidebar.Command.PlayerCommand;
+import com.gmail.flintintoe.simpleSidebar.command.AdminCommand;
+import com.gmail.flintintoe.simpleSidebar.command.PlayerCommand;
 import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
 import com.gmail.flintintoe.simpleSidebar.event.PlayerEvent;
 import com.gmail.flintintoe.simpleSidebar.sidebar.Sidebar;
@@ -36,7 +36,7 @@ public class SimpleSidebar extends JavaPlugin {
         // Permissions
         setupPerms();
         // Config
-        Configuration.setupConfig();
+        Configuration.setupConfig(this);
         //  Sidebars
         setupSidebar();
         // Commands

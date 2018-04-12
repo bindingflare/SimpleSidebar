@@ -1,4 +1,4 @@
-package com.gmail.flintintoe.simpleSidebar.Command;
+package com.gmail.flintintoe.simpleSidebar.command;
 
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import org.bukkit.command.Command;

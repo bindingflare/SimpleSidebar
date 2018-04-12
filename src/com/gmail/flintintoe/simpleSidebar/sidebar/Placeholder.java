@@ -1,5 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
+import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -29,44 +30,64 @@ public class Placeholder {
         // TODO Location of someone else
         // FIXME Possible logical error of duplicate lines
 
+        // Server economy (Player balance)
+        if (string.contains("%balance%")) {
+            string = string.replaceAll("%balance%", "" + ServerEconomy.getBalance(player));
+        }
+
         // Region
-        if (string.contains("%region")) {
+        if (string.contains("%region_")) {
             String[] regions = getRegionList(player);
 
-            if (string.contains("%region_1%")) {
-                if (regions.length > 0) {
-                    string = string.replaceAll("%region_1%", regions[2]);
-                } else {
-                    // Replace with String of 20 spaces
-                    string = string.replaceAll("%region_1%", "");
+            // FIXME Possible issue where region placeholders will not AT LEAST be replaced with blank
+
+            // Better way to handle variations of placeholder %region_x%
+            for (int i = 0; i < regions.length; i++) {
+                if (string.contains("%region_" + i + "%")) {
+                    string = string.replaceAll("%region_" + i + "%", regions[i]);
                 }
             }
-            if (string.contains("%region_2%")) {
-                if (regions.length > 1) {
-                    string = string.replaceAll("%region_2%", regions[2]);
-                } else {
-                    // Replace with String of 21 spaces
-                    string = string.replaceAll("%region_2%", "");
-                }
-            }
-            if (string.contains("%region_3%")) {
-                if (regions.length > 2) {
-                    string = string.replaceAll("%region_3%", regions[2]);
-                } else {
-                    // Replace with String of 22 spaces
-                    string = string.replaceAll("%region_3%", "");
-                }
-            }
+//            if (string.contains("%region_1%")) {
+//                if (regions.length > 0) {
+//                    string = string.replaceAll("%region_1%", regions[0]);
+//                } else {
+//                    // Replace with String of 20 spaces
+//                    string = string.replaceAll("%region_1%", "");
+//                }
+//            }
+//            if (string.contains("%region_2%")) {
+//                if (regions.length > 1) {
+//                    string = string.replaceAll("%region_2%", regions[1]);
+//                } else {
+//                    // Replace with String of 21 spaces
+//                    string = string.replaceAll("%region_2%", "");
+//                }
+//            }
+//            if (string.contains("%region_3%")) {
+//                if (regions.length > 2) {
+//                    string = string.replaceAll("%region_3%", regions[2]);
+//                } else {
+//                    // Replace with String of 22 spaces
+//                    string = string.replaceAll("%region_3%", "");
+//                }
+//            }
         }
+
+        // Handle still incomplete %region_x% placeholders
+        while (string.contains("%region_")) {
+            String tag = getVariableTag("%region_", string);
+
+            string = string.replaceAll(tag, "");
+        }
+
 
         // TODO Regions of other locations
 
         // Player statistics
-        if (string.contains("%stat_")) {
 
-            // TODO Redo this part of code (For now keeping the bottom code alive might work)
+        // TODO Redo this part of code (For now keeping the bottom code alive might work)
 
-            // MINE_BLOCK
+        // MINE_BLOCK
 //            if (string.contains("%stat_MINE_BLOCK_")) {
 //                while (string.contains("%stat_MINE_BLOCK_")) {
 //                    String materialName = "" + string.subSequence(string.indexOf("%stat_MINE_BLOCK_") - 17, string.replaceFirst("%", "").indexOf("%") - 1);
@@ -85,29 +106,27 @@ public class Placeholder {
 //                            "" + statResult);
 //                }
 //            } else {
-            // Basic handler for any other stat
-            while (string.contains("%stat_")) {
-                String temp = string;
+        // Basic handler for any other stat
+        // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
+        while (string.contains("%STAT_")) {
+            String temp = string;
 
-                int startIndex = temp.indexOf("%stat_") - 6;
-                int endIndex = temp.replaceFirst("%", "").indexOf("%") - 1;
+            String tag = getVariableTag("%STAT_", string);
 
-                String statName = string.substring(startIndex, endIndex);
-
-                // Try to get that specific stat
-                String statResult = "";
-                try {
-                    statResult += player.getStatistic(Statistic.valueOf(statName));
-                } catch (Exception e) {
-                    statResult += "(&4ERROR&r)";
-                }
-                // Replace raw placeholder
-                string = string.replaceAll("%stat_" + statName + "%", "" + statResult);
+            // Try to get that specific stat
+            String statResult = "";
+            try {
+                statResult += player.getStatistic(Statistic.valueOf(tag));
+            } catch (Exception e) {
+                statResult += "&r(&4ERROR&r)";
             }
-            //           }
-
-            // More coming soon-ish
+            // Replace raw placeholder
+            string = string.replaceAll("%" + tag + "%", "" + statResult);
         }
+        //           }
+
+        // More coming soon-ish
+
 
         return string;
     }
@@ -131,5 +150,10 @@ public class Placeholder {
         }
 
         return regions;
+    }
+
+    // Special return: Returns the full variable tag using the tagStart (Start of tag, which is constant)
+    private static String getVariableTag(String tagStart, String string) {
+        return string.substring(string.indexOf(tagStart), string.replaceFirst("%", "").indexOf("%") - 1);
     }
 }
