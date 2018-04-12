@@ -6,9 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class ServerEconomy {
-    private static Economy economy;
+    private SimpleSidebar plugin;
+    private Economy economy;
 
-    public static boolean setupEconomy(SimpleSidebar plugin) {
+    public ServerEconomy (SimpleSidebar plugin) {
+        this.plugin = plugin;
+    }
+
+    public boolean setupEconomy() {
         // Check if Vault exists
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -25,7 +30,7 @@ public class ServerEconomy {
         return economy != null;
     }
 
-    public static double getBalance(Player player) {
+    public double getBalance(Player player) {
 
         double balance = 0;
 
@@ -39,7 +44,7 @@ public class ServerEconomy {
     // WARNING Possible error with new players when using these methods
 
     // Special return: Returns the new balance of the player
-    public static double deductBalance(Player player, double amount) {
+    public double deductBalance(Player player, double amount) {
         double newBalance = getBalance(player) - amount;
 
         economy.withdrawPlayer(player, amount);
@@ -48,7 +53,7 @@ public class ServerEconomy {
     }
 
     // Special return: Returns the new balance of the player
-    public static double addBalance(Player player, double amount) {
+    public double addBalance(Player player, double amount) {
         double newBalance = getBalance(player) + amount;
 
         economy.depositPlayer(player, amount);

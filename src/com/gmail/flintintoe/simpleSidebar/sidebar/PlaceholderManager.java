@@ -1,5 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
+import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -9,9 +10,14 @@ import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class Placeholder {
+public class PlaceholderManager {
+    ServerEconomy economy;
 
-    public static String setPlaceholders(Player player, String string) {
+    public PlaceholderManager(SimpleSidebar plugin) {
+        economy = plugin.getEconomy();
+    }
+
+    public String setPlaceholders(Player player, String string) {
         // Player name
         if (string.contains("%player%")) string = string.replaceAll("%player%", player.getName());
 
@@ -32,7 +38,7 @@ public class Placeholder {
 
         // Server economy (Player balance)
         if (string.contains("%balance%")) {
-            string = string.replaceAll("%balance%", "" + ServerEconomy.getBalance(player));
+            string = string.replaceAll("%balance%", "" + economy.getBalance(player));
         }
 
         // Region

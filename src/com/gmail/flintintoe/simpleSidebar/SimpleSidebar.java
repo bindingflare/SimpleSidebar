@@ -2,43 +2,46 @@ package com.gmail.flintintoe.simpleSidebar;
 
 import com.gmail.flintintoe.simpleSidebar.command.AdminCommand;
 import com.gmail.flintintoe.simpleSidebar.command.PlayerCommand;
+import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
 import com.gmail.flintintoe.simpleSidebar.event.PlayerEvent;
-import com.gmail.flintintoe.simpleSidebar.sidebar.Sidebar;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
+import com.gmail.flintintoe.simpleSidebar.sidebar.PlaceholderManager;
+import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimpleSidebar extends JavaPlugin {
 
-    private static ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+    private MessageManager messageM;
+    private ConfigManager configM;
+    private SidebarManager sidebarM;
+    private PlaceholderManager placeholderManager;
+    private ServerEconomy economy;
 
-    public Sidebar sidebar;
-
-    private static String consoleHeader = "[SimpleSidebar] ";
-    private static String header = "[&aSidebar&r] ";
-
-    private static boolean isEconomy = true;
+    private boolean isEconomyEnabled = true;
+    private boolean isRegionEnabled = true;
+    private boolean isSidebarEnabled = true;
 
     @Override
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
+        // Messaging
+        messageM = new MessageManager(this);
         // Economy
-        if (ServerEconomy.setupEconomy(this)) {
-            console.sendMessage(header + "Vault is not detected. Economy functions of this plugin will not work.");
+        economy = new ServerEconomy(this);
+
+        if (!economy.setupEconomy()) {
+            messageM.sendToConsole("Vault is not detected. Economy functions of this plugin will not work.");
 
             // Disable economy
-            isEconomy = false;
+            isEconomyEnabled = false;
         }
         // Permissions
         setupPerms();
         // Config
-        Configuration.setupConfig(this);
+        configM = new ConfigManager(this);
         //  Sidebars
-        setupSidebar();
+        sidebarM = new SidebarManager(this);
         // Commands
         this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
         this.getCommand("sidebarAdmin").setExecutor((new AdminCommand(this)));
@@ -50,27 +53,25 @@ public class SimpleSidebar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        // Nothing to do here yet
     }
 
     private void setupPerms() {
         // TODO
     }
 
-    private void setupSidebar() {
-        // TODO
-    }
+    public MessageManager getMessageManager() { return messageM; }
 
-    public static boolean economyEnabled() {
-        return isEconomy;
-    }
+    public ConfigManager getConfigManager() { return configM; }
 
-    public static void sendToPlayer(Player player, String message) {
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', header + message));
-    }
+    public SidebarManager getSidebarManager() { return sidebarM; }
 
-    public static void sendToConsole(String message) {
-        console.sendMessage(consoleHeader + message);
+    public PlaceholderManager getPlaceholderManager() { return placeholderManager; }
+
+    public ServerEconomy getEconomy() { return economy; }
+
+    public boolean economyEnabled() {
+        return isEconomyEnabled;
     }
 
 

@@ -1,5 +1,7 @@
-package com.gmail.flintintoe.simpleSidebar;
+package com.gmail.flintintoe.simpleSidebar.config;
 
+import com.gmail.flintintoe.simpleSidebar.MessageManager;
+import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -7,35 +9,39 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class Configuration {
-    private static FileConfiguration config;
+public class ConfigManager {
+    private MessageManager messageM;
 
-    private static File sidebarFile;
-    private static File messageFile;
+    private FileConfiguration config;
 
-    public static void setupConfig(SimpleSidebar plugin) {
+    private File sidebarFile;
+    private File messageFile;
+
+    // No need to save SimpleSidebar reference here
+    public ConfigManager(SimpleSidebar plugin) {
         config = plugin.getConfig();
+        messageM = plugin.getMessageManager();
 
-        if(!plugin.getDataFolder().exists()) {
+        if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
         }
-        sidebarFile = new File(plugin.getDataFolder(), "sidebar.yaml");
-        messageFile = new File(plugin.getDataFolder(), "messages.yaml");
+        sidebarFile = new File(plugin.getDataFolder(), "sidebar.yml");
+        messageFile = new File(plugin.getDataFolder(), "messages.yml");
 
         // Copy if file does not exist
-        if(!sidebarFile.exists()) {
+        if (!sidebarFile.exists()) {
             try {
-                plugin.sendToConsole("Creating a copy of sidebar.yaml");
+                messageM.sendToConsole("Creating a copy of sidebar.yml");
                 config.save(sidebarFile);
-            } catch (Exception e ) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if(!messageFile.exists()) {
+        if (!messageFile.exists()) {
             try {
-                plugin.sendToConsole("Creating a copy of messages.yaml");
+                messageM.sendToConsole("Creating a copy of messages.yml");
                 config.save(messageFile);
-            } catch (Exception e ) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -52,7 +58,7 @@ public class Configuration {
         }
     }
 
-    public static String getEntry(ConfigurationFile configFile, String path) {
+    public String getEntry(ConfigFile configFile, String path) {
         return config.getString(path);
 
 //        if (configFile == ConfigurationFile.config) {
@@ -66,7 +72,7 @@ public class Configuration {
 //        }
     }
 
-    public static List<String> getEntries (ConfigurationFile configFile, String path) {
+    public List<String> getEntries(ConfigFile configFile, String path) {
         return config.getStringList(path);
     }
 }
