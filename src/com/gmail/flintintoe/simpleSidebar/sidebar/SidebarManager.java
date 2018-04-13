@@ -109,6 +109,7 @@ public class SidebarManager {
         return true;
     }
 
+    @Deprecated
     public boolean setSidebar(Player player, String header) {
         int sidebarNum = -1;
 
@@ -155,6 +156,16 @@ public class SidebarManager {
         // Set scoreboard
         player.setScoreboard(scoreboard);
 
+        return true;
+    }
+
+    // TODO Update sidebar function
+    public boolean updateSidebar(Player player) {
+        return true;
+    }
+
+    // TODO Set AFK sidebar function
+    public boolean setAFKSidebar(Player player) {
         return true;
     }
 }

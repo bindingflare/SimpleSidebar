@@ -6,5 +6,7 @@
 
 # Edit plugin configurations here.
 
-enabled: true
+plugin_enabled: true
+config_version: 1.0.0
 
+AFK_timer: 30

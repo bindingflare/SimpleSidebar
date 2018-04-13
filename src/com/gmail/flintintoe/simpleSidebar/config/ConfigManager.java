@@ -16,6 +16,7 @@ public class ConfigManager {
 
     private File sidebarFile;
     private File messageFile;
+    private File configFile;
 
     // No need to save SimpleSidebar reference here
     public ConfigManager(SimpleSidebar plugin) {
@@ -27,6 +28,8 @@ public class ConfigManager {
         }
         sidebarFile = new File(plugin.getDataFolder(), "sidebar.yml");
         messageFile = new File(plugin.getDataFolder(), "messages.yml");
+        configFile = new File(plugin.getDataFolder(), "config.yml");
+
 
         // Copy if file does not exist
         if (!sidebarFile.exists()) {
@@ -45,11 +48,20 @@ public class ConfigManager {
                 e.printStackTrace();
             }
         }
+        if (!configFile.exists()) {
+            try {
+                messageM.sendToConsole("Creating a copy of config.yml");
+                config.save(configFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // Load files for use
         try {
             config.load(sidebarFile);
             config.load(messageFile);
+            config.load(configFile);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,6 +82,14 @@ public class ConfigManager {
 //        else if (configFile == ConfigurationFile.messages) {
 //
 //        }
+    }
+
+    public int getValue(ConfigFile configFile, String path) {
+        return config.getInt(path);
+    }
+
+    public boolean getBoolean(ConfigFile configFile, String path) {
+        return config.getBoolean(path);
     }
 
     public List<String> getEntries(ConfigFile configFile, String path) {
