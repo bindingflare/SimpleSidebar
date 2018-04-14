@@ -114,10 +114,10 @@ public class PlaceholderManager {
 //            } else {
         // Basic handler for any other stat
         // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
-        while (string.contains("%STAT_")) {
+        while (string.contains("%stat_")) {
             String temp = string;
 
-            String tag = getVariableTag("%STAT_", string);
+            String tag = getVariableTag("%stat_", string);
 
             // Try to get that specific stat
             String statResult = "";

@@ -1,40 +1,51 @@
 package com.gmail.flintintoe.simpleSidebar.event;
 
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
+import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
-import com.gmail.flintintoe.simpleSidebar.timer.SidebarUpdateManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerEvent implements Listener {
     private SidebarManager sidebarM;
-    private SidebarUpdateManager sbUpdateM;
+    private ConfigManager configM;
 
     public PlayerEvent(SimpleSidebar plugin) {
         sidebarM = plugin.getSidebarManager();
-        sbUpdateM = plugin.getSidebarUpdateManager();
+        configM = plugin.getConfigManager();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Set sidebar of player
-        sidebarM.setSidebar(player, 0);
-        sbUpdateM.setPlayerCooldown(player);
+        if (configM.haveDefaultSb) {
+            // Set sidebar of player
+            sidebarM.setSidebar(player, 0);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerLeave(PlayerQuitEvent event) {
+        String playerName = event.getPlayer().getDisplayName();
+
+        if (configM.haveAFKSb) {
+            sidebarM.customUpdater.remove(playerName);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-            // Reset player AFK timer
-            sbUpdateM.setPlayerCooldown(player);
+        String playerName = event.getPlayer().getDisplayName();
+        if (configM.haveAFKSb) {
+            if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
+                sidebarM.customUpdater.reset(playerName);
+            }
         }
     }
 }

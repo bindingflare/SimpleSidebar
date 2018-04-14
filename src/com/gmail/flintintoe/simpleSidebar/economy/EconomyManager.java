@@ -6,28 +6,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class EconomyManager {
-    private SimpleSidebar plugin;
     private Economy economy;
 
     public EconomyManager(SimpleSidebar plugin) {
-        this.plugin = plugin;
-    }
 
-    public boolean setupEconomy() {
         // Check if Vault exists
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        // Check if an economy plugin exists
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+            plugin.getConfigManager().isEconomyEnabled = false;
+        } else {
+            // Check if an economy plugin exists
+            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
 
-        if (rsp == null) {
-            return false;
-        }
-        // Setup economy
-        economy = rsp.getProvider();
+            if (rsp == null) {
+                plugin.getConfigManager().isEconomyEnabled = false;
+            } else {
+                // Setup economy
+                economy = rsp.getProvider();
+                plugin.getConfigManager().isEconomyEnabled = true;
+            }
 
-        return economy != null;
+        }
     }
 
     public double getBalance(Player player) {

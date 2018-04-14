@@ -12,6 +12,8 @@ public class PlayerCommand implements CommandExecutor {
     private SidebarManager sidebarM;
     private MessageManager messageM;
 
+    private boolean lastSidebarIsForAFK;
+
     public PlayerCommand(SimpleSidebar plugin) {
         sidebarM = plugin.getSidebarManager();
         messageM = plugin.getMessageManager();
@@ -34,14 +36,20 @@ public class PlayerCommand implements CommandExecutor {
                 int sidebarIndex;
 
                 try {
-                    sidebarIndex = Integer.parseInt(args[1]);
+                    sidebarIndex = Integer.parseInt(args[0]);
                 } catch (Exception e) {
                     messageM.sendToPlayer(player, "Argument must be a number");
                     return true;
                 }
+                if (lastSidebarIsForAFK) {
+                    if (sidebarIndex == sidebarM.getSidebarCount()) {
+                        messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                        return true;
+                    }
+                }
 
                 if (!sidebarM.setSidebar(player, sidebarIndex)) {
-
+                    messageM.sendToPlayer(player, "The player " + player.getDisplayName() + " must be online");
                 }
             }
             // Too many arguments

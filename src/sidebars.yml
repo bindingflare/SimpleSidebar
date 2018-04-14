@@ -6,8 +6,21 @@
 
 # Edit sidebar configurations here.
 
+#### GENERAL GUIDELINES:
+   #
+   # - A line with only "%divider%" is used to separate sidebars
+   # - The line after the "%divider%" line and the first line of the list is reserved for the header (or title) of the sidebar
+   # - The lines after the header line until the line before the next "%divider%" line or the end of the list will be the entries of the header
+   #
+   # - A line can have a maximum of 40 characters
+   # - When there is a duplicate line in a sidebar, the plugin will add spaces to prevent duplicates from ruining the sidebar
+   #   This can create unexpected errors due to crossing the 40 character limit
+   # - Color codes are supported
+   #
+   # - Check the plugin wiki for placeholders and more!
+   #   https://github.com/flintintoe/simpleSidebar/wiki
+####
 sidebars:
-  - "%divider%"
   - "&6&lFlint server"
   - ""
   - " Welcome, &a%player%&r!"
