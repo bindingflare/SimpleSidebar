@@ -4,7 +4,7 @@ import com.gmail.flintintoe.simpleSidebar.command.AdminCommand;
 import com.gmail.flintintoe.simpleSidebar.command.PlayerCommand;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
-import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
+import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
 import com.gmail.flintintoe.simpleSidebar.event.PlayerEvent;
 import com.gmail.flintintoe.simpleSidebar.sidebar.PlaceholderManager;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
@@ -18,7 +18,7 @@ public class SimpleSidebar extends JavaPlugin {
     private ConfigManager configM;
     private SidebarManager sidebarM;
     private PlaceholderManager placeholderM;
-    private ServerEconomy economy;
+    private EconomyManager economyM;
     private SidebarUpdateManager sbUpdateM;
 
     // TODO Use these booleans in case of lack of dependencies
@@ -29,15 +29,21 @@ public class SimpleSidebar extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
+
+        // PRIORITY 0
         // Message
         messageM = new MessageManager(this);
+
+        // PRIORITY 1
         // Config
         configM = new ConfigManager(this);
+
+        // PRIORITY 2
         if (configM.getBoolean(ConfigFile.config, "plugin_enabled")) {
             // Economy
-            economy = new ServerEconomy(this);
+            economyM = new EconomyManager(this);
 
-            if (!economy.setupEconomy()) {
+            if (!economyM.setupEconomy()) {
                 messageM.sendToConsole("Vault is not detected. Economy functions of this plugin will not work.");
 
                 // Disable economy
@@ -45,6 +51,8 @@ public class SimpleSidebar extends JavaPlugin {
             }
             // Permission
             setupPerms();
+
+            // PRIORITY 3
             // Sidebar
             // Placeholders is first
             placeholderM = new PlaceholderManager(this);
@@ -54,7 +62,7 @@ public class SimpleSidebar extends JavaPlugin {
 
             // Command
             this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
-            this.getCommand("sidebarAdmin").setExecutor((new AdminCommand(this)));
+            this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
             // Events
             pm.registerEvents(new PlayerEvent(this), this);
         } else {
@@ -69,7 +77,7 @@ public class SimpleSidebar extends JavaPlugin {
     }
 
     private void setupPerms() {
-        // TODO
+        // TODO Setup permissions
     }
 
     public ConfigManager getConfigManager() {
@@ -78,8 +86,8 @@ public class SimpleSidebar extends JavaPlugin {
 
     public MessageManager getMessageManager() { return messageM; }
 
-    public ServerEconomy getEconomy() {
-        return economy;
+    public EconomyManager getEconomyManager() {
+        return economyM;
     }
 
     public PlaceholderManager getPlaceholderManager() {

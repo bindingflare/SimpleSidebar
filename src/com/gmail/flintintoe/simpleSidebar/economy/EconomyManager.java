@@ -5,11 +5,11 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public class ServerEconomy {
+public class EconomyManager {
     private SimpleSidebar plugin;
     private Economy economy;
 
-    public ServerEconomy (SimpleSidebar plugin) {
+    public EconomyManager(SimpleSidebar plugin) {
         this.plugin = plugin;
     }
 

@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.economy.ServerEconomy;
+import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -11,10 +11,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class PlaceholderManager {
-    ServerEconomy economy;
+    EconomyManager economyM;
 
     public PlaceholderManager(SimpleSidebar plugin) {
-        economy = plugin.getEconomy();
+        economyM = plugin.getEconomyManager();
     }
 
     public String setPlaceholders(Player player, String string) {
@@ -36,9 +36,9 @@ public class PlaceholderManager {
         // TODO Location of someone else
         // FIXME Possible logical error of duplicate lines
 
-        // Server economy (Player balance)
+        // Server economyM (Player balance)
         if (string.contains("%balance%")) {
-            string = string.replaceAll("%balance%", "" + economy.getBalance(player));
+            string = string.replaceAll("%balance%", "" + economyM.getBalance(player));
         }
 
         // Region

@@ -20,25 +20,35 @@ public class PlayerCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!(sender instanceof Player)) {
-            messageM.sendToConsole(" Only a player can run this command");
-        }
-
-        Player player = ((Player) sender).getPlayer();
-
-        // Help message
-        if (args.length == 0) {
-            // TODO
-        }
-        // Set sidebar of self
-        else if (args.length == 1) {
-            if(!sidebarM.setSidebar(player, args[0])) {
-
-            }
-        }
-        // Too many arguments
-        else {
-            messageM.sendToPlayer(player, "Too many arguments!");
+            messageM.sendToConsole("Only a player can run this command");
             return true;
+        } else {
+            Player player = (Player) sender;
+
+            // Help message
+            if (args.length == 0) {
+                // TODO
+            }
+            // Set sidebar of self
+            else if (args.length == 1) {
+                int sidebarIndex;
+
+                try {
+                    sidebarIndex = Integer.parseInt(args[1]);
+                } catch (Exception e) {
+                    messageM.sendToPlayer(player, "Argument must be a number");
+                    return true;
+                }
+
+                if (!sidebarM.setSidebar(player, sidebarIndex)) {
+
+                }
+            }
+            // Too many arguments
+            else {
+                messageM.sendToPlayer(player, "Too many arguments!");
+                return true;
+            }
         }
 
         return false;
