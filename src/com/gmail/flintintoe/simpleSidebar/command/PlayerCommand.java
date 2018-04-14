@@ -1,6 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.command;
 
-import com.gmail.flintintoe.simpleSidebar.MessageManager;
+import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
 import org.bukkit.command.Command;
@@ -42,14 +42,15 @@ public class PlayerCommand implements CommandExecutor {
                     return true;
                 }
                 if (lastSidebarIsForAFK) {
-                    if (sidebarIndex == sidebarM.getSidebarCount()) {
+                    if (sidebarIndex == sidebarM.getSidebarCount() - 1) {
                         messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
                         return true;
                     }
                 }
 
                 if (!sidebarM.setSidebar(player, sidebarIndex)) {
-                    messageM.sendToPlayer(player, "The player " + player.getDisplayName() + " must be online");
+                    messageM.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
+                    return true;
                 }
             }
             // Too many arguments

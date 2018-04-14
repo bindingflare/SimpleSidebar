@@ -27,6 +27,8 @@ public class PlayerEvent implements Listener {
         if (configM.haveDefaultSb) {
             // Set sidebar of player
             sidebarM.setSidebar(player, 0);
+            // Add player to update list
+            sidebarM.customUpdater.add(player.getDisplayName(), configM.duration);
         }
     }
 

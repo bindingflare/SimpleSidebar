@@ -22,6 +22,7 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
     }
 
     @Override
+    // FIXME null pointer error in line 35
     public void run() {
         for (String playerName : playersOnCooldown.keySet()) {
             Player player = Bukkit.getPlayer(playerName);
@@ -39,14 +40,14 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
         }
     }
 
-//    public boolean add(String playerName, int duration) {
-//        if (!playersOnCooldown.containsKey(playerName)) {
-//            playersOnCooldown.put(playerName, duration);
-//            return true;
-//        }
-//
-//        return false;
-//    }
+    public boolean add(String playerName, int duration) {
+        if (!playersOnCooldown.containsKey(playerName)) {
+            playersOnCooldown.put(playerName, duration);
+            return true;
+        }
+
+        return false;
+    }
 
     public boolean remove(String playerName) {
         if (playersOnCooldown.containsKey(playerName)) {

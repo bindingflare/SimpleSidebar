@@ -17,7 +17,7 @@ plugin_enabled: true
 # Default sidebar
 
 #### If this is true, the first sidebar will be loaded when a player joins the server
-firstSidebarIsDefault: true
+first_sidebar_is_default: true
 
 # AFK optimisation (for performance)
 
@@ -26,5 +26,5 @@ firstSidebarIsDefault: true
 AFK_timer: 30
 #### If this is true, the last sidebar will be used when a player enters AFK mode
    # With this enabled, a player cannot set their sidebar to the last sidebar
-lastSidebarIsForAFK: true
+last_sidebar_is_afk: true
 

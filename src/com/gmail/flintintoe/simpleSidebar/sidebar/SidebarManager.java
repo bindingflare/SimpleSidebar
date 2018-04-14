@@ -1,12 +1,13 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
-import com.gmail.flintintoe.simpleSidebar.MessageManager;
+import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import com.gmail.flintintoe.simpleSidebar.timer.LimitedSidebarUpdater;
 import com.gmail.flintintoe.simpleSidebar.timer.GlobalSidebarUpdater;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -23,7 +24,6 @@ public class SidebarManager {
 
     // BukkitRunnables
     public LimitedSidebarUpdater customUpdater;
-    public GlobalSidebarUpdater globalUpdater;
 
     //private static String[] names;
     // Names are now just the index of sidebar
@@ -32,7 +32,7 @@ public class SidebarManager {
 
     private int sidebarCount = 0;
 
-    public boolean SidebarManager(SimpleSidebar plugin) {
+    public SidebarManager(SimpleSidebar plugin) {
         placeholderM = plugin.getPlaceholderManager();
         configM = plugin.getConfigManager();
         messageM = plugin.getMessageManager();
@@ -46,20 +46,19 @@ public class SidebarManager {
         }
 
         messageM.sendToConsole("Info: Sidebar module enabled");
-        return true;
     }
 
     private boolean setupSidebar(SimpleSidebar plugin) {
         // Use Efficient updater or the standard
         if (configM.duration == 0) {
+            GlobalSidebarUpdater globalUpdater = new GlobalSidebarUpdater(plugin);
+            globalUpdater.runTaskTimer(plugin, 20L, 20L);
+        } else {
             customUpdater = new LimitedSidebarUpdater(plugin);
             customUpdater.runTaskTimer(plugin, 20L, 20L);
-        } else {
-            globalUpdater = new GlobalSidebarUpdater(plugin);
-            globalUpdater.runTaskTimer(plugin, 20L, 20L);
         }
 
-        List<String> sidebarList = configM.getEntries(ConfigFile.sidebars, "sidebars");
+        List<String> sidebarList = configM.getStrings(ConfigFile.sidebars, "sidebars");
         List<Integer> sidebarStarts = new ArrayList<>();
         List<Integer> sidebarEnds = new ArrayList<>();
 
@@ -70,7 +69,7 @@ public class SidebarManager {
         // Find number of sidebars
         // Ignore last 2 lines of list
         // Keep note of reference points
-        sidebarStarts.add(0);
+        sidebarStarts.add(1);
         for (int i = 0; i < sidebarList.size() - 2; i++) {
             if (sidebarList.get(i).trim().equals("%divider%")) {
                 if (i <= 1) {
@@ -80,7 +79,7 @@ public class SidebarManager {
                 sidebarCount++;
 
                 sidebarEnds.add(i - 1);
-                sidebarStarts.add(i + 1);
+                sidebarStarts.add(i + 2);
             }
         }
         // One more sidebar than the number of %divide% lines
@@ -93,10 +92,13 @@ public class SidebarManager {
 
         // Initialize entries
         for (int i = 0; i < sidebarCount; i++) {
+            // Get a header every loop
+            headers[i] = sidebarList.get(sidebarStarts.get(i) - 1);
+
             int start = sidebarStarts.get(i);
             int end = sidebarEnds.get(i);
             // Declare entries[i]
-            entries[i] = new String[end + 1 - start];
+            entries[i] = new String[end - start + 1];
 
             // Initialize entries[i]
             int count = 0;
@@ -110,78 +112,80 @@ public class SidebarManager {
     }
 
     public boolean setSidebar(Player player, int sidebarIndex) {
-        if (player.isOnline()) {
-            // Return false if sidebarIndex out of bounds
-            if (sidebarIndex < 0 || sidebarIndex > sidebarCount - 1) {
-                return false;
-            }
-
-            // Now ready to set sidebar
-            ScoreboardManager sbM = Bukkit.getServer().getScoreboardManager();
-
-            Scoreboard scoreboard = sbM.getNewScoreboard();
-            Objective objective = scoreboard.registerNewObjective("" + sidebarIndex, "dummy");
-
-            int entryCount = 1;
-            int spaceCount = 1;
-
-            for (String entry : entries[sidebarIndex]) {
-                entry = placeholderM.setPlaceholders(player, entry);
-
-                // TODO Checking algorithm so that duplicates are not set score twice
-
-                if (entry.length() == 0 || entry.trim().length() == 0) {
-                    entry = "";
-
-                    for (int i = 0; i < spaceCount; i++) {
-                        entry += " ";
-                    }
-                    spaceCount++;
-                }
-                // Add line to scoreboard
-                objective.getScore(entry).setScore(entryCount);
-                entryCount++;
-            }
-
-            // Set scoreboard
-            player.setScoreboard(scoreboard);
-
-            return true;
+        // Return false if sidebarIndex out of bounds
+        if (sidebarIndex < 0 || sidebarIndex > sidebarCount - 1) {
+            return false;
         }
 
-        return false;
+        // Now ready to set sidebar
+        ScoreboardManager sbM = Bukkit.getServer().getScoreboardManager();
+
+        Scoreboard scoreboard = sbM.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("" + sidebarIndex, "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        int entryOrder = entries[sidebarIndex].length;
+        int spaceCount = 1;
+
+        // Set header
+        objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', headers[sidebarIndex]));
+
+        for (String entry : entries[sidebarIndex]) {
+            entry = placeholderM.setPlaceholders(player, entry);
+
+            // TODO Checking algorithm so that duplicates are not set score twice
+
+            StringBuilder sb = new StringBuilder();
+
+            if (entry.length() == 0 || entry.trim().length() == 0) {
+                for (int i = 0; i < spaceCount; i++) {
+                    sb.append(" ");
+                }
+                entry = sb.toString();
+
+                spaceCount++;
+            }
+            // Add line to scoreboard
+            if (entry.length() > 40) {
+                objective.getScore(ChatColor.translateAlternateColorCodes('&', entry).substring(0, 39)).setScore(entryOrder);
+            } else {
+                objective.getScore(ChatColor.translateAlternateColorCodes('&', entry)).setScore(entryOrder);
+            }
+            entryOrder--;
+        }
+
+        // Set scoreboard
+        player.setScoreboard(scoreboard);
+
+        return true;
     }
 
     public boolean updateSidebar(Player player) {
         String playerName = player.getDisplayName();
 
-        if (player.isOnline()) {
-            // Set sidebar
-            String sidebarName = null;
-            try {
-                sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
-            } catch (Exception e) {
-                messageM.sendToConsole("Error:" + playerName + " has no sidebar set");
-            }
-
-            int sidebarIndex;
-
-            try {
-                sidebarIndex = Integer.parseInt(sidebarName);
-                setSidebar(player, sidebarIndex);
-            } catch (Exception e) {
-                messageM.sendToConsole("Failed to parse sidebar name of " + playerName + " into an integer");
-                return false;
-            }
-
-            return true;
+        // Set sidebar
+        String sidebarName = null;
+        try {
+            sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
+        } catch (Exception e) {
+            messageM.sendToConsole("Error:" + playerName + " has no sidebar set");
         }
 
-        return false;
+        int sidebarIndex;
+
+        try {
+            sidebarIndex = Integer.parseInt(sidebarName);
+            setSidebar(player, sidebarIndex);
+        } catch (Exception e) {
+            messageM.sendToConsole("Failed to parse sidebar name of " + playerName + " into an integer");
+            return false;
+        }
+
+        return true;
     }
 
     public boolean setAFKSidebar(Player player) {
-        if (player.isOnline() && configM.haveAFKSb) {
+        if (configM.haveAFKSb) {
             // Set AFK sidebar
             int sidebarIndex = headers.length - 1;
 

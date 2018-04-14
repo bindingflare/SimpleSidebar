@@ -6,6 +6,7 @@ import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
 import com.gmail.flintintoe.simpleSidebar.event.PlayerEvent;
+import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.sidebar.PlaceholderManager;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
 import org.bukkit.plugin.PluginManager;
@@ -34,7 +35,7 @@ public class SimpleSidebar extends JavaPlugin {
             // PRIORITY 3
             // Placeholders is first
             placeholderM = new PlaceholderManager(this);
-            sidebarM = new SidebarManager();
+            sidebarM = new SidebarManager(this);
             // Commands
             this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
             this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));

@@ -1,6 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.config;
 
-import com.gmail.flintintoe.simpleSidebar.MessageManager;
+import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -99,18 +99,18 @@ public class ConfigManager {
     public int duration;
 
     private void getPluginSettings() {
-        haveDefaultSb = getBoolean(ConfigFile.config, "firstSidebarIsDefault");
-        haveAFKSb = getBoolean(ConfigFile.config, "haveAFKSb");
+        haveDefaultSb = getBoolean(ConfigFile.config, "first_sidebar_is_default");
+        haveAFKSb = getBoolean(ConfigFile.config, "last_sidebar_is_afk");
 
         duration = getValue(ConfigFile.config, "AFK_timer");
     }
 
-    public String getEntry(ConfigFile configFile, String path) {
+    public String getString(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.sidebars) {
             return sidebarConfig.getString(path);
         } else if (configFile == ConfigFile.messages) {
             return messageConfig.getString(path);
-        } else if (configFile == configFile.config) {
+        } else if (configFile == ConfigFile.config) {
             return configConfig.getString(path);
         }
 
@@ -122,7 +122,7 @@ public class ConfigManager {
             return sidebarConfig.getInt(path);
         } else if (configFile == ConfigFile.messages) {
             return messageConfig.getInt(path);
-        } else if (configFile == configFile.config) {
+        } else if (configFile == ConfigFile.config) {
             return configConfig.getInt(path);
         }
 
@@ -134,19 +134,19 @@ public class ConfigManager {
             return sidebarConfig.getBoolean(path);
         } else if (configFile == ConfigFile.messages) {
             return messageConfig.getBoolean(path);
-        } else if (configFile == configFile.config) {
+        } else if (configFile == ConfigFile.config) {
             return configConfig.getBoolean(path);
         }
 
         return false;
     }
 
-    public List<String> getEntries(ConfigFile configFile, String path) {
+    public List<String> getStrings(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.sidebars) {
             return sidebarConfig.getStringList(path);
         } else if (configFile == ConfigFile.messages) {
             return messageConfig.getStringList(path);
-        } else if (configFile == configFile.config) {
+        } else if (configFile == ConfigFile.config) {
             return configConfig.getStringList(path);
         }
 

@@ -1,5 +1,6 @@
-package com.gmail.flintintoe.simpleSidebar;
+package com.gmail.flintintoe.simpleSidebar.message;
 
+import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
