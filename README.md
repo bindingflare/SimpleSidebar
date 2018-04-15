@@ -1,15 +1,6 @@
-# A simple sidebar plugin for Minecraft Spigot
-Made to be highly configurable while being small!
+# Test branch
 
-Currently in development... (Im new >.<)
+This branch is for development of the next releases of this plugin.
 
-### Features
-- Customization options
-- Multiple sidebars support
-- Optimization options to save resources while still updating sidebars
+USE AT YOUR OWN RISK.
 
-### News
-No news at the moment
-
-### Downloads
-No releases at the moment
