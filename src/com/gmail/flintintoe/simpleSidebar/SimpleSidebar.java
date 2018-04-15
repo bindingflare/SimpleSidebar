@@ -46,6 +46,15 @@ public class SimpleSidebar extends JavaPlugin {
         }
     }
 
+    @Override
+    public void onDisable() {
+        if (configM.duration == 0) {
+            sidebarM.getGlobalUpdater().cancel();
+        } else {
+            sidebarM.getCustomUpdater().cancel();
+        }
+    }
+
     public ConfigManager getConfigManager() {
         return configM;
     }

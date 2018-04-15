@@ -9,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GlobalSidebarUpdater extends BukkitRunnable {
     SidebarManager sidebarM;
 
-    public GlobalSidebarUpdater(SimpleSidebar plugin) {
-        sidebarM = plugin.getSidebarManager();
+    public GlobalSidebarUpdater(SidebarManager sidebarM) {
+        this.sidebarM = sidebarM;
     }
 
     public void run() {

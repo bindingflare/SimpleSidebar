@@ -23,7 +23,8 @@ public class SidebarManager {
     private MessageManager messageM;
 
     // BukkitRunnables
-    public LimitedSidebarUpdater customUpdater;
+    private GlobalSidebarUpdater globalUpdater;
+    private LimitedSidebarUpdater customUpdater;
 
     //private static String[] names;
     // Names are now just the index of sidebar
@@ -51,10 +52,10 @@ public class SidebarManager {
     private boolean setupSidebar(SimpleSidebar plugin) {
         // Use Efficient updater or the standard
         if (configM.duration == 0) {
-            GlobalSidebarUpdater globalUpdater = new GlobalSidebarUpdater(plugin);
+            globalUpdater = new GlobalSidebarUpdater(this);
             globalUpdater.runTaskTimer(plugin, 20L, 20L);
         } else {
-            customUpdater = new LimitedSidebarUpdater(plugin);
+            customUpdater = new LimitedSidebarUpdater(this, configM.duration, configM.haveAFKSb);
             customUpdater.runTaskTimer(plugin, 20L, 20L);
         }
 
@@ -162,25 +163,13 @@ public class SidebarManager {
 
     public boolean updateSidebar(Player player) {
         String playerName = player.getDisplayName();
+        int sidebarIndex = getSidebarIndexOf(player);
 
-        // Set sidebar
-        String sidebarName = null;
-        try {
-            sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
-        } catch (Exception e) {
-            messageM.sendToConsole("Error:" + playerName + " has no sidebar set");
-        }
-
-        int sidebarIndex;
-
-        try {
-            sidebarIndex = Integer.parseInt(sidebarName);
-            setSidebar(player, sidebarIndex);
-        } catch (Exception e) {
-            messageM.sendToConsole("Failed to parse sidebar name of " + playerName + " into an integer");
+        if (sidebarIndex == -1) {
             return false;
         }
 
+        setSidebar(player, sidebarIndex);
         return true;
     }
 
@@ -195,6 +184,35 @@ public class SidebarManager {
         }
 
         return false;
+    }
+
+    public int getSidebarIndexOf (Player player) {
+        String sidebarName = null;
+        try {
+            sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
+        } catch (Exception e) {
+            //messageM.sendToConsole("Error:" + playerName + " has no sidebar set");
+            return -1;
+        }
+
+        int sidebarIndex;
+        try {
+            sidebarIndex = Integer.parseInt(sidebarName);
+
+        } catch (Exception e) {
+            //messageM.sendToConsole("Failed to parse sidebar name of " + playerName + " into an integer");
+            return -1;
+        }
+
+        return sidebarIndex;
+    }
+
+    public LimitedSidebarUpdater getCustomUpdater() {
+        return customUpdater;
+    }
+
+    public GlobalSidebarUpdater getGlobalUpdater() {
+        return globalUpdater;
     }
 
     public int getSidebarCount() {

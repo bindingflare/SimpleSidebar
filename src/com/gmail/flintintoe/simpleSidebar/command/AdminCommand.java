@@ -26,7 +26,7 @@ public class AdminCommand implements CommandExecutor {
                 // Player who sent the command
                 Player player = (Player) sender;
                 // Player where the command will apply to
-                Player target = Bukkit.getPlayer(args[1]);
+                Player target = Bukkit.getPlayer(args[0]);
 
                 // Test first if target is valid
                 if (target != null) {
@@ -53,30 +53,32 @@ public class AdminCommand implements CommandExecutor {
             }
         } else {
             // Server console
-            // Player where the command will apply to
-            Player target = Bukkit.getPlayer(args[1]);
+            if (args.length == 2) {
+                // Player where the command will apply to
+                Player target = Bukkit.getPlayer(args[0]);
 
-            // Test first if target is valid
-            if (target != null) {
-                int sidebarIndex;
+                // Test first if target is valid
+                if (target != null) {
+                    int sidebarIndex;
 
-                try {
-                    sidebarIndex = Integer.parseInt(args[1]);
-                } catch (Exception e) {
-                    messageM.sendToConsole("Argument must be a number");
-                    return true;
-                }
-                // Then test if the sidebarName is valid
-                if (!sidebarM.setSidebar(target, sidebarIndex)) {
-                    messageM.sendToConsole("The page you requested to be set to " + target.getDisplayName() + " failed.");
-                    return true;
+                    try {
+                        sidebarIndex = Integer.parseInt(args[1]);
+                    } catch (Exception e) {
+                        messageM.sendToConsole("Argument must be a number");
+                        return true;
+                    }
+                    // Then test if the sidebarName is valid
+                    if (!sidebarM.setSidebar(target, sidebarIndex)) {
+                        messageM.sendToConsole("The page you requested to be set to " + target.getDisplayName() + " failed.");
+                        return true;
+                    } else {
+                        messageM.sendToConsole("Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                        return true;
+                    }
                 } else {
-                    messageM.sendToConsole("Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                    messageM.sendToConsole("The player " + args[1] + "does not exist.");
                     return true;
                 }
-            } else {
-                messageM.sendToConsole("The player " + args[1] + "does not exist.");
-                return true;
             }
         }
 

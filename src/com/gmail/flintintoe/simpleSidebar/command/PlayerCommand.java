@@ -1,5 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.command;
 
+import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
@@ -11,12 +12,12 @@ import org.bukkit.entity.Player;
 public class PlayerCommand implements CommandExecutor {
     private SidebarManager sidebarM;
     private MessageManager messageM;
-
-    private boolean lastSidebarIsForAFK;
+    private ConfigManager configM;
 
     public PlayerCommand(SimpleSidebar plugin) {
         sidebarM = plugin.getSidebarManager();
         messageM = plugin.getMessageManager();
+        configM = plugin.getConfigManager();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class PlayerCommand implements CommandExecutor {
                     messageM.sendToPlayer(player, "Argument must be a number");
                     return true;
                 }
-                if (lastSidebarIsForAFK) {
+                if (configM.haveAFKSb) {
                     if (sidebarIndex == sidebarM.getSidebarCount() - 1) {
                         messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
                         return true;

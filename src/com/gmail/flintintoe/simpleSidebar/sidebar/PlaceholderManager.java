@@ -1,7 +1,6 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -10,16 +9,14 @@ import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 public class PlaceholderManager {
-    EconomyManager economyM;
+    SimpleSidebar plugin;
 
     public PlaceholderManager(SimpleSidebar plugin) {
-        economyM = plugin.getEconomyManager();
+        this.plugin = plugin;
     }
 
     public String setPlaceholders(Player player, String string) {
@@ -69,7 +66,7 @@ public class PlaceholderManager {
 
         // Player balance
         if (string.contains("%balance%")) {
-            string = string.replaceAll("%balance%", "" + economyM.getBalance(player));
+            string = string.replaceAll("%balance%", "" + plugin.getEconomyManager().getBalance(player));
         }
 
         // Region
@@ -123,32 +120,25 @@ public class PlaceholderManager {
             string = string.replaceAll(tag, "");
         }
 
+        // Afk duration
+        if (string.contains("%afk_time%")) {
+            if (plugin.getConfigManager().duration != 0) {
+                string = string.replaceAll("%afk_time%","" + (-plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+            } else {
+                string = string.replaceAll("%afk_time%", "");
+            }
+        }
+        if (string.contains("%afk_timeLeft%")) {
+            if (plugin.getConfigManager().duration != 0) {
+                string = string.replaceAll("%afk_timeLeft%","" + (plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+            } else {
+                string = string.replaceAll("%afk_timeLeft%", "");
+            }
+        }
 
         // TODO Regions of other locations
 
         // Player statistics
-
-        // TODO Redo this part of code (For now keeping the bottom code alive might work)
-
-        // MINE_BLOCK
-//            if (string.contains("%stat_MINE_BLOCK_")) {
-//                while (string.contains("%stat_MINE_BLOCK_")) {
-//                    String materialName = "" + string.subSequence(string.indexOf("%stat_MINE_BLOCK_") - 17, string.replaceFirst("%", "").indexOf("%") - 1);
-//
-//                    // Get the material to check stats with
-//                    Material material = Material.getMaterial(materialName);
-//                    String statResult = "";
-//
-//                    try {
-//                        statResult += player.getStatistic(Statistic.MINE_BLOCK, material);
-//                    } catch (Exception e) {
-//                        statResult += "(&4ERROR&r)";
-//                    }
-//                    // Replace raw placeholder
-//                    string.replaceAll("%stat_MINE_BLOCK_" + materialName + "%",
-//                            "" + statResult);
-//                }
-//            } else {
         // Basic handler for any other stat
         // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
         while (string.contains("%stat_")) {

@@ -28,7 +28,7 @@ public class PlayerEvent implements Listener {
             // Set sidebar of player
             sidebarM.setSidebar(player, 0);
             // Add player to update list
-            sidebarM.customUpdater.add(player.getDisplayName(), configM.duration);
+            sidebarM.getCustomUpdater().set(player.getDisplayName(), configM.duration);
         }
     }
 
@@ -36,17 +36,17 @@ public class PlayerEvent implements Listener {
     public void playerLeave(PlayerQuitEvent event) {
         String playerName = event.getPlayer().getDisplayName();
 
-        if (configM.haveAFKSb) {
-            sidebarM.customUpdater.remove(playerName);
+        if (configM.duration != 0) {
+            sidebarM.getCustomUpdater().remove(playerName);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerMove(PlayerMoveEvent event) {
         String playerName = event.getPlayer().getDisplayName();
-        if (configM.haveAFKSb) {
+        if (configM.duration != 0) {
             if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-                sidebarM.customUpdater.reset(playerName);
+                sidebarM.getCustomUpdater().resetCooldown(playerName);
             }
         }
     }

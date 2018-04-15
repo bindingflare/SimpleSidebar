@@ -1,7 +1,5 @@
 package com.gmail.flintintoe.simpleSidebar.timer;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,37 +10,42 @@ import java.util.HashMap;
 public class LimitedSidebarUpdater extends BukkitRunnable {
 
     private HashMap<String, Integer> playersOnCooldown = new HashMap<>();
+    private HashMap<String, Integer> playerSetSidebar = new HashMap<>();
 
     private SidebarManager sidebarM;
-    private ConfigManager configM;
 
-    public LimitedSidebarUpdater(SimpleSidebar plugin) {
-        configM = plugin.getConfigManager();
-        sidebarM = plugin.getSidebarManager();
+    private int defaultDuration;
+    private boolean afkSb;
+
+    public LimitedSidebarUpdater(SidebarManager sidebarM, int defaultDuration, boolean afkSb) {
+        this.sidebarM = sidebarM;
+        this.defaultDuration = defaultDuration;
+        this.afkSb = afkSb;
     }
 
     @Override
-    // FIXME null pointer error in line 35
     public void run() {
         for (String playerName : playersOnCooldown.keySet()) {
             Player player = Bukkit.getPlayer(playerName);
 
             int timeLeft = playersOnCooldown.get(playerName);
-            timeLeft--;
 
-            playersOnCooldown.put(playerName, timeLeft);
-
-            if (timeLeft > 0) {
-                sidebarM.updateSidebar(player);
-            } else if (timeLeft == 0) {
+            if (timeLeft >= 0) {
+                sidebarM.setSidebar(player, playerSetSidebar.get(playerName));
+            } else if (timeLeft == -1) {
                 sidebarM.setAFKSidebar(player);
+            } else if (timeLeft < -1) {
+                sidebarM.updateSidebar(player);
             }
+
+            playersOnCooldown.put(playerName, timeLeft - 1);
         }
     }
 
-    public boolean add(String playerName, int duration) {
+    public boolean set(String playerName, int duration) {
         if (!playersOnCooldown.containsKey(playerName)) {
             playersOnCooldown.put(playerName, duration);
+            playerSetSidebar.put(playerName, sidebarM.getSidebarIndexOf(Bukkit.getPlayer(playerName)));
             return true;
         }
 
@@ -52,18 +55,27 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
     public boolean remove(String playerName) {
         if (playersOnCooldown.containsKey(playerName)) {
             playersOnCooldown.remove(playerName);
+            playerSetSidebar.remove(playerName);
             return true;
         }
 
         return false;
     }
 
-    public boolean reset(String playerName) {
+    public boolean resetCooldown(String playerName) {
         if (playersOnCooldown.containsKey(playerName)) {
-            playersOnCooldown.put(playerName, configM.duration);
+            playersOnCooldown.put(playerName, defaultDuration);
             return true;
         }
 
         return false;
+    }
+
+    public int getTime(String playerName) {
+        if (playersOnCooldown.containsKey(playerName)) {
+            return playersOnCooldown.get(playerName);
+        }
+
+        return -(defaultDuration + 1);
     }
 }
