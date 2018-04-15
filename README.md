@@ -6,7 +6,7 @@ Currently in development... (Im new >.<)
 ### Features
 - Customization options
 - Multiple sidebars support
-- Optimization options to save resources while still updating sidebars
+- ~~Optimization options to save resources while still updating sidebars~~
 
 ### Todo
 - Support for duplicate sidebar lines
