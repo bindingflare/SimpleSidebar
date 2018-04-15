@@ -8,8 +8,12 @@ Currently in development... (Im new >.<)
 - Multiple sidebars support
 - Optimization options to save resources while still updating sidebars
 
-### News
-No news at the moment
+### Todo
+- Support for duplicate sidebar lines
+- Redo of placeholders (And maybe support for Placeholder API)
+- Redo of commands
+- Adding permissions support
 
-### Downloads
-No releases at the moment
+### News
+2018/4/15 - First release! v0.6.0_BETA
+
