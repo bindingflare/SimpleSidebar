@@ -187,7 +187,7 @@ public class SidebarManager {
     }
 
     public int getSidebarIndexOf (Player player) {
-        String sidebarName = null;
+        String sidebarName;
         try {
             sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
         } catch (Exception e) {

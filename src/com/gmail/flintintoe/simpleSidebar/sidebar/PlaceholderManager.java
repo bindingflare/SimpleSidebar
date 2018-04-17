@@ -4,6 +4,7 @@ import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Statistic;
 import org.bukkit.World;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 public class PlaceholderManager {
     SimpleSidebar plugin;
@@ -34,35 +37,75 @@ public class PlaceholderManager {
         if (string.contains("%z%")) {
             string = string.replace("%z%", "" + player.getLocation().getBlockZ());
         }
+
+        if (string.contains("%x_")) {
+            while (string.contains("%x_")) {
+                String propertyTag = getFirstPropertyTag(string);
+
+                Player target = Bukkit.getPlayer(propertyTag);
+                String replacement = "";
+
+                if (target != null) {
+                    replacement += player.getLocation().getBlockX();
+                }
+                string = string.replace("%x_" + propertyTag + "%", replacement);
+            }
+        }
+        if (string.contains("%y_")) {
+            while (string.contains("%y_")) {
+                String propertyTag = getFirstPropertyTag(string);
+
+                Player target = Bukkit.getPlayer(propertyTag);
+                String replacement = "";
+
+                if (target != null) {
+                    replacement += player.getLocation().getBlockX();
+                }
+                string = string.replace("%y_" + propertyTag + "%", replacement);
+            }
+        }
+        if (string.contains("%z_")) {
+            while (string.contains("%z_")) {
+                String propertyTag = getFirstPropertyTag(string);
+
+                Player target = Bukkit.getPlayer(propertyTag);
+                String replacement = "";
+
+                if (target != null) {
+                    replacement += player.getLocation().getBlockX();
+                }
+                string = string.replace("%z_" + propertyTag + "%", replacement);
+            }
+        }
+
         // Date and time
-        // TODO Fix formatting of date and time
-        ZonedDateTime currentTime = ZonedDateTime.now();
-        ZoneId currentZone = ZoneId.systemDefault();
+        if (string.contains("%date%")) {
+            ZoneId currentZone = ZoneId.systemDefault();
+            ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-        if (string.contains("%year%")) {
-            string = string.replaceAll("%year%", "" + currentTime.getYear());
-        }
-        if (string.contains("%month%")) {
-            string = string.replaceAll("%month%", "" + currentTime.getMonth());
-        }
-        if (string.contains("%day%")) {
-            string = string.replaceAll("%day%", "" + currentTime.getDayOfMonth());
-        }
-        if (string.contains("%hour%")) {
-            string = string.replaceAll("%hour%", "" + currentTime.getHour());
-        }
-        if (string.contains("%minute%")) {
-            string = string.replaceAll("%minute%", "" + currentTime.getMinute());
-        }
-        if (string.contains("%second%")) {
-            string = string.replaceAll("%second%", "" + currentTime.getSecond());
-        }
-        if (string.contains("%timezone%")) {
-            string = string.replaceAll("%timezone%", "" + currentZone);
+            DateTimeFormatterBuilder formatterBuilder =  new DateTimeFormatterBuilder();
+            DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern("dd MM yyyy").toFormatter();
+
+            string.replaceAll("%date%", currentDateTime.format(dateTimeFormatter));
         }
 
-        // TODO Location of someone else
-        // FIXME Possible logical error of duplicate lines
+        if (string.contains("%time%")) {
+            ZoneId currentZone = ZoneId.systemDefault();
+            ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
+
+            DateTimeFormatterBuilder formatterBuilder =  new DateTimeFormatterBuilder();
+            DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern("need help").toFormatter();
+
+            string.replaceAll("%time%", currentDateTime.format(dateTimeFormatter));
+        }
+
+        if (string.contains("%date_")) {
+            // TODO Custom date format
+        }
+
+        if (string.contains("%time_")) {
+            // TODO Custom time format
+        }
 
         // Player balance
         if (string.contains("%balance%")) {
@@ -72,8 +115,6 @@ public class PlaceholderManager {
         // Region
         if (string.contains("%region_")) {
             String[] regions = getRegionList(player);
-
-            // FIXME Possible issue where region placeholders will not AT LEAST be replaced with blank
 
             // Better way to handle variations of placeholder %region_x%
             for (int i = 0; i < regions.length; i++) {
@@ -87,34 +128,11 @@ public class PlaceholderManager {
                     string = string.replaceAll(sb.toString(), regions[i]);
                 }
             }
-//            if (string.contains("%region_1%")) {
-//                if (regions.length > 0) {
-//                    string = string.replaceAll("%region_1%", regions[0]);
-//                } else {
-//                    // Replace with String of 20 spaces
-//                    string = string.replaceAll("%region_1%", "");
-//                }
-//            }
-//            if (string.contains("%region_2%")) {
-//                if (regions.length > 1) {
-//                    string = string.replaceAll("%region_2%", regions[1]);
-//                } else {
-//                    // Replace with String of 21 spaces
-//                    string = string.replaceAll("%region_2%", "");
-//                }
-//            }
-//            if (string.contains("%region_3%")) {
-//                if (regions.length > 2) {
-//                    string = string.replaceAll("%region_3%", regions[2]);
-//                } else {
-//                    // Replace with String of 22 spaces
-//                    string = string.replaceAll("%region_3%", "");
-//                }
-//            }
         }
 
         // Handle still incomplete %region_x% placeholders
         while (string.contains("%region_")) {
+            // TODO Region list of other locations
             String tag = string.substring(string.indexOf("%region_"), string.replaceFirst("%", " ").indexOf("%") + 1);
 
             string = string.replaceAll(tag, "");
@@ -123,49 +141,47 @@ public class PlaceholderManager {
         // Afk duration
         if (string.contains("%afk_time%")) {
             if (plugin.getConfigManager().duration != 0) {
-                string = string.replaceAll("%afk_time%","" + (-plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+                string = string.replaceAll("%afk_time%", "" + (-plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
             } else {
                 string = string.replaceAll("%afk_time%", "");
             }
         }
         if (string.contains("%afk_timeLeft%")) {
             if (plugin.getConfigManager().duration != 0) {
-                string = string.replaceAll("%afk_timeLeft%","" + (plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+                string = string.replaceAll("%afk_timeLeft%", "" + (plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
             } else {
                 string = string.replaceAll("%afk_timeLeft%", "");
             }
         }
 
-        // TODO Regions of other locations
-
         // Player statistics
-        // Basic handler for any other stat
-        // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
         while (string.contains("%stat_")) {
             String temp = string;
 
-            String tag = string.substring(string.indexOf("%stat_"), string.replaceFirst("%", " ").indexOf("%") + 1);
+            String propertyTag = string.substring(string.indexOf("%stat_"), string.replaceFirst("%", " ").indexOf("%") + 1);
 
             // Try to get that specific stat
             String statResult = "";
             try {
-                statResult += player.getStatistic(Statistic.valueOf(tag));
+                statResult += player.getStatistic(Statistic.valueOf(propertyTag));
             } catch (Exception e) {
                 statResult += "&r(&4ERROR&r)";
+                // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
             }
             // Replace raw placeholder
-            string = string.replaceAll("%" + tag + "%", "" + statResult);
+            string = string.replaceAll("%" + propertyTag + "%", "" + statResult);
         }
-        //           }
 
         // More coming soon-ish
-
 
         return string;
     }
 
-    private static String[] getRegionList(Player player) {
+    private String getFirstPropertyTag(String firstTag) {
+        return firstTag.substring(firstTag.indexOf("%region_"), firstTag.replaceFirst("%", " ").indexOf("%") + 1);
+    }
 
+    private String[] getRegionList(Player player) {
         World world = player.getWorld();
         Location location = player.getLocation();
 
@@ -174,10 +190,9 @@ public class PlaceholderManager {
         String[] regions = new String[set.size()];
 
         // Keeping all parent classes for now
-        // This part could change (or another method be added
+        // This part could change (or another method be added)
         int count = 0;
         for (ProtectedRegion region : set) {
-
             regions[count] = region.getId();
             count++;
         }

@@ -2,6 +2,7 @@ package com.gmail.flintintoe.simpleSidebar.config;
 
 import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
+import com.sk89q.worldedit.event.platform.ConfigurationLoadEvent;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -92,6 +93,13 @@ public class ConfigManager {
     public boolean isRegionEnabled;
     public boolean isSidebarEnabled;
 
+    public boolean containsAFKSbPlaceholders;
+
+    public boolean updateWhenNeeded;
+    public boolean updateWhenMovement;
+    public boolean updateWhenMining;
+    public boolean updateWhenPlacing;
+
     // Manual settings
     public boolean haveDefaultSb;
     public boolean haveAFKSb;
@@ -103,6 +111,11 @@ public class ConfigManager {
         haveAFKSb = getBoolean(ConfigFile.config, "last_sidebar_is_afk");
 
         duration = getValue(ConfigFile.config, "AFK_timer");
+
+        updateWhenNeeded = getBoolean(ConfigFile.config, "update_sidebar_when_placeholder_update");
+        updateWhenMovement = getBoolean(ConfigFile.config, "sidebar_update_when_player_movement");
+        updateWhenMining = getBoolean(ConfigFile.config,"sidebar_update_when_player_mine");
+        updateWhenPlacing = getBoolean(ConfigFile.config,"sidebar_update_when_block_place");
     }
 
     public String getString(ConfigFile configFile, String path) {
