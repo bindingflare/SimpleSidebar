@@ -4,7 +4,7 @@ import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
 import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.timer.LimitedSidebarUpdater;
+import com.gmail.flintintoe.simpleSidebar.timer.CustomSidebarUpdater;
 import com.gmail.flintintoe.simpleSidebar.timer.GlobalSidebarUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,7 +24,7 @@ public class SidebarManager {
 
     // BukkitRunnables
     private GlobalSidebarUpdater globalUpdater;
-    private LimitedSidebarUpdater customUpdater;
+    private CustomSidebarUpdater customUpdater;
 
     //private static String[] names;
     // Names are now just the index of sidebar
@@ -41,7 +41,7 @@ public class SidebarManager {
         // Setup sidebar
         if (!setupSidebar(plugin)) {
             messageM.sendToConsole("Fatal: Sidebar module has failed to finish setup process");
-            messageM.sendToConsole("Note: Disabling plugin...");
+            messageM.sendToConsole("Info: Disabling plugin...");
             // Disable plugin
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
@@ -50,13 +50,14 @@ public class SidebarManager {
     }
 
     private boolean setupSidebar(SimpleSidebar plugin) {
-        // Use Efficient updater or the standard
-        if (configM.duration == 0) {
+        // Use Efficient updater or the standard (Both not recommended)
+        if (configM.updatePlaceholerSync) {
             globalUpdater = new GlobalSidebarUpdater(this);
-            globalUpdater.runTaskTimer(plugin, 20L, 20L);
-        } else {
-            customUpdater = new LimitedSidebarUpdater(this, configM.duration, configM.haveAFKSb);
-            customUpdater.runTaskTimer(plugin, 20L, 20L);
+            globalUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
+        }
+        if (configM.updatePlaceholerSync){
+            customUpdater = new CustomSidebarUpdater(this, configM.afkTimer, configM.afkPlaceholderUpdate);
+            customUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
         }
 
         List<String> sidebarList = configM.getStrings(ConfigFile.sidebars, "sidebars");
@@ -161,32 +162,32 @@ public class SidebarManager {
         return true;
     }
 
-    public boolean updateSidebar(Player player) {
-        String playerName = player.getDisplayName();
+    public void updateSidebar(Player player) {
         int sidebarIndex = getSidebarIndexOf(player);
 
         if (sidebarIndex == -1) {
-            return false;
+            messageM.sendToConsole("Warning: Update sidebar was called when player " + player.getDisplayName() + " had no scoreboard set");
         }
 
-        setSidebar(player, sidebarIndex);
-        return true;
+        if (!setSidebar(player, sidebarIndex)) {
+            messageM.sendToConsole("Error: Failed to update sidebar of " + player.getDisplayName());
+        }
     }
 
-    public boolean setAFKSidebar(Player player) {
-        if (configM.haveAFKSb) {
+    public void setAFKSidebar(Player player) {
+        if (configM.afkTimer != 0) {
             // Set AFK sidebar
             int sidebarIndex = headers.length - 1;
 
-            setSidebar(player, sidebarIndex);
-
-            return true;
+            if (!setSidebar(player, sidebarIndex)) {
+                messageM.sendToConsole("Error: An error has occured when setting AFK sidebar to " + player.getDisplayName());
+            }
+        } else {
+            messageM.sendToConsole("Warning: AFK sidebar method called when AFK sidebar is disabled");
         }
-
-        return false;
     }
 
-    public int getSidebarIndexOf (Player player) {
+    public int getSidebarIndexOf(Player player) {
         String sidebarName;
         try {
             sidebarName = player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName();
@@ -207,7 +208,7 @@ public class SidebarManager {
         return sidebarIndex;
     }
 
-    public LimitedSidebarUpdater getCustomUpdater() {
+    public CustomSidebarUpdater getCustomUpdater() {
         return customUpdater;
     }
 

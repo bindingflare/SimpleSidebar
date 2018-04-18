@@ -24,7 +24,7 @@ public class SimpleSidebar extends JavaPlugin {
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
         // PRIORITY 1
-        messageM = new MessageManager(this);
+        messageM = new MessageManager();
         configM = new ConfigManager(this);
 
         // PRIORITY 2
@@ -48,7 +48,7 @@ public class SimpleSidebar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (configM.duration == 0) {
+        if (configM.afkTimer == 0) {
             sidebarM.getGlobalUpdater().cancel();
         } else {
             sidebarM.getCustomUpdater().cancel();
@@ -74,8 +74,4 @@ public class SimpleSidebar extends JavaPlugin {
     public SidebarManager getSidebarManager() {
         return sidebarM;
     }
-
-//    public boolean economyEnabled() {
-//        return isEconomyEnabled;
-//    }
 }

@@ -1,8 +1,7 @@
 package com.gmail.flintintoe.simpleSidebar.config;
 
-import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.sk89q.worldedit.event.platform.ConfigurationLoadEvent;
+import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,10 +17,6 @@ public class ConfigManager {
     private FileConfiguration messageConfig;
     private FileConfiguration configConfig;
 
-    private File sidebarFile;
-    private File messageFile;
-    private File configFile;
-
     // No need to save SimpleSidebar reference here
     public ConfigManager(SimpleSidebar plugin) {
         messageM = plugin.getMessageManager();
@@ -35,6 +30,10 @@ public class ConfigManager {
     }
 
     private void setupConfig(SimpleSidebar plugin) {
+        File sidebarFile;
+        File messageFile;
+        File configFile;
+
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
         }
@@ -93,29 +92,35 @@ public class ConfigManager {
     public boolean isRegionEnabled;
     public boolean isSidebarEnabled;
 
-    public boolean containsAFKSbPlaceholders;
+    // TODO Change these into getters and setters in the future
+    public boolean enablePlugin;
+    public boolean setOnLogin;
 
-    public boolean updateWhenNeeded;
-    public boolean updateWhenMovement;
-    public boolean updateWhenMining;
-    public boolean updateWhenPlacing;
+    public int afkTimer;
 
-    // Manual settings
-    public boolean haveDefaultSb;
-    public boolean haveAFKSb;
+    public boolean allowChangeAfk;
+    public boolean afkPlaceholderUpdate;
 
-    public int duration;
+    public boolean updatePlaceholderAsync;
+    public boolean updatePlaceholerSync;
+
+    public int updateTimer;
 
     private void getPluginSettings() {
-        haveDefaultSb = getBoolean(ConfigFile.config, "first_sidebar_is_default");
-        haveAFKSb = getBoolean(ConfigFile.config, "last_sidebar_is_afk");
+        // TODO Redo getting plugin settings
 
-        duration = getValue(ConfigFile.config, "AFK_timer");
+        enablePlugin = getBoolean(ConfigFile.config, "plugin_enabled");
+        setOnLogin = getBoolean(ConfigFile.config, "set_on_login");
 
-        updateWhenNeeded = getBoolean(ConfigFile.config, "update_sidebar_when_placeholder_update");
-        updateWhenMovement = getBoolean(ConfigFile.config, "sidebar_update_when_player_movement");
-        updateWhenMining = getBoolean(ConfigFile.config,"sidebar_update_when_player_mine");
-        updateWhenPlacing = getBoolean(ConfigFile.config,"sidebar_update_when_block_place");
+        afkTimer = getValue(ConfigFile.config, "afk_timer");
+
+        allowChangeAfk = getBoolean(ConfigFile.config, "allow_change_afk");
+        afkPlaceholderUpdate = getBoolean(ConfigFile.config, "afk_placeholder_update");
+
+        updatePlaceholderAsync = getBoolean(ConfigFile.config, "update_placeholder_async");
+        updatePlaceholerSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
+
+        updateTimer = getValue(ConfigFile.config, "sidebar_update_timer");
     }
 
     public String getString(ConfigFile configFile, String path) {

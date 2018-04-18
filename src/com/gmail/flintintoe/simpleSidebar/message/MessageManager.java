@@ -12,10 +12,6 @@ public class MessageManager {
     private String consoleHeader = "[SimpleSidebar] ";
     private String header = "[&aSidebar&r] ";
 
-    public MessageManager (SimpleSidebar plugin) {
-        // Nothing here for now
-    }
-
     public void sendToPlayer(Player player, String message) {
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', header + message));
     }

@@ -1,6 +1,8 @@
 package com.gmail.flintintoe.simpleSidebar.sidebar;
 
 import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
+import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
+import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -16,10 +18,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
 public class PlaceholderManager {
-    SimpleSidebar plugin;
+    private ConfigManager configM;
+    private EconomyManager economyM;
+    private SidebarManager sidebarM;
 
     public PlaceholderManager(SimpleSidebar plugin) {
-        this.plugin = plugin;
+        configM = plugin.getConfigManager();
+        economyM = plugin.getEconomyManager();
+        sidebarM = plugin.getSidebarManager();
     }
 
     public String setPlaceholders(Player player, String string) {
@@ -35,9 +41,10 @@ public class PlaceholderManager {
             string = string.replaceAll("%y%", "" + player.getLocation().getBlockY());
         }
         if (string.contains("%z%")) {
-            string = string.replace("%z%", "" + player.getLocation().getBlockZ());
+            string = string.replaceAll("%z%", "" + player.getLocation().getBlockZ());
         }
 
+        // Player location
         if (string.contains("%x_")) {
             while (string.contains("%x_")) {
                 String propertyTag = getFirstPropertyTag(string);
@@ -83,22 +90,23 @@ public class PlaceholderManager {
             ZoneId currentZone = ZoneId.systemDefault();
             ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-            DateTimeFormatterBuilder formatterBuilder =  new DateTimeFormatterBuilder();
+            DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
             DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern("dd MM yyyy").toFormatter();
 
-            string.replaceAll("%date%", currentDateTime.format(dateTimeFormatter));
+            string = string.replaceAll("%date%", currentDateTime.format(dateTimeFormatter));
         }
 
         if (string.contains("%time%")) {
             ZoneId currentZone = ZoneId.systemDefault();
             ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-            DateTimeFormatterBuilder formatterBuilder =  new DateTimeFormatterBuilder();
+            DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
             DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern("need help").toFormatter();
 
-            string.replaceAll("%time%", currentDateTime.format(dateTimeFormatter));
+            string = string.replaceAll("%time%", currentDateTime.format(dateTimeFormatter));
         }
 
+        // Player specific date and time
         if (string.contains("%date_")) {
             // TODO Custom date format
         }
@@ -107,11 +115,27 @@ public class PlaceholderManager {
             // TODO Custom time format
         }
 
-        // Player balance
+        // Player self balance
         if (string.contains("%balance%")) {
-            string = string.replaceAll("%balance%", "" + plugin.getEconomyManager().getBalance(player));
+            string = string.replaceAll("%balance%", "" + economyM.getBalance(player));
         }
 
+        // Player balance
+        if (string.contains("%balance_")) {
+            while (string.contains("%balance_")) {
+                String propertyTag = getFirstPropertyTag(string);
+
+                Player target = Bukkit.getPlayer(propertyTag);
+
+                String replacement = "";
+
+                if (target != null) {
+                    replacement += economyM.getBalance(target);
+                }
+
+                string.replace("%balance_" + propertyTag + "%", replacement);
+            }
+        }
         // Region
         if (string.contains("%region_")) {
             String[] regions = getRegionList(player);
@@ -140,37 +164,35 @@ public class PlaceholderManager {
 
         // Afk duration
         if (string.contains("%afk_time%")) {
-            if (plugin.getConfigManager().duration != 0) {
-                string = string.replaceAll("%afk_time%", "" + (-plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+            if (configM.afkTimer != 0) {
+                string = string.replaceAll("%afk_time%", "" + (-sidebarM.getCustomUpdater().getTime(player.getDisplayName())));
             } else {
                 string = string.replaceAll("%afk_time%", "");
             }
         }
+
         if (string.contains("%afk_timeLeft%")) {
-            if (plugin.getConfigManager().duration != 0) {
-                string = string.replaceAll("%afk_timeLeft%", "" + (plugin.getSidebarManager().getCustomUpdater().getTime(player.getDisplayName())));
+            if (configM.afkTimer != 0) {
+                string = string.replaceAll("%afk_timeLeft%", "" + (sidebarM.getCustomUpdater().getTime(player.getDisplayName())));
             } else {
                 string = string.replaceAll("%afk_timeLeft%", "");
             }
         }
 
         // Player statistics
+
         while (string.contains("%stat_")) {
-            String temp = string;
+            String propertyTag = getFirstPropertyTag(string);
 
-            String propertyTag = string.substring(string.indexOf("%stat_"), string.replaceFirst("%", " ").indexOf("%") + 1);
-
-            // Try to get that specific stat
-            String statResult = "";
-            try {
-                statResult += player.getStatistic(Statistic.valueOf(propertyTag));
-            } catch (Exception e) {
-                statResult += "&r(&4ERROR&r)";
-                // FIXME Possible error where the colour would be reset after &r(&4ERROR&r) due to &r
-            }
-            // Replace raw placeholder
-            string = string.replaceAll("%" + propertyTag + "%", "" + statResult);
+            String statResult = Statistic.valueOf(propertyTag).toString();
+            String replacement = "";
         }
+
+//            while (string.contains("stat_block_")) {
+//                String propertyTag = getFirstPropertyTag(string);
+//
+//                String statResult = Statistic.valueOf( , propertyTag);
+//            }
 
         // More coming soon-ish
 

@@ -7,20 +7,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
-public class LimitedSidebarUpdater extends BukkitRunnable {
+public class CustomSidebarUpdater extends BukkitRunnable {
 
     private HashMap<String, Integer> playersOnCooldown = new HashMap<>();
     private HashMap<String, Integer> playerSetSidebar = new HashMap<>();
 
     private SidebarManager sidebarM;
 
-    private int defaultDuration;
+    private int interval;
     private boolean afkSb;
+    private boolean afkUpdate;
 
-    public LimitedSidebarUpdater(SidebarManager sidebarM, int defaultDuration, boolean afkSb) {
+    public CustomSidebarUpdater(SidebarManager sidebarM, int interval, boolean afkUpdate) {
         this.sidebarM = sidebarM;
-        this.defaultDuration = defaultDuration;
-        this.afkSb = afkSb;
+        this.interval = interval;
+        afkSb = interval == 0;
+        this.afkUpdate = afkUpdate;
     }
 
     @Override
@@ -32,9 +34,9 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
 
             if (timeLeft >= 0) {
                 sidebarM.setSidebar(player, playerSetSidebar.get(playerName));
-            } else if (timeLeft == -1) {
-                sidebarM.setAFKSidebar(player);
-            } else if (timeLeft < -1) {
+            } else if (timeLeft == -1 && afkSb) {
+                    sidebarM.setAFKSidebar(player);
+            } else if (timeLeft < -1 && afkUpdate) {
                 sidebarM.updateSidebar(player);
             }
 
@@ -42,9 +44,9 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
         }
     }
 
-    public boolean set(String playerName, int duration) {
+    public boolean set(String playerName) {
         if (!playersOnCooldown.containsKey(playerName)) {
-            playersOnCooldown.put(playerName, duration);
+            playersOnCooldown.put(playerName, interval);
             playerSetSidebar.put(playerName, sidebarM.getSidebarIndexOf(Bukkit.getPlayer(playerName)));
             return true;
         }
@@ -64,7 +66,7 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
 
     public boolean resetCooldown(String playerName) {
         if (playersOnCooldown.containsKey(playerName)) {
-            playersOnCooldown.put(playerName, defaultDuration);
+            playersOnCooldown.put(playerName, interval);
             return true;
         }
 
@@ -76,6 +78,6 @@ public class LimitedSidebarUpdater extends BukkitRunnable {
             return playersOnCooldown.get(playerName);
         }
 
-        return -(defaultDuration + 1);
+        return -(interval + 1);
     }
 }
