@@ -9,6 +9,7 @@ import com.gmail.flintintoe.simplesidebar.event.PlayerEvent;
 import com.gmail.flintintoe.simplesidebar.message.MessageManager;
 import com.gmail.flintintoe.simplesidebar.sidebar.PlaceholderManager;
 import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.statistic.PlayerStatistic;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,7 @@ public class SimpleSidebar extends JavaPlugin {
     private SidebarManager sidebarM;
     private PlaceholderManager placeholderM;
     private EconomyManager economyM;
+    private PlayerStatistic playerStat;
 
     @Override
     public void onEnable() {
@@ -26,6 +28,7 @@ public class SimpleSidebar extends JavaPlugin {
         // PRIORITY 1
         messageM = new MessageManager();
         configM = new ConfigManager(this);
+        playerStat = new PlayerStatistic(this);
 
         // PRIORITY 2
         if (configM.getBoolean(ConfigFile.config, "plugin_enabled")) {
@@ -73,5 +76,9 @@ public class SimpleSidebar extends JavaPlugin {
 
     public SidebarManager getSidebarManager() {
         return sidebarM;
+    }
+
+    public PlayerStatistic getStatManager() {
+        return playerStat;
     }
 }
