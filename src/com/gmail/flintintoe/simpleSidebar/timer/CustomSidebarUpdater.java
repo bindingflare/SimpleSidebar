@@ -77,7 +77,8 @@ public class CustomSidebarUpdater extends BukkitRunnable {
         if (playersOnCooldown.containsKey(playerName)) {
             return playersOnCooldown.get(playerName);
         }
-
         return -(interval + 1);
     }
+
+    // AFK time will be opposite of method above
 }
