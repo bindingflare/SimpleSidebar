@@ -33,6 +33,7 @@ public class PlaceholderManager {
         if (string.contains("%player%")) {
             string = string.replaceAll("%player%", player.getDisplayName());
         }
+
         // Player self location
         if (string.contains("%x%")) {
             string = string.replaceAll("%x%", "" + player.getLocation().getBlockX());
@@ -43,40 +44,15 @@ public class PlaceholderManager {
         if (string.contains("%z%")) {
             string = string.replaceAll("%z%", "" + player.getLocation().getBlockZ());
         }
-
         // Player location
         while (string.contains("%x_")) {
-            String propertyTag = getFirstPropertyTag(string);
-
-            Player target = Bukkit.getPlayer(propertyTag);
-            String replacement = "";
-
-            if (target != null) {
-                replacement += player.getLocation().getBlockX();
-            }
-            string = string.replace("%x_" + propertyTag + "%", replacement);
+            string = setLocationPlaceholder("%x_", string);
         }
         while (string.contains("%y_")) {
-            String propertyTag = getFirstPropertyTag(string);
-
-            Player target = Bukkit.getPlayer(propertyTag);
-            String replacement = "";
-
-            if (target != null) {
-                replacement += player.getLocation().getBlockX();
-            }
-            string = string.replace("%y_" + propertyTag + "%", replacement);
+            string = setLocationPlaceholder("%y_", string);
         }
         while (string.contains("%z_")) {
-            String propertyTag = getFirstPropertyTag(string);
-
-            Player target = Bukkit.getPlayer(propertyTag);
-            String replacement = "";
-
-            if (target != null) {
-                replacement += player.getLocation().getBlockX();
-            }
-            string = string.replace("%z_" + propertyTag + "%", replacement);
+            string = setLocationPlaceholder("%z_", string);
         }
 
         // Date and time
@@ -89,7 +65,6 @@ public class PlaceholderManager {
 
             string = string.replaceAll("%date%", currentDateTime.format(dateTimeFormatter));
         }
-
         if (string.contains("%time%")) {
             ZoneId currentZone = ZoneId.systemDefault();
             ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
@@ -104,7 +79,6 @@ public class PlaceholderManager {
         if (string.contains("%date_")) {
             // TODO Custom date format
         }
-
         if (string.contains("%time_")) {
             // TODO Custom time format
         }
@@ -113,44 +87,28 @@ public class PlaceholderManager {
         if (string.contains("%balance%")) {
             string = string.replaceAll("%balance%", "" + economyM.getBalance(player));
         }
-
         // Player balance
         while (string.contains("%balance_")) {
-            String propertyTag = getFirstPropertyTag(string);
+            string = setPlayerPlaceholder("%balance_", string, player);
+        }
+
+        // Region
+        if (string.contains("%region_")) {
+            string = setRegionPlaceholders(string, player);
+        }
+        // Other player's region
+        if (string.contains("%regionof_")) {
+            String propertyTag = getPTag("%regionof_", string);
 
             Player target = Bukkit.getPlayer(propertyTag);
 
-            String replacement = "";
+            string = string.replaceAll("%regionof_" + propertyTag + "_", "%region_");
 
             if (target != null) {
-                replacement += economyM.getBalance(target);
+                setRegionPlaceholders(string, target);
+            } else {
+                string = string.replaceAll("%region_" + getPTag("%region_", string) + "%", "");
             }
-
-            string.replace("%balance_" + propertyTag + "%", replacement);
-        }
-        // Region
-        if (string.contains("%region_")) {
-            String[] regions = getRegionList(player);
-
-            // Better way to handle variations of placeholder %region_x%
-            for (int i = 0; i < regions.length; i++) {
-                StringBuilder sb = new StringBuilder();
-
-                sb.append("%region_");
-                sb.append(i + 1);
-                sb.append("%");
-
-                if (string.contains("%region_" + (i + 1) + "%")) {
-                    string = string.replaceAll(sb.toString(), regions[i]);
-                }
-            }
-        }
-
-        // Handle still incomplete %region_x% placeholders
-        while (string.contains("%region_")) {
-            String propertyTag = getFirstPropertyTag("%region_");
-
-            string = string.replaceAll("%region_" + propertyTag + "%", "");
         }
 
         // Afk duration
@@ -161,7 +119,6 @@ public class PlaceholderManager {
                 string = string.replaceAll("%afk_time%", "");
             }
         }
-
         if (string.contains("%afk_timeLeft%")) {
             if (configM.afkTimer != 0) {
                 string = string.replaceAll("%afk_timeLeft%", "" + (sidebarM.getCustomUpdater().getTime(player.getDisplayName())));
@@ -173,14 +130,20 @@ public class PlaceholderManager {
         // Player statistics
 
         while (string.contains("%stat_")) {
-            String propertyTag = getFirstPropertyTag(string);
+            String propertyTag = getPTag("%stat_", string);
 
             String statResult = Statistic.valueOf(propertyTag).toString();
             String replacement = "";
+
+            if (statResult != null) {
+                replacement = statResult;
+            }
+
+            string.replace("%stat_" + propertyTag + "%", replacement);
         }
 
 //            while (string.contains("stat_block_")) {
-//                String propertyTag = getFirstPropertyTag(string);
+//                String propertyTag = getPTag(string);
 //
 //                String statResult = Statistic.valueOf( , propertyTag);
 //            }
@@ -190,8 +153,69 @@ public class PlaceholderManager {
         return string;
     }
 
-    private String getFirstPropertyTag(String firstTag) {
-        return firstTag.substring(firstTag.indexOf("%region_"), firstTag.replaceFirst("%", " ").indexOf("%") + 1);
+    private String getPTag(String tagHeader, String string) {
+        return string.substring(string.indexOf(tagHeader), string.replaceFirst("%", " ").indexOf("%") + 1);
+    }
+
+    private String getMiddlePTag(String tagHeader, String string) {
+        return string.substring(string.indexOf(tagHeader), string.replaceFirst("_", " ").indexOf("_") + 1);
+    }
+
+    private String setLocationPlaceholder(String tagHeader, String string) {
+        String propertyTag = getPTag(tagHeader, string);
+
+        Player target = Bukkit.getPlayer(propertyTag);
+        String replacement = "";
+
+        if (target != null) {
+            if (tagHeader.equals("%x_")) {
+                replacement += target.getLocation().getBlockX();
+            } else if (tagHeader.equals("%y_")) {
+                replacement += target.getLocation().getBlockY();
+            } else if (tagHeader.equals("%z_")) {
+                replacement += target.getLocation().getBlockZ();
+            }
+        }
+        return string.replace(tagHeader + propertyTag + "%", replacement);
+    }
+
+    private String setPlayerPlaceholder(String tagHeader, String string, Player player) {
+        String propertyTag = getPTag(tagHeader, string);
+
+        String replacement = "";
+
+        if (tagHeader.equals("%balance_")) {
+            replacement += economyM.getBalance(player);
+        }
+
+        return string.replace(tagHeader + propertyTag + "%", replacement);
+    }
+
+    private String setRegionPlaceholders(String string, Player player) {
+        String[] regions = getRegionList(player);
+
+        // Better way to handle variations of placeholder %region_x%
+
+        for (int i = 0; i < regions.length; i++) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("%region_");
+            sb.append(i + 1);
+            sb.append("%");
+
+            if (string.contains("%region_" + (i + 1) + "%")) {
+                string = string.replaceAll(sb.toString(), regions[i]);
+            }
+        }
+
+        // Handle still incomplete %region_x% placeholders
+        while (string.contains("%region_")) {
+            String propertyTag = getPTag("%region_", string);
+
+            string = string.replaceAll("%region_" + propertyTag + "%", "");
+        }
+
+        return string;
     }
 
     private String[] getRegionList(Player player) {
