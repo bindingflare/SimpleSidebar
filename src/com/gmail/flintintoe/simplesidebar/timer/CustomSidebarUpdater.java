@@ -1,6 +1,6 @@
-package com.gmail.flintintoe.simpleSidebar.timer;
+package com.gmail.flintintoe.simplesidebar.timer;
 
-import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

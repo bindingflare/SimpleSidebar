@@ -1,7 +1,7 @@
-package com.gmail.flintintoe.simpleSidebar.config;
+package com.gmail.flintintoe.simplesidebar.config;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.message.MessageManager;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +16,26 @@ public class ConfigManager {
     private FileConfiguration sidebarConfig;
     private FileConfiguration messageConfig;
     private FileConfiguration configConfig;
+
+    // Automatic settings
+    // TODO Use these booleans in case of lack of dependencies
+    public boolean isEconomyEnabled;
+    public boolean isRegionEnabled;
+    public boolean isSidebarEnabled;
+
+    // TODO Change these into getters and setters in the future
+    public boolean enablePlugin;
+    public boolean setOnLogin;
+
+    public int afkTimer;
+
+    public boolean allowChangeAfk;
+    public boolean afkPlaceholderUpdate;
+
+    public boolean updatePlaceholderAsync;
+    public boolean updatePlaceholerSync;
+
+    public int updateTimer;
 
     // No need to save SimpleSidebar reference here
     public ConfigManager(SimpleSidebar plugin) {
@@ -86,29 +106,7 @@ public class ConfigManager {
         }
     }
 
-    // Automatic settings
-    // TODO Use these booleans in case of lack of dependencies
-    public boolean isEconomyEnabled;
-    public boolean isRegionEnabled;
-    public boolean isSidebarEnabled;
-
-    // TODO Change these into getters and setters in the future
-    public boolean enablePlugin;
-    public boolean setOnLogin;
-
-    public int afkTimer;
-
-    public boolean allowChangeAfk;
-    public boolean afkPlaceholderUpdate;
-
-    public boolean updatePlaceholderAsync;
-    public boolean updatePlaceholerSync;
-
-    public int updateTimer;
-
     private void getPluginSettings() {
-        // TODO Redo getting plugin settings
-
         enablePlugin = getBoolean(ConfigFile.config, "plugin_enabled");
         setOnLogin = getBoolean(ConfigFile.config, "set_on_login");
 

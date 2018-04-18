@@ -1,14 +1,14 @@
-package com.gmail.flintintoe.simpleSidebar;
+package com.gmail.flintintoe.simplesidebar;
 
-import com.gmail.flintintoe.simpleSidebar.command.AdminCommand;
-import com.gmail.flintintoe.simpleSidebar.command.PlayerCommand;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
-import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
-import com.gmail.flintintoe.simpleSidebar.event.PlayerEvent;
-import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
-import com.gmail.flintintoe.simpleSidebar.sidebar.PlaceholderManager;
-import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.command.AdminCommand;
+import com.gmail.flintintoe.simplesidebar.command.PlayerCommand;
+import com.gmail.flintintoe.simplesidebar.config.ConfigFile;
+import com.gmail.flintintoe.simplesidebar.config.ConfigManager;
+import com.gmail.flintintoe.simplesidebar.economy.EconomyManager;
+import com.gmail.flintintoe.simplesidebar.event.PlayerEvent;
+import com.gmail.flintintoe.simplesidebar.message.MessageManager;
+import com.gmail.flintintoe.simplesidebar.sidebar.PlaceholderManager;
+import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 

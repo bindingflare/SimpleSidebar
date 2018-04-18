@@ -1,4 +1,4 @@
-package com.gmail.flintintoe.simpleSidebar.config;
+package com.gmail.flintintoe.simplesidebar.config;
 
 public enum ConfigFile {
     config,

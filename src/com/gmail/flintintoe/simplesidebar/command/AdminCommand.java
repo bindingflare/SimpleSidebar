@@ -1,8 +1,8 @@
-package com.gmail.flintintoe.simpleSidebar.command;
+package com.gmail.flintintoe.simplesidebar.command;
 
-import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.message.MessageManager;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

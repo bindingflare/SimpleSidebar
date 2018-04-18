@@ -1,8 +1,8 @@
-package com.gmail.flintintoe.simpleSidebar.event;
+package com.gmail.flintintoe.simplesidebar.event;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
-import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.config.ConfigManager;
+import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,11 +48,9 @@ public class PlayerEvent implements Listener {
     public void playerMove(PlayerMoveEvent event) {
         String playerName = event.getPlayer().getDisplayName();
 
-        if (configM.afkTimer != 0) {
-            // If customUpdater is active, reset player afkTimer when the player moves 1 block
-            if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-                sidebarM.getCustomUpdater().resetCooldown(playerName);
-            }
+        // If customUpdater is active, reset player afkTimer when the player moves 1 block
+        if (configM.afkTimer != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
+            sidebarM.getCustomUpdater().resetCooldown(playerName);
         }
     }
 

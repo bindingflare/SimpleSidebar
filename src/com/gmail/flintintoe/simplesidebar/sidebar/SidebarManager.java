@@ -1,11 +1,11 @@
-package com.gmail.flintintoe.simpleSidebar.sidebar;
+package com.gmail.flintintoe.simplesidebar.sidebar;
 
-import com.gmail.flintintoe.simpleSidebar.message.MessageManager;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigFile;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.timer.CustomSidebarUpdater;
-import com.gmail.flintintoe.simpleSidebar.timer.GlobalSidebarUpdater;
+import com.gmail.flintintoe.simplesidebar.message.MessageManager;
+import com.gmail.flintintoe.simplesidebar.config.ConfigFile;
+import com.gmail.flintintoe.simplesidebar.config.ConfigManager;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.timer.CustomSidebarUpdater;
+import com.gmail.flintintoe.simplesidebar.timer.GlobalSidebarUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -1,13 +1,12 @@
-package com.gmail.flintintoe.simpleSidebar.timer;
+package com.gmail.flintintoe.simplesidebar.timer;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.sidebar.SidebarManager;
+import com.gmail.flintintoe.simplesidebar.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GlobalSidebarUpdater extends BukkitRunnable {
-    SidebarManager sidebarM;
+    private SidebarManager sidebarM;
 
     public GlobalSidebarUpdater(SidebarManager sidebarM) {
         this.sidebarM = sidebarM;

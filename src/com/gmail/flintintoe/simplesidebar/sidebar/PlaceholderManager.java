@@ -1,8 +1,8 @@
-package com.gmail.flintintoe.simpleSidebar.sidebar;
+package com.gmail.flintintoe.simplesidebar.sidebar;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
-import com.gmail.flintintoe.simpleSidebar.config.ConfigManager;
-import com.gmail.flintintoe.simpleSidebar.economy.EconomyManager;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.config.ConfigManager;
+import com.gmail.flintintoe.simplesidebar.economy.EconomyManager;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -45,44 +45,38 @@ public class PlaceholderManager {
         }
 
         // Player location
-        if (string.contains("%x_")) {
-            while (string.contains("%x_")) {
-                String propertyTag = getFirstPropertyTag(string);
+        while (string.contains("%x_")) {
+            String propertyTag = getFirstPropertyTag(string);
 
-                Player target = Bukkit.getPlayer(propertyTag);
-                String replacement = "";
+            Player target = Bukkit.getPlayer(propertyTag);
+            String replacement = "";
 
-                if (target != null) {
-                    replacement += player.getLocation().getBlockX();
-                }
-                string = string.replace("%x_" + propertyTag + "%", replacement);
+            if (target != null) {
+                replacement += player.getLocation().getBlockX();
             }
+            string = string.replace("%x_" + propertyTag + "%", replacement);
         }
-        if (string.contains("%y_")) {
-            while (string.contains("%y_")) {
-                String propertyTag = getFirstPropertyTag(string);
+        while (string.contains("%y_")) {
+            String propertyTag = getFirstPropertyTag(string);
 
-                Player target = Bukkit.getPlayer(propertyTag);
-                String replacement = "";
+            Player target = Bukkit.getPlayer(propertyTag);
+            String replacement = "";
 
-                if (target != null) {
-                    replacement += player.getLocation().getBlockX();
-                }
-                string = string.replace("%y_" + propertyTag + "%", replacement);
+            if (target != null) {
+                replacement += player.getLocation().getBlockX();
             }
+            string = string.replace("%y_" + propertyTag + "%", replacement);
         }
-        if (string.contains("%z_")) {
-            while (string.contains("%z_")) {
-                String propertyTag = getFirstPropertyTag(string);
+        while (string.contains("%z_")) {
+            String propertyTag = getFirstPropertyTag(string);
 
-                Player target = Bukkit.getPlayer(propertyTag);
-                String replacement = "";
+            Player target = Bukkit.getPlayer(propertyTag);
+            String replacement = "";
 
-                if (target != null) {
-                    replacement += player.getLocation().getBlockX();
-                }
-                string = string.replace("%z_" + propertyTag + "%", replacement);
+            if (target != null) {
+                replacement += player.getLocation().getBlockX();
             }
+            string = string.replace("%z_" + propertyTag + "%", replacement);
         }
 
         // Date and time
@@ -121,20 +115,18 @@ public class PlaceholderManager {
         }
 
         // Player balance
-        if (string.contains("%balance_")) {
-            while (string.contains("%balance_")) {
-                String propertyTag = getFirstPropertyTag(string);
+        while (string.contains("%balance_")) {
+            String propertyTag = getFirstPropertyTag(string);
 
-                Player target = Bukkit.getPlayer(propertyTag);
+            Player target = Bukkit.getPlayer(propertyTag);
 
-                String replacement = "";
+            String replacement = "";
 
-                if (target != null) {
-                    replacement += economyM.getBalance(target);
-                }
-
-                string.replace("%balance_" + propertyTag + "%", replacement);
+            if (target != null) {
+                replacement += economyM.getBalance(target);
             }
+
+            string.replace("%balance_" + propertyTag + "%", replacement);
         }
         // Region
         if (string.contains("%region_")) {
@@ -156,10 +148,9 @@ public class PlaceholderManager {
 
         // Handle still incomplete %region_x% placeholders
         while (string.contains("%region_")) {
-            // TODO Region list of other locations
-            String tag = string.substring(string.indexOf("%region_"), string.replaceFirst("%", " ").indexOf("%") + 1);
+            String propertyTag = getFirstPropertyTag("%region_");
 
-            string = string.replaceAll(tag, "");
+            string = string.replaceAll("%region_" + propertyTag + "%", "");
         }
 
         // Afk duration

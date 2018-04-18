@@ -1,6 +1,6 @@
-package com.gmail.flintintoe.simpleSidebar.economy;
+package com.gmail.flintintoe.simplesidebar.economy;
 
-import com.gmail.flintintoe.simpleSidebar.SimpleSidebar;
+import com.gmail.flintintoe.simplesidebar.SimpleSidebar;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
