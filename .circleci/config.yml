@@ -21,10 +21,7 @@ jobs:
       
     working_directory: ~/repo/
     
-    branches:
-      ignore:
-       - release
-       - gh-pages
+    #branches: Nothing here
        
     steps:
       - checkout
@@ -51,4 +48,8 @@ workflows:
   build-deploy:
     jobs:
       - build
+          branches:
+            ignore:
+            - release
+            - gh-pages
 
