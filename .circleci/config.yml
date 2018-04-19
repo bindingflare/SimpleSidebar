@@ -40,7 +40,8 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-          branches:
-            only: test
+      - build:
+          filters:
+            branches:
+              only: test
 
