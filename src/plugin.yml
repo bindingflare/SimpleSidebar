@@ -1,7 +1,7 @@
 name: SimpleSidebar
-author: Flarin
+author: xFlarinFlint
 version: 0.3.0-SNAPSHOT
-main: com.gmail.flintintoe.simplesidebar.SimpleSidebar
+main: SimpleSidebar
 
 depend: []
 softdepend: [Vault, WorldGaurd]

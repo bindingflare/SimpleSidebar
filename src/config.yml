@@ -3,12 +3,7 @@
 #  \ \_/ /| |_| |/ _` | `__/ _ \
 #   > _ < |  _| | |_| | |  | __/
 #  /_/ \_\|_| |_|\__,_|_|  \___|
-
-# TODO Change big text here to SimpleSidebar
-#  ____
-#  \
-#   --
-#
+# Simple Sidebar - by xFlarinFlint (flintintoe or Flarin)
 
 # Edit plugin configurations here.
 
@@ -40,7 +35,7 @@ afk_placeholder_update: true
 # Update sidebar only when placeholders update (May cause lag)
 update_placholder_async: true
 
-# TODO set which placeholders to update
+# Setting to update specific placeholders is coming soon
 
 # Update sidebar on set intervals
 update_sidebar_sync: false
