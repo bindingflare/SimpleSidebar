@@ -49,7 +49,5 @@ workflows:
     jobs:
       - build
           branches:
-            ignore:
-            - release
-            - gh-pages
+            only: test
 
