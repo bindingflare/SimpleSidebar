@@ -2,7 +2,6 @@ package com.gmail.flintintoe.playerproperty;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;

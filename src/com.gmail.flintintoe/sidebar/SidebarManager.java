@@ -1,9 +1,9 @@
 package com.gmail.flintintoe.sidebar;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.message.MessageManager;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.config.ConfigManager;
+import com.gmail.flintintoe.message.MessageManager;
 import com.gmail.flintintoe.playerproperty.PlayerPlaceholder;
 import com.gmail.flintintoe.timer.CustomSidebarUpdater;
 import com.gmail.flintintoe.timer.SidebarUpdater;
@@ -11,12 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SidebarManager {
     private PlayerPlaceholder playerPholder;
@@ -56,7 +52,7 @@ public class SidebarManager {
             globalUpdater = new SidebarUpdater(this);
             globalUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
         }
-        if (configM.updatePlaceholerSync){
+        if (configM.updatePlaceholerSync) {
             customUpdater = new CustomSidebarUpdater(this, configM.afkTimer, configM.afkPlaceholderUpdate);
             customUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
         }

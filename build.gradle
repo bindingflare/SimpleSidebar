@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'com.gmail.flintintoe'
-version = '0.6.5'
+version = '0.6.6s'
 
 description = "A Minecraft Plugin for customizable sidebars"
 

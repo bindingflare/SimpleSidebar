@@ -1,9 +1,8 @@
 package com.gmail.flintintoe.event;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.sidebar.SidebarManager;
 import com.gmail.flintintoe.config.ConfigManager;
-import org.bukkit.entity.Player;
+import com.gmail.flintintoe.sidebar.SidebarManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

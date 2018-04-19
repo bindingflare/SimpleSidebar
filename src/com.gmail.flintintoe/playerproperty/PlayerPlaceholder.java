@@ -3,7 +3,6 @@ package com.gmail.flintintoe.playerproperty;
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.config.ConfigManager;
 import com.gmail.flintintoe.sidebar.SidebarManager;
-import com.google.gson.annotations.Since;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
