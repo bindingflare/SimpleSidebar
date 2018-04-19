@@ -1,5 +1,5 @@
 # A simple sidebar plugin for Minecraft Spigot
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ad2a5c3320dd43cbad38ba13a85f8a66)](https://www.codacy.com/app/flintintoe/SimpleSidebar?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=flintintoe/SimpleSidebar&amp;utm_campaign=Badge_Grade) ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg) ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square)
+![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/release.svg?style=flat-square) ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg) ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square)
 
 Made to be highly configurable while being small!
 
