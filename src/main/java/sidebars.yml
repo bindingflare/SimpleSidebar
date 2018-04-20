@@ -1,0 +1,78 @@
+#           __ _
+#  __   __ / _| | __ _ _ __ ___
+#  \ \_/ /| |_| |/ _` | `__/ _ \
+#   > _ < |  _| | |_| | |  | __/
+#  /_/ \_\|_| |_|\__,_|_|  \___|
+# Simple Sidebar - by xFlarinFlint (flintintoe or Flarin)
+
+# Edit sidebar configurations here.
+
+#### GENERAL GUIDELINES:
+   #
+   # - A line with only "%divider%" is used to separate sidebars
+   # - The line after the "%divider%" line and the first line of the list is reserved for the header (or title) of the sidebar
+   # - The lines after the header line until the line before the next "%divider%" line or the end of the list will be the entries of the header
+   #
+   # - A line can have a maximum of 40 characters (If the line has more than 40 characters the line will be cut off)
+   # - When there is a duplicate line in a sidebar, the plugin will add spaces to prevent duplicates from ruining the sidebar
+   # - Color codes are supported
+   #
+   # - Check the plugin wiki for placeholders and more!
+   #   https://github.com/flintintoe/simpleSidebar/wiki
+####
+sidebars:
+  - "&6&lFlint server"
+  - ""
+  - " Welcome, &a%player%&r!"
+  - "   Today is %day%/%month%/%year%"
+  - ""
+  - "   [&bTime&r]"
+  - "    %hour%:%minute%:%second%  %timezone%"
+  - "   [&bCash&r]"
+  - "     %balance%₩"
+  - "   [&bRegions&r]"
+  - "     %region_1%"
+  - "     %region_2%"
+  - "     %region_3%"
+  - ""
+  - " Time left till AFK: %afk_timeLeft%"
+  - ""
+  - "%divider%"
+  - "&3&lFlint server"
+  - ""
+  - " Stone: %STAT_MINE_BLOCK_STONE%"
+  - ""
+  - " Coal: %STAT_MINE_BLOCK_COAL_ORE%"
+  - " Iron: %STAT_MINE_BLOCK_IRON_ORE%"
+  - " Redstone: %STAT_MINE_BLOCK_REDSTONE_ORE%"
+  - ""
+  - " Lapiz lazuli: %STAT_MINE_BLOCK_LAPIZ_ORE%"
+  - " Gold: %STAT_MINE_BLOCK_GOLD_ORE%"
+  - " Quartz: %STAT_MINE_BLOCK_QUARTZ_ORE%"
+  - ""
+  - " Emerald: %STAT_MINE_BLOCK_EMERALD_ORE%"
+  - " Diamond: %STAT_MINE_BLOCK_DIAMOND_ORE%"
+  - ""
+  - "%divider%"
+  - "ERROR 999 ILLUMINATI"
+  - ""
+  - "This is special"
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - "%divider%"
+  - "&3&lFlint server"
+  - ""
+  - ""
+  - ""
+  - ""
+  - " You are now &c&lAFK"
+  - ""
+  - "    Time since afk: %afk_time%"
+  - ""
+  - ""
+  - ""
