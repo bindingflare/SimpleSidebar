@@ -5,7 +5,7 @@ Made to be highly configurable while being small!
 
 Currently in development... (Im new >.<)
 
-## Note
+#### Note
 If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most definitely rushed by me who got excited (lol).
 
 ## Features
@@ -18,6 +18,7 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 - Optimization options to updating sidebars
 
 ## News
+
 2018/4/15 - First release! v0.6.0_BETA
 
 ## (My) Semantic Versioning
