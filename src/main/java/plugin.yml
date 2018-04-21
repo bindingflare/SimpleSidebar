@@ -4,24 +4,24 @@ version: 0.3.0-SNAPSHOT
 main: SimpleSidebar
 
 depend: []
-softdepend: [Vault, WorldGaurd]
+softdepend: [Vault, WorldGaurd, WorldEdit]
 
 commands:
   sidebar:
     description: Sidebar player commands
     aliases: [sb]
     usage: /sidebar
-    permission: sidebar.use
+    permission: simplesidebar.use
   sidebaradmin:
     description: Sidebar admin commands
     aliases: [asidebar, asb]
     usage: /adminsidebar
-    permission: sidebar.admin
+    permission: simplesidebar.admin
 
 permissions:
-  sidebar.use:
+  simplesidebar.use:
     description: Allow sidebar player commands
     default: true
-  sidebar.admin:
+  simplesidebar.admin:
     description: Allow sidebar admin commands
     default: op

@@ -11,15 +11,9 @@ import org.bukkit.plugin.Plugin;
 import java.util.Set;
 
 public class PlayerRegion {
-    private SimpleSidebar plugin;
-
     private WorldGuardPlugin wGPlugin;
 
-    public PlayerRegion(SimpleSidebar plugin) {
-        this.plugin = plugin;
-    }
-
-    public boolean setupWorldGuard() {
+    public boolean setupWorldGuard(SimpleSidebar plugin) {
         Plugin wGPlugin = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 
         // WorldGuard may not be loaded

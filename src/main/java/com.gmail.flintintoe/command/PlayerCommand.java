@@ -26,37 +26,42 @@ public class PlayerCommand implements CommandExecutor {
             messageM.sendToConsole("Only a player can run this command");
             return true;
         } else {
-            Player player = (Player) sender;
+            if (sender.hasPermission("simplesidebar.use")) {
+                Player player = (Player) sender;
 
-            // Help message
-            if (args.length == 0) {
-                // TODO
-            }
-            // Set sidebar of self
-            else if (args.length == 1) {
-                int sidebarIndex;
+                // Help message
+                if (args.length == 0) {
+                    // TODO Maybe also have a help menu printed
+                    messageM.sendToPlayer(player, "This command requires at least 1 argument");
+                }
+                // Set sidebar of self
+                else if (args.length == 1) {
+                    int sidebarIndex;
 
-                try {
-                    sidebarIndex = Integer.parseInt(args[0]);
-                } catch (Exception e) {
-                    messageM.sendToPlayer(player, "Argument must be a number");
+                    try {
+                        sidebarIndex = Integer.parseInt(args[0]);
+                    } catch (Exception e) {
+                        messageM.sendToPlayer(player, "Argument must be a number");
+                        return true;
+                    }
+
+                    if (!configM.allowChangeAfk && sidebarIndex == sidebarM.getSidebarCount() - 1) {
+                        messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                        return true;
+                    }
+
+                    if (!sidebarM.setSidebar(player, sidebarIndex)) {
+                        messageM.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
+                        return true;
+                    }
+                }
+                // Too many arguments
+                else {
+                    messageM.sendToPlayer(player, "Too many arguments!");
                     return true;
                 }
-
-                if (!configM.allowChangeAfk && sidebarIndex == sidebarM.getSidebarCount() - 1) {
-                    messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                    return true;
-                }
-
-                if (!sidebarM.setSidebar(player, sidebarIndex)) {
-                    messageM.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
-                    return true;
-                }
-            }
-            // Too many arguments
-            else {
-                messageM.sendToPlayer(player, "Too many arguments!");
-                return true;
+            } else {
+                messageM.sendToPlayer((Player) sender, "You do not have the permission to use this command");
             }
         }
 

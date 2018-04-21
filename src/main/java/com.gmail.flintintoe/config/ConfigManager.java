@@ -18,9 +18,8 @@ public class ConfigManager {
     private FileConfiguration configConfig;
 
     // Automatic settings
-    // TODO Use these booleans in case of lack of dependencies
-    public boolean isEconomyEnabled;
-    public boolean isRegionEnabled;
+    public boolean isEconomyEnabled = true;
+    public boolean isRegionEnabled = true;
 
     // TODO Change these into getters and setters in the future
     public boolean enablePlugin;
@@ -98,9 +97,7 @@ public class ConfigManager {
             sidebarConfig.load(sidebarFile);
             messageConfig.load(messageFile);
             configConfig.load(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

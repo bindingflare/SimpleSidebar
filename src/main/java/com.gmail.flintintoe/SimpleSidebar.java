@@ -2,7 +2,6 @@ package com.gmail.flintintoe;
 
 import com.gmail.flintintoe.command.AdminCommand;
 import com.gmail.flintintoe.command.PlayerCommand;
-import com.gmail.flintintoe.playerproperty.PlayerPermission;
 import com.gmail.flintintoe.playerproperty.PlayerPlaceholder;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.config.ConfigManager;
@@ -24,7 +23,6 @@ public class SimpleSidebar extends JavaPlugin {
     private PlayerEconomy playerEco;
     private PlayerStatistic playerStat;
     private PlayerRegion playerRegion;
-    private PlayerPermission playerPerm;
 
     @Override
     public void onEnable() {
@@ -36,12 +34,19 @@ public class SimpleSidebar extends JavaPlugin {
         // PRIORITY 2
         if (configM.getBoolean(ConfigFile.config, "plugin_enabled")) {
             // PlayerXXXX classes
-            playerPerm = new PlayerPermission(this);
-            playerEco = new PlayerEconomy(this);
             playerStat = new PlayerStatistic(this);
 
-            playerRegion = new PlayerRegion(this);
-            playerRegion.setupWorldGuard();
+            playerEco = new PlayerEconomy();
+            if (!playerEco.setupEconomy(this)) {
+                messageM.sendToConsole("Vault dependency not found. Economy features will be disabled");
+                configM.isEconomyEnabled = false;
+            }
+
+            playerRegion = new PlayerRegion();
+            if(!playerRegion.setupWorldGuard(this)){
+                messageM.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
+                configM.isRegionEnabled = false;
+            }
 
             // PRIORITY 3
             // Placeholders is first
