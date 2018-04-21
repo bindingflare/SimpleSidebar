@@ -5,7 +5,6 @@ import com.gmail.flintintoe.config.ConfigManager;
 import com.gmail.flintintoe.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 

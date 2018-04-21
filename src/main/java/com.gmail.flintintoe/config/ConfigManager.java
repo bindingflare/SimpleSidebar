@@ -2,12 +2,10 @@ package com.gmail.flintintoe.config;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.message.MessageManager;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class ConfigManager {
