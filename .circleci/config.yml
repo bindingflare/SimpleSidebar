@@ -43,5 +43,5 @@ workflows:
       - build:
           filters:
             branches:
-              only: test
+              only: master
 
