@@ -21,23 +21,12 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 
 2018/4/15 - First release! v0.6.0_BETA
 
-## (My) Semantic Versioning
-### Commits to master branch
-MAJOR ver "." MINOR ver "." PATCH ver "" letter
+## Releases order
 
-s = save (Just keeping a backup on remote AKA Github)
-u = untested (Expecting it to work)
-x = experimental (Confidence more on the will not work side)
+Pre-release --> Release candidate --> Official release
 
-Only for the commits made to branches.
-
-### Releases
-#### Release candidates
-MAJOR ver "." MINOR ver "." PATCH ver "-RC" RC counter
-#### Releases
-MAJOR ver "." MINOR ver "." PATCH ver "" (optional) tag
-
-Only for the releases page of this repository.
+Pre-releases and release candidates are only for MINOR versions (e.g 1.0.0)
+Official releases can follow up with PATCH versions (e.g 1.0.1)
 
 ## Todo
 - Thorough testing
