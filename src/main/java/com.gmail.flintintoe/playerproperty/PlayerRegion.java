@@ -37,12 +37,12 @@ public class PlayerRegion {
 
        Set<ProtectedRegion> set = wGPlugin.getRegionManager(world).getApplicableRegions(location).getRegions();
 
-        var regions = new String[set.size()];
+        String[] regions = new String[set.size()];
 
         // Keeping all parent classes for now
         // This part could change (or another method be added)
-        var count = 0;
-        for (var region : set) {
+        int count = 0;
+        for (ProtectedRegion region : set) {
             regions[count] = region.getId();
             count++;
         }

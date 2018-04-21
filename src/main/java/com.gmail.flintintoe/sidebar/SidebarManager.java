@@ -11,8 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SidebarManager {
     private PlayerPlaceholder playerPholder;
@@ -57,9 +61,9 @@ public class SidebarManager {
             customUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
         }
 
-        var sidebarList = configM.getStrings(ConfigFile.sidebars, "sidebars");
-        var sidebarStarts = new ArrayList<Integer>();
-        var sidebarEnds = new ArrayList<Integer>();
+        List<String> sidebarList = configM.getStrings(ConfigFile.sidebars, "sidebars");
+        List<Integer> sidebarStarts = new ArrayList<>();
+        List<Integer> sidebarEnds = new ArrayList<>();
 
         if (sidebarList.get(sidebarList.size() - 1).equals("%divider%") || sidebarList.get(sidebarList.size() - 2).equals("%divider%")) {
             messageM.sendToConsole("Error: Cannot use %divider% in last 2 lines");
@@ -69,7 +73,7 @@ public class SidebarManager {
         // Ignore last 2 lines of list
         // Keep note of reference points
         sidebarStarts.add(1);
-        for (var i = 0; i < sidebarList.size() - 2; i++) {
+        for (int i = 0; i < sidebarList.size() - 2; i++) {
             if (sidebarList.get(i).trim().equals("%divider%")) {
                 if (i <= 1) {
                     messageM.sendToConsole("Error: Cannot use %divider in first 2 lines");
@@ -90,18 +94,18 @@ public class SidebarManager {
         headers = new String[sidebarCount];
 
         // Initialize entries
-        for (var i = 0; i < sidebarCount; i++) {
+        for (int i = 0; i < sidebarCount; i++) {
             // Get a header every loop
             headers[i] = sidebarList.get(sidebarStarts.get(i) - 1);
 
-            var start = sidebarStarts.get(i);
-            var end = sidebarEnds.get(i);
+            int start = sidebarStarts.get(i);
+            int end = sidebarEnds.get(i);
             // Declare entries[i]
             entries[i] = new String[end - start + 1];
 
             // Initialize entries[i]
-            var count = 0;
-            for (var j = sidebarStarts.get(i); j <= sidebarEnds.get(i); j++) {
+            int count = 0;
+            for (int j = sidebarStarts.get(i); j <= sidebarEnds.get(i); j++) {
                 entries[i][count] = sidebarList.get(j);
                 count++;
             }
@@ -117,26 +121,26 @@ public class SidebarManager {
         }
 
         // Now ready to set sidebar
-        var sbM = Bukkit.getServer().getScoreboardManager();
+        ScoreboardManager sbM = Bukkit.getServer().getScoreboardManager();
 
-        var scoreboard = sbM.getNewScoreboard();
-        var objective = scoreboard.registerNewObjective("" + sidebarIndex, "dummy");
+        Scoreboard scoreboard = sbM.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("" + sidebarIndex, "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         // Set header
         objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', headers[sidebarIndex]));
 
-        var newEntries = new String[entries[sidebarIndex].length];
+        String[] newEntries = new String[entries[sidebarIndex].length];
 
         // Set placeholders and check for duplicates
-        for (var i = 0; i < entries[sidebarIndex].length; i++) {
+        for (int i = 0; i < entries[sidebarIndex].length; i++) {
             String entry = entries[sidebarIndex][i];
 
-            var stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.append(playerPholder.setPlaceholders(player, entry));
 
             // Duplicate checker
-            for (var j = 0; j <= i; j++) {
+            for (int j = 0; j <= i; j++) {
                 if (newEntries[j].equals(stringBuilder.toString())) {
                     stringBuilder.append(" ");
                     // Reset j just in case
@@ -148,9 +152,9 @@ public class SidebarManager {
         }
 
         // Set entries to scoreboard and check for overflow
-        var entryOrder = entries[sidebarIndex].length;
+        int entryOrder = entries[sidebarIndex].length;
 
-        for (var entry : entries[sidebarIndex]) {
+        for (String entry : entries[sidebarIndex]) {
             if (entry.length() > 40) {
                 objective.getScore(ChatColor.translateAlternateColorCodes('&', entry).substring(0, 39)).setScore(entryOrder);
             } else {
@@ -166,7 +170,7 @@ public class SidebarManager {
     }
 
     public void updateSidebar(Player player) {
-        var sidebarIndex = getSidebarIndexOf(player);
+        int sidebarIndex = getSidebarIndexOf(player);
 
         if (sidebarIndex == -1) {
             messageM.sendToConsole("Error: Update sidebar was called when player " + player.getDisplayName() + " had no scoreboard set");
@@ -180,7 +184,7 @@ public class SidebarManager {
     public void setAFKSidebar(Player player) {
         if (configM.afkTimer != 0) {
             // Set AFK sidebar
-            var sidebarIndex = headers.length - 1;
+            int sidebarIndex = headers.length - 1;
 
             if (!setSidebar(player, sidebarIndex)) {
                 messageM.sendToConsole("Error: An error has occured when setting AFK sidebar to " + player.getDisplayName());

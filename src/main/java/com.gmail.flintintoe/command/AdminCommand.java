@@ -24,9 +24,9 @@ public class AdminCommand implements CommandExecutor {
         if (sender instanceof Player) {
             if (args.length == 2) {
                 // Player who sent the command
-                var player = (Player) sender;
+                Player player = (Player) sender;
                 // Player where the command will apply to
-                var target = Bukkit.getPlayer(args[0]);
+                Player target = Bukkit.getPlayer(args[0]);
 
                 // Test first if target is valid
                 if (target != null) {
@@ -55,7 +55,7 @@ public class AdminCommand implements CommandExecutor {
             // Server console
             if (args.length == 2) {
                 // Player where the command will apply to
-                var target = Bukkit.getPlayer(args[0]);
+                Player target = Bukkit.getPlayer(args[0]);
 
                 // Test first if target is valid
                 if (target != null) {

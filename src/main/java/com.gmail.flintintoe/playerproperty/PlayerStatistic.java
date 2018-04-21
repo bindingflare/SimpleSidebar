@@ -28,7 +28,7 @@ public class PlayerStatistic {
     }
 
     public int getPlayerStat(Player player, String statName, Material material) {
-        var result = -1;
+        int result = -1;
 
         try {
             result = player.getStatistic(Statistic.valueOf(statName), material);
@@ -40,7 +40,7 @@ public class PlayerStatistic {
     }
 
     public int getPlayerStat(Player player, String statName, EntityType entityType) {
-        var result = -1;
+        int result = -1;
 
         try {
             result = player.getStatistic(Statistic.valueOf(statName), entityType);

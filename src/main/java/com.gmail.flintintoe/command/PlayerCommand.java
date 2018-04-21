@@ -26,7 +26,7 @@ public class PlayerCommand implements CommandExecutor {
             messageM.sendToConsole("Only a player can run this command");
             return true;
         } else {
-            var player = (Player) sender;
+            Player player = (Player) sender;
 
             // Help message
             if (args.length == 0) {

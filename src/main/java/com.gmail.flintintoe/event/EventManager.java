@@ -3,6 +3,7 @@ package com.gmail.flintintoe.event;
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.config.ConfigManager;
 import com.gmail.flintintoe.sidebar.SidebarManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,7 +23,7 @@ public class EventManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerJoin(PlayerJoinEvent event) {
-        var player = event.getPlayer();
+        Player player = event.getPlayer();
 
         if (configM.setOnLogin) {
             sidebarM.setSidebar(player, 0);
@@ -35,7 +36,7 @@ public class EventManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerLeave(PlayerQuitEvent event) {
-        var playerName = event.getPlayer().getDisplayName();
+        String playerName = event.getPlayer().getDisplayName();
 
         // If customUpdater is active, remove player name to its update list
         if (configM.afkTimer != 0) {
@@ -45,7 +46,7 @@ public class EventManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerMove(PlayerMoveEvent event) {
-        var playerName = event.getPlayer().getDisplayName();
+        String playerName = event.getPlayer().getDisplayName();
 
         // If customUpdater is active, reset player afkTimer when the player moves 1 block
         if (configM.afkTimer != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
@@ -55,7 +56,7 @@ public class EventManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerChat(AsyncPlayerChatEvent event) {
-        var playerName = event.getPlayer().getDisplayName();
+        String playerName = event.getPlayer().getDisplayName();
 
         if (configM.afkTimer != 0) {
             sidebarM.getCustomUpdater().resetCooldown(playerName);

@@ -26,110 +26,106 @@ public class PlayerPlaceholder {
         playerRegion = plugin.getPlayerRegion();
     }
 
-    public String setPlaceholders(Player player, String string) {
+    public String setPlaceholders(Player player, String line) {
+        String temp = line;
+
         // Player name
-        if (string.contains("%player%")) {
-            string = string.replaceAll("%player%", player.getDisplayName());
+        if (temp.contains("%player%")) {
+            temp = temp.replaceAll("%player%", player.getDisplayName());
         }
 
         // Player self location
-        if (string.contains("%x%")) {
-            string = string.replaceAll("%x%", "" + player.getLocation().getBlockX());
+        if (temp.contains("%x%")) {
+            temp = temp.replaceAll("%x%", "" + player.getLocation().getBlockX());
         }
-        if (string.contains("%y%")) {
-            string = string.replaceAll("%y%", "" + player.getLocation().getBlockY());
+        if (temp.contains("%y%")) {
+            temp = temp.replaceAll("%y%", "" + player.getLocation().getBlockY());
         }
-        if (string.contains("%z%")) {
-            string = string.replaceAll("%z%", "" + player.getLocation().getBlockZ());
+        if (temp.contains("%z%")) {
+            temp = temp.replaceAll("%z%", "" + player.getLocation().getBlockZ());
         }
         // Player location
-        while (string.contains("%x_")) {
-            string = setLocationPlaceholder("%x_", string);
+        while (temp.contains("%x_")) {
+            temp = setLocationPlaceholder("%x_", temp);
         }
-        while (string.contains("%y_")) {
-            string = setLocationPlaceholder("%y_", string);
+        while (temp.contains("%y_")) {
+            temp = setLocationPlaceholder("%y_", temp);
         }
-        while (string.contains("%z_")) {
-            string = setLocationPlaceholder("%z_", string);
+        while (temp.contains("%z_")) {
+            temp = setLocationPlaceholder("%z_", temp);
         }
 
         // Date and time
-        if (string.contains("%date%")) {
-            var currentZone = ZoneId.systemDefault();
-            var currentDateTime = ZonedDateTime.now(currentZone);
+        while (temp.contains("%date_")) {
+            String propertyTag = getPTag("%date_", temp);
 
-            var formatterBuilder = new DateTimeFormatterBuilder();
-            var dateTimeFormatter = formatterBuilder.appendPattern("dd MM yyyy").toFormatter();
+            ZoneId currentZone = ZoneId.systemDefault();
+            ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-            string = string.replaceAll("%date%", currentDateTime.format(dateTimeFormatter));
+            DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
+            DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern(propertyTag).toFormatter();
+
+            temp = temp.replace("%date%", currentDateTime.format(dateTimeFormatter));
         }
-        if (string.contains("%time%")) {
+        while (temp.contains("%time_")) {
             ZoneId currentZone = ZoneId.systemDefault();
             ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
             DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
             DateTimeFormatter dateTimeFormatter = formatterBuilder.appendPattern("need help").toFormatter();
 
-            string = string.replaceAll("%time%", currentDateTime.format(dateTimeFormatter));
-        }
-
-        // Player specific date and time
-        if (string.contains("%date_")) {
-            // TODO Custom date format
-        }
-        if (string.contains("%time_")) {
-            // TODO Custom time format
+            temp = temp.replace("%time%", currentDateTime.format(dateTimeFormatter));
         }
 
         // Player self balance
-        if (string.contains("%balance%")) {
-            string = string.replaceAll("%balance%", "" + playerEco.getBalance(player));
+        if (temp.contains("%balance%")) {
+            temp = temp.replaceAll("%balance%", "" + playerEco.getBalance(player));
         }
         // Player balance
-        while (string.contains("%balance_")) {
-            string = setPlayerPlaceholder("%balance_", string, player);
+        while (temp.contains("%balance_")) {
+            temp = setPlayerPlaceholder("%balance_", temp, player);
         }
 
         // Region
-        if (string.contains("%region_")) {
-            string = setRegionPlaceholders(string, player);
+        if (temp.contains("%region_")) {
+            temp = setRegionPlaceholders(temp, player);
         }
         // Other player's region
-        if (string.contains("%regionof_")) {
-            String propertyTag = getPTag("%regionof_", string);
+        if (temp.contains("%regionof_")) {
+            String propertyTag = getPTag("%regionof_", temp);
 
             Player target = Bukkit.getPlayer(propertyTag);
 
-            string = string.replaceAll("%regionof_" + propertyTag + "_", "%region_");
+            temp = temp.replaceAll("%regionof_" + propertyTag + "_", "%region_");
 
             if (target != null) {
-                setRegionPlaceholders(string, target);
+                setRegionPlaceholders(temp, target);
             } else {
-                string = string.replaceAll("%region_" + getPTag("%region_", string) + "%", "");
+                temp = temp.replaceAll("%region_" + getPTag("%region_", temp) + "%", "");
             }
         }
 
         // Afk duration
         if (configM.afkTimer != 0) {
-            if (string.contains("%afk_time%")) {
-                string = string.replaceAll("%afk_time%", "" + sidebarM.getCustomUpdater().getAfkTime(player.getDisplayName()));
+            if (temp.contains("%afk_time%")) {
+                temp = temp.replaceAll("%afk_time%", "" + sidebarM.getCustomUpdater().getAfkTime(player.getDisplayName()));
             }
 
-            if (string.contains("%afk_timeLeft%")) {
-                string = string.replaceAll("%afk_timeLeft%", "" + sidebarM.getCustomUpdater().getTime(player.getDisplayName()));
+            if (temp.contains("%afk_timeLeft%")) {
+                temp = temp.replaceAll("%afk_timeLeft%", "" + sidebarM.getCustomUpdater().getTime(player.getDisplayName()));
             }
 
         }
 
         // Player statistics
 
-        while (string.contains("%stat_")) {
+        while (temp.contains("%stat_")) {
             // TODO Fix statistic placeholder
-            string = setPlayerPlaceholder("%stat_%", string, player);
+            temp = setPlayerPlaceholder("%stat_%", temp, player);
         }
 
         // More coming soon-ish
-        return string;
+        return temp;
     }
 
     private String getPTag(String tagHeader, String string) {
@@ -159,7 +155,7 @@ public class PlayerPlaceholder {
     }
 
     private String setPlayerPlaceholder(String tagHeader, String string, Player player) {
-        var propertyTag = getPTag(tagHeader, string);
+        String propertyTag = getPTag(tagHeader, string);
 
         String replacement = "";
 
@@ -173,13 +169,13 @@ public class PlayerPlaceholder {
     }
 
     private String setRegionPlaceholders(String string, Player player) {
-        var regions = playerRegion.getRegionList(player);
-        var temp = string;
+        String[] regions = playerRegion.getRegionList(player);
+        String temp = string;
 
         // Better way to handle variations of placeholder %region_x%
 
         for (int i = 0; i < regions.length; i++) {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             sb.append("%region_");
             sb.append(i + 1);
@@ -192,7 +188,7 @@ public class PlayerPlaceholder {
 
         // Handle still incomplete %region_x% placeholders
         while (temp.contains("%region_")) {
-            var propertyTag = getPTag("%region_", temp);
+            String propertyTag = getPTag("%region_", temp);
 
             temp = temp.replaceAll("%region_" + propertyTag + "%", "");
         }
