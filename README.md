@@ -12,10 +12,9 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 ### Latest release build (0.6.0-BETA)
 - Customization options
 - Multiple sidebars support
-### Latest commit (0.6.8u)
-- Permissions support
-- More placeholders available
-- Optimization options to updating sidebars
+### Latest commit (0.7.0s_pre)
+- Sidebar and Placeholder rewrite (In progress)
+- Commands redo (To do)
 
 ## News
 
