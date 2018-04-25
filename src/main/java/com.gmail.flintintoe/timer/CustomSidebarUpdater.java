@@ -1,6 +1,6 @@
 package com.gmail.flintintoe.timer;
 
-import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,14 +12,14 @@ public class CustomSidebarUpdater extends BukkitRunnable {
     private HashMap<String, Integer> playersOnCooldown = new HashMap<>();
     private HashMap<String, Integer> playerSetSidebar = new HashMap<>();
 
-    private SidebarManager sidebarM;
+    private Sidebar sidebar;
 
     private int interval;
     private boolean afkSb;
     private boolean afkUpdate;
 
-    public CustomSidebarUpdater(SidebarManager sidebarM, int interval, boolean afkUpdate) {
-        this.sidebarM = sidebarM;
+    public CustomSidebarUpdater(Sidebar sidebar, int interval, boolean afkUpdate) {
+        this.sidebar = sidebar;
         this.interval = interval;
         afkSb = interval == 0;
         this.afkUpdate = afkUpdate;
@@ -33,11 +33,11 @@ public class CustomSidebarUpdater extends BukkitRunnable {
             int timeLeft = playersOnCooldown.get(playerName);
 
             if (timeLeft >= 0) {
-                sidebarM.setSidebar(player, playerSetSidebar.get(playerName));
+                sidebar.setSidebar(player, playerSetSidebar.get(playerName));
             } else if (timeLeft == -1 && afkSb) {
-                    sidebarM.setAFKSidebar(player);
+                sidebar.setAFKSidebar(player);
             } else if (timeLeft < -1 && afkUpdate) {
-                sidebarM.updateSidebar(player);
+                sidebar.updateSidebar(player);
             }
 
             playersOnCooldown.put(playerName, timeLeft - 1);
@@ -47,7 +47,8 @@ public class CustomSidebarUpdater extends BukkitRunnable {
     public boolean set(String playerName) {
         if (!playersOnCooldown.containsKey(playerName)) {
             playersOnCooldown.put(playerName, interval);
-            playerSetSidebar.put(playerName, sidebarM.getSidebarIndexOf(Bukkit.getPlayer(playerName)));
+            playerSetSidebar.put(playerName, sidebar.getSidebarIndexOf(Bukkit.getPlayer(playerName)));
+            // TODO need checker for above method that can return -1
             return true;
         }
 

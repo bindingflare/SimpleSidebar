@@ -12,7 +12,7 @@ public class PlayerStatistic {
     private MessageManager messageM;
 
     public PlayerStatistic(SimpleSidebar plugin) {
-        messageM = plugin.getMessageManager();
+        messageM = plugin.getMessenger();
     }
 
     public int getPlayerStat(Player player, String statName) {

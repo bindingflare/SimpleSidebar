@@ -1,20 +1,20 @@
 package com.gmail.flintintoe.timer;
 
-import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SidebarUpdater extends BukkitRunnable {
-    private SidebarManager sidebarM;
+    private Sidebar sidebar;
 
-    public SidebarUpdater(SidebarManager sidebarM) {
-        this.sidebarM = sidebarM;
+    public SidebarUpdater(Sidebar sidebar) {
+        this.sidebar = sidebar;
     }
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            sidebarM.updateSidebar(player);
+            sidebar.updateSidebar(player);
         }
     }
 }

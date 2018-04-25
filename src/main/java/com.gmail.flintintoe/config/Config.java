@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.List;
 
-public class ConfigManager {
+public class Config {
     private MessageManager messageM;
 
     private FileConfiguration sidebarConfig;
@@ -29,13 +29,13 @@ public class ConfigManager {
     public boolean afkPlaceholderUpdate;
 
     public boolean updatePlaceholderAsync;
-    public boolean updatePlaceholerSync;
+    public boolean updatePlaceholderSync;
 
     public int updateTimer;
 
     // No need to save SimpleSidebar reference here
-    public ConfigManager(SimpleSidebar plugin) {
-        messageM = plugin.getMessageManager();
+    public Config(SimpleSidebar plugin) {
+        messageM = plugin.getMessenger();
 
         // Setup config
         setupConfig(plugin);
@@ -110,24 +110,24 @@ public class ConfigManager {
         afkPlaceholderUpdate = getBoolean(ConfigFile.config, "afk_placeholder_update");
 
         updatePlaceholderAsync = getBoolean(ConfigFile.config, "update_placeholder_async");
-        updatePlaceholerSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
+        updatePlaceholderSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
 
         updateTimer = getValue(ConfigFile.config, "sidebar_update_timer");
     }
 
-    public String getString(ConfigFile configFile, String path) {
-        if (configFile == ConfigFile.sidebars) {
-            return sidebarConfig.getString(path);
-        } else if (configFile == ConfigFile.messages) {
-            return messageConfig.getString(path);
-        } else if (configFile == ConfigFile.config) {
-            return configConfig.getString(path);
-        }
+//    public String getString(ConfigFile configFile, String path) {
+//        if (configFile == ConfigFile.sidebars) {
+//            return sidebarConfig.getString(path);
+//        } else if (configFile == ConfigFile.messages) {
+//            return messageConfig.getString(path);
+//        } else if (configFile == ConfigFile.config) {
+//            return configConfig.getString(path);
+//        }
+//
+//        return null;
+//    }
 
-        return null;
-    }
-
-    public int getValue(ConfigFile configFile, String path) {
+    private int getValue(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.sidebars) {
             return sidebarConfig.getInt(path);
         } else if (configFile == ConfigFile.messages) {

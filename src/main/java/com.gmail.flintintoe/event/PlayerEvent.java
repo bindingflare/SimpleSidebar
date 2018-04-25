@@ -1,8 +1,8 @@
 package com.gmail.flintintoe.event;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.ConfigManager;
-import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,24 +12,24 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EventManager implements Listener {
-    private SidebarManager sidebarM;
-    private ConfigManager configM;
+public class PlayerEvent implements Listener {
+    private Sidebar sidebar;
+    private Config config;
 
-    public EventManager(SimpleSidebar plugin) {
-        sidebarM = plugin.getSidebarManager();
-        configM = plugin.getConfigManager();
+    public PlayerEvent(SimpleSidebar plugin) {
+        sidebar = plugin.getSidebar();
+        config = plugin.getConfigMan();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (configM.setOnLogin) {
-            sidebarM.setSidebar(player, 0);
+        if (config.setOnLogin) {
+            sidebar.setSidebar(player, 0);
             // If customUpdater is active, add player name to its update list
-            if (configM.afkTimer != 0) {
-                sidebarM.getCustomUpdater().set(player.getDisplayName());
+            if (config.afkTimer != 0) {
+                sidebar.getCustomUpdater().set(player.getDisplayName());
             }
         }
     }
@@ -39,8 +39,8 @@ public class EventManager implements Listener {
         String playerName = event.getPlayer().getDisplayName();
 
         // If customUpdater is active, remove player name to its update list
-        if (configM.afkTimer != 0) {
-            sidebarM.getCustomUpdater().remove(playerName);
+        if (config.afkTimer != 0) {
+            sidebar.getCustomUpdater().remove(playerName);
         }
     }
 
@@ -49,8 +49,8 @@ public class EventManager implements Listener {
         String playerName = event.getPlayer().getDisplayName();
 
         // If customUpdater is active, reset player afkTimer when the player moves 1 block
-        if (configM.afkTimer != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
-            sidebarM.getCustomUpdater().resetCooldown(playerName);
+        if (config.afkTimer != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
+            sidebar.getCustomUpdater().resetCooldown(playerName);
         }
     }
 
@@ -58,8 +58,8 @@ public class EventManager implements Listener {
     public void playerChat(AsyncPlayerChatEvent event) {
         String playerName = event.getPlayer().getDisplayName();
 
-        if (configM.afkTimer != 0) {
-            sidebarM.getCustomUpdater().resetCooldown(playerName);
+        if (config.afkTimer != 0) {
+            sidebar.getCustomUpdater().resetCooldown(playerName);
         }
     }
 

@@ -1,29 +1,29 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.ConfigManager;
+import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.message.MessageManager;
-import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PlayerCommand implements CommandExecutor {
-    private SidebarManager sidebarM;
-    private MessageManager messageM;
-    private ConfigManager configM;
+    private Sidebar sidebar;
+    private MessageManager message;
+    private Config config;
 
     public PlayerCommand(SimpleSidebar plugin) {
-        sidebarM = plugin.getSidebarManager();
-        messageM = plugin.getMessageManager();
-        configM = plugin.getConfigManager();
+        sidebar = plugin.getSidebar();
+        message = plugin.getMessenger();
+        config = plugin.getConfigMan();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!(sender instanceof Player)) {
-            messageM.sendToConsole("Only a player can run this command");
+            message.sendToConsole("Only a player can run this command");
             return true;
         } else {
             if (sender.hasPermission("simplesidebar.use")) {
@@ -32,7 +32,7 @@ public class PlayerCommand implements CommandExecutor {
                 // Help message
                 if (args.length == 0) {
                     // TODO Maybe also have a help menu printed
-                    messageM.sendToPlayer(player, "This command requires at least 1 argument");
+                    message.sendToPlayer(player, "This command requires at least 1 argument");
                 }
                 // Set sidebar of self
                 else if (args.length == 1) {
@@ -41,27 +41,27 @@ public class PlayerCommand implements CommandExecutor {
                     try {
                         sidebarIndex = Integer.parseInt(args[0]);
                     } catch (Exception e) {
-                        messageM.sendToPlayer(player, "Argument must be a number");
+                        message.sendToPlayer(player, "Argument must be a number");
                         return true;
                     }
 
-                    if (!configM.allowChangeAfk && sidebarIndex == sidebarM.getSidebarCount() - 1) {
-                        messageM.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                    if (!config.allowChangeAfk && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                        message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
                         return true;
                     }
 
-                    if (!sidebarM.setSidebar(player, sidebarIndex)) {
-                        messageM.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
+                    if (!sidebar.setSidebar(player, sidebarIndex)) {
+                        message.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
                         return true;
                     }
                 }
                 // Too many arguments
                 else {
-                    messageM.sendToPlayer(player, "Too many arguments!");
+                    message.sendToPlayer(player, "Too many arguments!");
                     return true;
                 }
             } else {
-                messageM.sendToPlayer((Player) sender, "You do not have the permission to use this command");
+                message.sendToPlayer((Player) sender, "You do not have the permission to use this command");
             }
         }
 

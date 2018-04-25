@@ -1,8 +1,8 @@
 package com.gmail.flintintoe.command;
 
-import com.gmail.flintintoe.message.MessageManager;
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,12 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AdminCommand implements CommandExecutor {
-    private SidebarManager sidebarM;
-    private MessageManager messageM;
+    private Sidebar sidebar;
+    private MessageManager message;
 
     public AdminCommand(SimpleSidebar plugin) {
-        sidebarM = plugin.getSidebarManager();
-        messageM = plugin.getMessageManager();
+        sidebar = plugin.getSidebar();
+        message = plugin.getMessenger();
     }
 
     @Override
@@ -36,23 +36,23 @@ public class AdminCommand implements CommandExecutor {
                         try {
                             sidebarIndex = Integer.parseInt(args[1]);
                         } catch (Exception e) {
-                            messageM.sendToPlayer(player, "Argument must be a number");
+                            message.sendToPlayer(player, "Argument must be a number");
                             return true;
                         }
                         // Then test if the sidebarName is valid
-                        if (!sidebarM.setSidebar(target, sidebarIndex)) {
-                            messageM.sendToPlayer(player, "The page you requested to be set to " + target.getDisplayName() + " failed.");
+                        if (!sidebar.setSidebar(target, sidebarIndex)) {
+                            message.sendToPlayer(player, "The page you requested to be set to " + target.getDisplayName() + " failed.");
                             return true;
                         } else {
-                            messageM.sendToPlayer(player, "Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                            message.sendToPlayer(player, "Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
                             return true;
                         }
                     } else {
-                        messageM.sendToPlayer(player, "The player " + args[1] + "does not exist.");
+                        message.sendToPlayer(player, "The player " + args[1] + "does not exist.");
                         return true;
                     }
                 } else {
-                    messageM.sendToPlayer((Player) sender, "You do not have the permission to use this command");
+                    message.sendToPlayer((Player) sender, "You do not have the permission to use this command");
                 }
             }
         } else {
@@ -68,19 +68,19 @@ public class AdminCommand implements CommandExecutor {
                     try {
                         sidebarIndex = Integer.parseInt(args[1]);
                     } catch (Exception e) {
-                        messageM.sendToConsole("Argument must be a number");
+                        message.sendToConsole("Argument must be a number");
                         return true;
                     }
                     // Then test if the sidebarName is valid
-                    if (!sidebarM.setSidebar(target, sidebarIndex)) {
-                        messageM.sendToConsole("The page you requested to be set to " + target.getDisplayName() + " failed.");
+                    if (!sidebar.setSidebar(target, sidebarIndex)) {
+                        message.sendToConsole("The page you requested to be set to " + target.getDisplayName() + " failed.");
                         return true;
                     } else {
-                        messageM.sendToConsole("Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                        message.sendToConsole("Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
                         return true;
                     }
                 } else {
-                    messageM.sendToConsole("The player " + args[1] + "does not exist.");
+                    message.sendToConsole("The player " + args[1] + "does not exist.");
                     return true;
                 }
             }

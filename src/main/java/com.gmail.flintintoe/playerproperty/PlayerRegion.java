@@ -8,6 +8,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class PlayerRegion {
@@ -25,20 +27,19 @@ public class PlayerRegion {
         return true;
     }
 
-    public String[] getRegionList(Player player) {
+    public List<String> getRegionList(Player player) {
         World world = player.getWorld();
         Location location = player.getLocation();
 
        Set<ProtectedRegion> set = wGPlugin.getRegionManager(world).getApplicableRegions(location).getRegions();
 
-        String[] regions = new String[set.size()];
+        List<String> regions = new ArrayList<>();
 
         // Keeping all parent classes for now
         // This part could change (or another method be added)
         int count = 0;
         for (ProtectedRegion region : set) {
-            regions[count] = region.getId();
-            count++;
+            regions.add(region.getId());
         }
 
         return regions;
