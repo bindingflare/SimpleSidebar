@@ -1,8 +1,8 @@
 //package com.gmail.flintintoe.sidebar;
 //
 //import com.gmail.flintintoe.SimpleSidebar;
-//import com.gmail.flintintoe.config.ConfigFile;
-//import com.gmail.flintintoe.config.Config;
+//import com.gmail.flintintoe.CONFIG.ConfigFile;
+//import com.gmail.flintintoe.CONFIG.Config;
 //import com.gmail.flintintoe.message.Messenger;
 //import com.gmail.flintintoe.placeholder.Placeholder;
 //import com.gmail.flintintoe.timer.CustomSidebarUpdater;
@@ -61,7 +61,7 @@
 //            customUpdater.runTaskTimer(plugin, 20L, configM.updateTimer * 20);
 //        }
 //
-//        List<String> sidebarList = configM.getStrings(ConfigFile.sidebars, "sidebars");
+//        List<String> sidebarList = configM.getStrings(ConfigFile.SIDEBARS, "SIDEBARS");
 //        List<Integer> sidebarStarts = new ArrayList<>();
 //        List<Integer> sidebarEnds = new ArrayList<>();
 //
@@ -69,7 +69,7 @@
 //            messageM.sendToConsole("Error: Cannot use %divider% in last 2 lines");
 //            return false;
 //        }
-//        // Find number of sidebars
+//        // Find number of SIDEBARS
 //        // Ignore last 2 lines of list
 //        // Keep note of reference points
 //        sidebarStarts.add(1);

@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class Config {
@@ -46,9 +45,9 @@ public class Config {
             plugin.getDataFolder().mkdirs();
         }
         // Load Files
-        sidebarFile = new File(plugin.getDataFolder(), "src/sidebars.yml");
-        messageFile = new File(plugin.getDataFolder(), "src/messages.yml");
-        configFile = new File(plugin.getDataFolder(), "src/config.yml");
+        sidebarFile = new File(plugin.getDataFolder(), "sidebars.yml");
+        messageFile = new File(plugin.getDataFolder(), "messages.yml");
+        configFile = new File(plugin.getDataFolder(), "config.yml");
         // Load FileConfigs
         sidebarConfig = new YamlConfiguration();
         messageConfig = new YamlConfiguration();
@@ -56,9 +55,9 @@ public class Config {
         // Copy if file does not exist
         if (!sidebarFile.exists()) {
             try {
-                messenger.sendToConsole("Creating a copy of sidebars.yml");
+                messenger.sendToConsole("Creating a copy of SIDEBARS.yml");
                 sidebarFile.getParentFile().mkdirs();
-                plugin.saveResource("src/sidebars.yml", false);
+                plugin.saveResource("sidebars.yml", false);
 
             } catch (Exception e) {
                 return false;
@@ -66,9 +65,9 @@ public class Config {
         }
         if (!messageFile.exists()) {
             try {
-                messenger.sendToConsole("Creating a copy of messages.yml");
+                messenger.sendToConsole("Creating a copy of MESSAGES.yml");
                 messageFile.getParentFile().mkdirs();
-                plugin.saveResource("src/messages.yml", false);
+                plugin.saveResource("messages.yml", false);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -76,9 +75,9 @@ public class Config {
         }
         if (!configFile.exists()) {
             try {
-                messenger.sendToConsole("Creating a copy of config.yml");
+                messenger.sendToConsole("Creating a copy of CONFIG.yml");
                 configFile.getParentFile().mkdirs();
-                plugin.saveResource("src/config.yml", false);
+                plugin.saveResource("config.yml", false);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -94,75 +93,71 @@ public class Config {
             return false;
         }
 
-        return getBoolean(ConfigFile.config, "plugin_enabled");
+        return getBoolean(ConfigFile.CONFIG, "plugin_enabled");
     }
 
 
     public void loadConfig() {
-        setOnLogin = getBoolean(ConfigFile.config, "set_on_login");
+        setOnLogin = getBoolean(ConfigFile.CONFIG, "set_on_login");
 
-        afkTimer = getValue(ConfigFile.config, "afk_timer");
+        afkTimer = getValue(ConfigFile.CONFIG, "afk_timer");
 
-        allowAfkSet = getBoolean(ConfigFile.config, "allow_change_afk");
-        afkPhUpdate = getBoolean(ConfigFile.config, "afk_placeholder_update");
+        allowAfkSet = getBoolean(ConfigFile.CONFIG, "allow_change_afk");
+        afkPhUpdate = getBoolean(ConfigFile.CONFIG, "afk_placeholder_update");
 
-        updatePhAsync = getBoolean(ConfigFile.config, "update_placeholder_async");
-        updatePhSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
+        updatePhAsync = getBoolean(ConfigFile.CONFIG, "update_placeholder_async");
+        updatePhSync = getBoolean(ConfigFile.CONFIG, "update_placeholder_sync");
 
-        updateTimer = getValue(ConfigFile.config, "sidebar_update_timer");
+        updateTimer = getValue(ConfigFile.CONFIG, "sidebar_update_timer");
     }
 
     public void checkConfig(SimpleSidebar plugin) {
-        // Using rudimentary config checking for now
-        if (!getString(ConfigFile.config, "config_version").equals("1.2.0")) {
-            messenger.sendToConsole("You are currently using an old config.yml");
-            messenger.sendToConsole("Creating a copy of the new config.yml under the name newconfig.yml");
-            try {
-                configConfig.save(new File(plugin.getDataFolder(), "src/newconfig.yml"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // Using rudimentary CONFIG checking for now
+        if (configConfig.getDouble("config_version") != 1.2) {
+            messenger.sendToConsole("You are currently using an old CONFIG.yml");
         }
-        if (!getString(ConfigFile.sidebars, "sidebars_version").equals("1.1.0")) {
-            messenger.sendToConsole("You are currently using an old sidebars.yml");
-            messenger.sendToConsole("Creating a copy of the new config.yml under the name newsidebarsyml");
-            try {
-                configConfig.save(new File(plugin.getDataFolder(), "src/newsidebars.yml"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
+            messenger.sendToConsole("You are currently using an old SIDEBARS.yml");
         }
-        if (!getString(ConfigFile.messages, "messages_version").equals("1.0.0")) {
-            messenger.sendToConsole("You are currently using an old messages.yml");
-            messenger.sendToConsole("Creating a copy of the new config.yml under the name newmessages.yml");
-            try {
-                configConfig.save(new File(plugin.getDataFolder(), "src/newmessages.yml"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (messageConfig.getDouble("messages_version") != 1.0) {
+            messenger.sendToConsole("You are currently using an old MESSAGES.yml");
         }
     }
 
-    public boolean paramExists(ConfigFile configFile, String path) {
+    public boolean sectionExists(ConfigFile configFile, String path) {
         boolean exists = false;
 
-        if (configFile == ConfigFile.sidebars) {
+        if (configFile == ConfigFile.SIDEBARS) {
             exists = sidebarConfig.isConfigurationSection(path);
-        } else if (configFile == ConfigFile.messages) {
+        } else if (configFile == ConfigFile.MESSAGES) {
             exists = messageConfig.isConfigurationSection(path);
-        } else if (configFile == ConfigFile.config) {
+        } else if (configFile == ConfigFile.CONFIG) {
             exists = configConfig.isConfigurationSection(path);
         }
 
         return exists;
     }
 
+    public boolean listExists(ConfigFile configFile, String path) {
+        boolean exists = false;
+
+        if (configFile == ConfigFile.SIDEBARS) {
+            exists = sidebarConfig.isList(path);
+        } else if (configFile == ConfigFile.MESSAGES) {
+            exists = messageConfig.isList(path);
+        } else if (configFile == ConfigFile.CONFIG) {
+            exists = configConfig.isList(path);
+        }
+
+        return exists;
+    }
+
     private int getValue(ConfigFile configFile, String path) {
-        if (configFile == ConfigFile.sidebars) {
+        if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getInt(path);
-        } else if (configFile == ConfigFile.messages) {
+        } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getInt(path);
-        } else if (configFile == ConfigFile.config) {
+        } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getInt(path);
         }
 
@@ -170,23 +165,23 @@ public class Config {
     }
 
     private boolean getBoolean(ConfigFile configFile, String path) {
-        if (configFile == ConfigFile.sidebars) {
+        if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getBoolean(path);
-        } else if (configFile == ConfigFile.messages) {
+        } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getBoolean(path);
-        } else if (configFile == ConfigFile.config) {
+        } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getBoolean(path);
         }
 
         return false;
     }
 
-        public String getString(ConfigFile configFile, String path) {
-        if (configFile == ConfigFile.sidebars) {
+    public String getString(ConfigFile configFile, String path) {
+        if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getString(path);
-        } else if (configFile == ConfigFile.messages) {
+        } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getString(path);
-        } else if (configFile == ConfigFile.config) {
+        } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getString(path);
         }
 
@@ -194,11 +189,11 @@ public class Config {
     }
 
     public List<String> getStrings(ConfigFile configFile, String path) {
-        if (configFile == ConfigFile.sidebars) {
+        if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getStringList(path);
-        } else if (configFile == ConfigFile.messages) {
+        } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getStringList(path);
-        } else if (configFile == ConfigFile.config) {
+        } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getStringList(path);
         }
 

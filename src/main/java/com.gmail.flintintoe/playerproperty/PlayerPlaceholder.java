@@ -1,7 +1,7 @@
 //package com.gmail.flintintoe.playerproperty;
 //
 //import com.gmail.flintintoe.SimpleSidebar;
-//import com.gmail.flintintoe.config.Config;
+//import com.gmail.flintintoe.CONFIG.Config;
 //import com.gmail.flintintoe.sidebar.SidebarManager;
 //import org.bukkit.Bukkit;
 //import org.bukkit.Material;

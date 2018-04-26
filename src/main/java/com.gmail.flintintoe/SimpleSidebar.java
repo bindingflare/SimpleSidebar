@@ -57,14 +57,16 @@ public class SimpleSidebar extends JavaPlugin {
         // PRIORITY 3 //
         // Placeholder
         ph = new Placeholder(this);
-        if (config.getAfkTimer() != 0) {
-            ph.setCustomUpd(this);
-        }
 
         // Sidebar
         sidebar = new Sidebar(this);
         sidebar.setupUpdater(this);
         sidebar.loadSidebars();
+
+        // Placeholder Ext.
+        if (config.getAfkTimer() != 0) {
+            ph.setCustomUpd(this);
+        }
 
         // Commands
         this.getCommand("sidebar").setExecutor(new PlayerCommand(this));

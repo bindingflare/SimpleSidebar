@@ -181,7 +181,10 @@ public class Placeholder {
     private String getKeyword(String tag) {
         String property;
 
-        if (!tag.contains("_")) {
+        if (tag.length() == 0) {
+            property = "";
+        }
+        else if (!tag.contains("_")) {
             property = tag.substring(1, tag.length() - 1);
         } else {
             property = tag.substring(1, tag.indexOf("_"));
@@ -216,9 +219,11 @@ public class Placeholder {
 //    }
 
     public boolean isKeyword(String word) {
+        String keyword = getKeyword(word);
+
         for (String playerPh : playerPhs) {
             // Compare the keyword of word with available keywords
-            if (getKeyword(word).equalsIgnoreCase(playerPh)) {
+            if (keyword.equalsIgnoreCase(playerPh)) {
                 return true;
             }
         }

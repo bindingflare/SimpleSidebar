@@ -6,6 +6,8 @@ import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.placeholder.Placeholder;
 import com.gmail.flintintoe.timer.CustomSidebarUpdater;
 import com.gmail.flintintoe.timer.SidebarUpdater;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -13,6 +15,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Sidebar {
@@ -52,32 +55,49 @@ public class Sidebar {
         // List inside a list = list squared lol
         List<List<String>> aliases = new ArrayList<>();
 
+        // Get names, headers, aliases
+        // Also, get sidebar count
         int sidebarNum = 1;
-        while (config.paramExists(ConfigFile.sidebars, "sidebars." + sidebarNum)) {
-            names.add(config.getString(ConfigFile.sidebars, "sidebars." + sidebarNum + ".name"));
-            headers.add(config.getString(ConfigFile.sidebars, "sidebars." + sidebarNum + ".header"));
+        while (config.sectionExists(ConfigFile.SIDEBARS, "sidebars." + sidebarNum)) {
+            StringBuilder path = new StringBuilder();
+            path.append("sidebars.").append(sidebarNum);
+
+            names.add(config.getString(ConfigFile.SIDEBARS, path.toString() + ".name"));
+            headers.add(config.getString(ConfigFile.SIDEBARS, path.toString() + ".header"));
+
             sidebarNum++;
-            aliases.add(config.getStrings(ConfigFile.sidebars, "sidebars." + sidebarNum + ".aliases"));
+
+            if (config.listExists(ConfigFile.SIDEBARS, path.toString() + ".aliases")) {
+                aliases.add(config.getStrings(ConfigFile.SIDEBARS, path.toString() + ".aliases"));
+            } else {
+                // Add empty list if no path
+                List<String> emptyList = Arrays.asList("");
+                aliases.add(emptyList);
+            }
         }
         sidebarCount = sidebarNum - 1;
 
+        // Initialize class Arrays
         this.names = new String[sidebarCount];
         this.headers = new String[sidebarCount];
         this.aliases = new String[sidebarCount][];
+
+        // Partly initialize sidebars Array
         sidebars = new String[sidebarCount][][];
 
         // For each sidebar...
         for (int i = 0; i < sidebarCount; i++) {
             this.names[i] = names.get(i);
             this.headers[i] = headers.get(i);
-            this.aliases[i] = new String[aliases.size()];
+            this.aliases[i] = new String[aliases.get(i).size()];
 
             // For each alias...
-            for (int j = 0; j < aliases.size(); j++) {
+            for (int j = 0; j < aliases.get(i).size(); j++) {
                 this.aliases[i][j] = aliases.get(i).get(j);
             }
 
-            List<String> entries = config.getStrings(ConfigFile.sidebars, "sidebars." + sidebarNum + ".entries");
+            // Get entries
+            List<String> entries = config.getStrings(ConfigFile.SIDEBARS, "sidebars." + (i + 1) + ".entries");
 
             // Sidebar entries limit: 15
             int entriesSize = entries.size();
@@ -85,48 +105,31 @@ public class Sidebar {
                 entriesSize = 15;
             }
 
+            sidebars[i] = new String[entriesSize][];
+
             // For each line...
             for (int j = 0; j < entriesSize; j++) {
-                sidebars[i] = new String[entriesSize][];
-
                 String entry = entries.get(j);
-                List<Integer> splitters = new ArrayList<>();
-                int partCount = 1;
+                Iterable<String> parts = Splitter.on('%').split(entry);
 
-                // Getting places to split String
-                while (entry.contains("%")) {
-                    splitters.add(entry.indexOf("%"));
-                    entry = entry.replace("%", "");
-
-                    partCount++;
-                }
-
-                // If last character of String is "%" remove that index in splitters
-                if (splitters.get(splitters.size() - 1) == entry.length()) {
-                    splitters.remove(splitters.size());
-                } else {
-                    partCount++;
-                }
-
+                // Get number of parts
+                int partCount = Iterables.size(parts);
                 sidebars[i][j] = new String[partCount];
-                int lastIndex = 0;
-                int k;
 
-                // Adding parts to the sidebars Array
-                for (k = 0; k < splitters.size(); k++) {
-                    String part = entry.substring(lastIndex, splitters.get(k) - 1);
-
-                    // TODO Use different characters that call smaller setPh methods to further improve performance
-                    if (placeholder.isKeyword(part)) {
-                        part = "%" + part;
+                int count = 0;
+                for (String part : parts) {
+                    // Alternate between tags and text
+                    if (count % 2 == 0) {
+                        sidebars[i][j][count] = part;
+                    } else {
+                        sidebars[i][j][count] = "%" + part;
                     }
-
-                    sidebars[i][j][k] = part;
-                    lastIndex = splitters.get(k);
+                    count++;
                 }
-                sidebars[i][j][k] = entry.substring(lastIndex);
             }
         }
+
+        int i = 0;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

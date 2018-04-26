@@ -8,11 +8,12 @@
 # Edit sidebar configurations here.
 
 # Please do not change this value to avoid unexpected errors
-sidebars_version: 1.1.0
+sidebars_version: 1.1
 
 #### GENERAL GUIDELINES:
    #
-   # Use numbers in order from 1 to n for sidebars
+   # INSTRUCTIONS
+   # Use numbers in order from 1 to n for SIDEBARS
    # Aliases are alternative names a player can use to call the sidebar
    # Header is what is displayed at the top of the sidebar
    # Entries are the contents of the sidebar
