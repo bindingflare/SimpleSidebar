@@ -5,7 +5,7 @@ import com.gmail.flintintoe.command.PlayerCommand;
 import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.event.PlayerEvent;
-import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.placeholder.Placeholder;
 import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
@@ -16,46 +16,54 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimpleSidebar extends JavaPlugin {
 
-    private MessageManager messageM;
-    private Config configM;
+    private Messenger messenger;
+    private Config config;
     private Sidebar sidebar;
-    private Placeholder placeholder;
-    private PlayerEconomy playerEco;
-    private PlayerStatistic playerStat;
-    private PlayerRegion playerRegion;
+    private Placeholder ph;
+    private PlayerEconomy pEconomy;
+    private PlayerStatistic pStatistic;
+    private PlayerRegion pRegion;
 
     @Override
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
         // PRIORITY 1
-        messageM = new MessageManager();
-        configM = new Config(this);
+        messenger = new Messenger();
+
+
+        config = new Config(this);
 
         // PRIORITY 2
-        if (configM.getBoolean(ConfigFile.config, "plugin_enabled")) {
+        if (config.getBoolean(ConfigFile.config, "plugin_enabled")) {
             // PlayerXXXX classes
-            playerStat = new PlayerStatistic(this);
+            pStatistic = new PlayerStatistic(this);
 
-            playerEco = new PlayerEconomy();
-            if (!playerEco.setupEconomy(this)) {
-                messageM.sendToConsole("Vault dependency not found. Economy features will be disabled");
-                configM.isEconomyEnabled = false;
+            pEconomy = new PlayerEconomy();
+            if (!pEconomy.setupEconomy(this)) {
+                messenger.sendToConsole("Vault dependency not found. Economy features will be disabled");
             }
 
-            playerRegion = new PlayerRegion();
-            if (!playerRegion.setupWorldGuard(this)) {
-                messageM.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
-                configM.isRegionEnabled = false;
+            pRegion = new PlayerRegion();
+            if (!pRegion.setupWorldGuard(this)) {
+                messenger.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
             }
 
             // PRIORITY 3
             // Placeholders is first
-            placeholder = new Placeholder(this);
-            if (configM.afkTimer != 0) {
-                placeholder.setupPholder(this);
+            ph = new Placeholder(this);
+            if (config.getAfkTimer() != 0) {
+                ph.setCustomUpd(this);
             }
 
             sidebar = new Sidebar(this);
+
+            // Sidebar
+            sidebar.setupUpdater(this);
+            if (!sidebar.loadSidebars()) {
+                messenger.sendToConsole("Fatal: Sidebar module has failed to load sidebars");
+                messenger.sendToConsole("Info: Disabling plugin...");
+                this.getServer().getPluginManager().disablePlugin(this);
+            }
             // Commands
             this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
             this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
@@ -68,7 +76,7 @@ public class SimpleSidebar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (configM.afkTimer == 0) {
+        if (config.getAfkTimer() == 0) {
             sidebar.getGlobalUpdater().cancel();
         } else {
             sidebar.getCustomUpdater().cancel();
@@ -76,30 +84,30 @@ public class SimpleSidebar extends JavaPlugin {
     }
 
     public Config getConfigMan() {
-        return configM;
+        return config;
     }
 
-    public MessageManager getMessenger() {
-        return messageM;
+    public Messenger getMessenger() {
+        return messenger;
     }
 
     public PlayerEconomy getPlEconomy() {
-        return playerEco;
+        return pEconomy;
     }
 
-//    public Placeholder getPlaceholder() {
-//        return placeholder;
-//    }
+    public Placeholder getPlaceholder() {
+        return ph;
+    }
 
     public Sidebar getSidebar() {
         return sidebar;
     }
 
     public PlayerStatistic getPlStatistic() {
-        return playerStat;
+        return pStatistic;
     }
 
     public PlayerRegion getPlRegion() {
-        return playerRegion;
+        return pRegion;
     }
 }

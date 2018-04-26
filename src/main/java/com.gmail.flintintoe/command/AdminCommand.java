@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class AdminCommand implements CommandExecutor {
     private Sidebar sidebar;
-    private MessageManager message;
+    private Messenger message;
 
     public AdminCommand(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
@@ -40,15 +40,15 @@ public class AdminCommand implements CommandExecutor {
                             return true;
                         }
                         // Then test if the sidebarName is valid
-                        if (!sidebar.setSidebar(target, sidebarIndex)) {
-                            message.sendToPlayer(player, "The page you requested to be set to " + target.getDisplayName() + " failed.");
+                        if (!sidebar.setSidebar(target, args[1])) {
+                            message.sendToPlayer(player, "The sidebar " + args[1] + " was not found");
                             return true;
                         } else {
-                            message.sendToPlayer(player, "Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                            message.sendToPlayer(player, "Set the sidebar of " + args[0] + " to " + args[1]);
                             return true;
                         }
                     } else {
-                        message.sendToPlayer(player, "The player " + args[1] + "does not exist.");
+                        message.sendToPlayer(player, "The player " + args[0] + " was not found");
                         return true;
                     }
                 } else {
@@ -72,15 +72,15 @@ public class AdminCommand implements CommandExecutor {
                         return true;
                     }
                     // Then test if the sidebarName is valid
-                    if (!sidebar.setSidebar(target, sidebarIndex)) {
-                        message.sendToConsole("The page you requested to be set to " + target.getDisplayName() + " failed.");
+                    if (!sidebar.setSidebar(target, args[1])) {
+                        message.sendToConsole("The sidebar " + args[1] + " was not found");
                         return true;
                     } else {
-                        message.sendToConsole("Set the sidebar of " + target.getDisplayName() + " to " + args[0] + ".");
+                        message.sendToConsole("Set the sidebar of " + args[0] + " to " + args[1]);
                         return true;
                     }
                 } else {
-                    message.sendToConsole("The player " + args[1] + "does not exist.");
+                    message.sendToConsole("The player " + args[0] + "was not found");
                     return true;
                 }
             }

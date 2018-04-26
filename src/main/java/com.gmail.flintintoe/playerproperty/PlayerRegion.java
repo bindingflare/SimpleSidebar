@@ -24,6 +24,7 @@ public class PlayerRegion {
         }
 
         this.wGPlugin = (WorldGuardPlugin) wGPlugin;
+        plugin.getConfigMan().isRegionEnabled = true;
         return true;
     }
 

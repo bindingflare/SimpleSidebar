@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class MessageManager {
+public class Messenger {
     private ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 
     private String consoleHeader = "[SimpleSidebar] ";

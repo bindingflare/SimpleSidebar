@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.config;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.message.Messenger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,40 +9,33 @@ import java.io.File;
 import java.util.List;
 
 public class Config {
-    private MessageManager messageM;
+    private Messenger messageM;
 
     private FileConfiguration sidebarConfig;
     private FileConfiguration messageConfig;
     private FileConfiguration configConfig;
 
     // Automatic settings
-    public boolean isEconomyEnabled = true;
-    public boolean isRegionEnabled = true;
+    public boolean isEconomyEnabled = false;
+    public boolean isRegionEnabled = false;
 
-    // TODO Change these into getters and setters in the future
-    public boolean enablePlugin;
-    public boolean setOnLogin;
+    // Settings
+    private boolean enablePlugin;
+    private boolean setOnLogin;
 
-    public int afkTimer;
+    private int afkTimer;
 
-    public boolean allowChangeAfk;
-    public boolean afkPlaceholderUpdate;
+    private boolean allowAfkSet;
+    private boolean afkPhUpdate;
 
-    public boolean updatePlaceholderAsync;
-    public boolean updatePlaceholderSync;
+    private boolean updatePhAsync;
+    private boolean updatePhSync;
 
-    public int updateTimer;
+    private int updateTimer;
 
     // No need to save SimpleSidebar reference here
     public Config(SimpleSidebar plugin) {
         messageM = plugin.getMessenger();
-
-        // Setup config
-        setupConfig(plugin);
-        // Get plugin settings
-        getPluginSettings();
-
-        // TODO Update/ add settings when config file version updates
     }
 
     private void setupConfig(SimpleSidebar plugin) {
@@ -100,32 +93,39 @@ public class Config {
         }
     }
 
-    private void getPluginSettings() {
+
+    private void loadConfig() {
         enablePlugin = getBoolean(ConfigFile.config, "plugin_enabled");
         setOnLogin = getBoolean(ConfigFile.config, "set_on_login");
 
         afkTimer = getValue(ConfigFile.config, "afk_timer");
 
-        allowChangeAfk = getBoolean(ConfigFile.config, "allow_change_afk");
-        afkPlaceholderUpdate = getBoolean(ConfigFile.config, "afk_placeholder_update");
+        allowAfkSet = getBoolean(ConfigFile.config, "allow_change_afk");
+        afkPhUpdate = getBoolean(ConfigFile.config, "afk_placeholder_update");
 
-        updatePlaceholderAsync = getBoolean(ConfigFile.config, "update_placeholder_async");
-        updatePlaceholderSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
+        updatePhAsync = getBoolean(ConfigFile.config, "update_placeholder_async");
+        updatePhSync = getBoolean(ConfigFile.config, "update_placeholder_sync");
 
         updateTimer = getValue(ConfigFile.config, "sidebar_update_timer");
     }
 
-//    public String getString(ConfigFile configFile, String path) {
-//        if (configFile == ConfigFile.sidebars) {
-//            return sidebarConfig.getString(path);
-//        } else if (configFile == ConfigFile.messages) {
-//            return messageConfig.getString(path);
-//        } else if (configFile == ConfigFile.config) {
-//            return configConfig.getString(path);
-//        }
-//
-//        return null;
-//    }
+    private void checkConfig() {
+        // TODO Check config versions
+    }
+
+    public boolean paramExists(ConfigFile configFile, String path) {
+        boolean exists = false;
+
+        if (configFile == ConfigFile.sidebars) {
+            exists = sidebarConfig.isConfigurationSection(path);
+        } else if (configFile == ConfigFile.messages) {
+            exists = messageConfig.isConfigurationSection(path);
+        } else if (configFile == ConfigFile.config) {
+            exists = configConfig.isConfigurationSection(path);
+        }
+
+        return exists;
+    }
 
     private int getValue(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.sidebars) {
@@ -151,6 +151,18 @@ public class Config {
         return false;
     }
 
+        public String getString(ConfigFile configFile, String path) {
+        if (configFile == ConfigFile.sidebars) {
+            return sidebarConfig.getString(path);
+        } else if (configFile == ConfigFile.messages) {
+            return messageConfig.getString(path);
+        } else if (configFile == ConfigFile.config) {
+            return configConfig.getString(path);
+        }
+
+        return null;
+    }
+
     public List<String> getStrings(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.sidebars) {
             return sidebarConfig.getStringList(path);
@@ -161,5 +173,85 @@ public class Config {
         }
 
         return null;
+    }
+
+    public boolean isEconomyEnabled() {
+        return isEconomyEnabled;
+    }
+
+    public void setEconomyEnabled(boolean economyEnabled) {
+        isEconomyEnabled = economyEnabled;
+    }
+
+    public boolean isRegionEnabled() {
+        return isRegionEnabled;
+    }
+
+    public void setRegionEnabled(boolean regionEnabled) {
+        isRegionEnabled = regionEnabled;
+    }
+
+    public boolean isEnablePlugin() {
+        return enablePlugin;
+    }
+
+    public void setEnablePlugin(boolean enablePlugin) {
+        this.enablePlugin = enablePlugin;
+    }
+
+    public boolean isSetOnLogin() {
+        return setOnLogin;
+    }
+
+    public void setSetOnLogin(boolean setOnLogin) {
+        this.setOnLogin = setOnLogin;
+    }
+
+    public int getAfkTimer() {
+        return afkTimer;
+    }
+
+    public void setAfkTimer(int afkTimer) {
+        this.afkTimer = afkTimer;
+    }
+
+    public boolean isAllowAfkSet() {
+        return allowAfkSet;
+    }
+
+    public void setAllowAfkSet(boolean allowAfkSet) {
+        this.allowAfkSet = allowAfkSet;
+    }
+
+    public boolean isAfkPhUpdate() {
+        return afkPhUpdate;
+    }
+
+    public void setAfkPhUpdate(boolean afkPhUpdate) {
+        this.afkPhUpdate = afkPhUpdate;
+    }
+
+    public boolean isUpdatePhAsync() {
+        return updatePhAsync;
+    }
+
+    public void setUpdatePhAsync(boolean updatePhAsync) {
+        this.updatePhAsync = updatePhAsync;
+    }
+
+    public boolean isUpdatePhSync() {
+        return updatePhSync;
+    }
+
+    public void setUpdatePhSync(boolean updatePhSync) {
+        this.updatePhSync = updatePhSync;
+    }
+
+    public int getUpdateTimer() {
+        return updateTimer;
+    }
+
+    public void setUpdateTimer(int updateTimer) {
+        this.updateTimer = updateTimer;
     }
 }

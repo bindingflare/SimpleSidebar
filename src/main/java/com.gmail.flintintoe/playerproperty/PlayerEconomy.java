@@ -24,7 +24,7 @@ public class PlayerEconomy {
                 economy = rsp.getProvider();
             }
         }
-
+        plugin.getConfigMan().isEconomyEnabled = true;
         return true;
     }
 
@@ -41,22 +41,22 @@ public class PlayerEconomy {
     }
     // WARNING Possible error with new players when using these methods
 
-    // Special return: Returns the new balance of the player
-    public double deductBalance(Player player, double amount) {
-        double newBalance = getBalance(player) - amount;
-
-        economy.withdrawPlayer(player, amount);
-
-        return newBalance;
-    }
-
-    // TODO Check return of depositPlayer when error happens
-    // Special return: Returns the new balance of the player
-    public double addBalance(Player player, double amount) {
-        double newBalance = getBalance(player) + amount;
-
-        economy.depositPlayer(player, amount);
-
-        return newBalance;
-    }
+//    // Special return: Returns the new balance of the player
+//    public double deductBalance(Player player, double amount) {
+//        double newBalance = getBalance(player) - amount;
+//
+//        economy.withdrawPlayer(player, amount);
+//
+//        return newBalance;
+//    }
+//
+//    // TODO Check return of depositPlayer when error happens
+//    // Special return: Returns the new balance of the player
+//    public double addBalance(Player player, double amount) {
+//        double newBalance = getBalance(player) + amount;
+//
+//        economy.depositPlayer(player, amount);
+//
+//        return newBalance;
+//    }
 }

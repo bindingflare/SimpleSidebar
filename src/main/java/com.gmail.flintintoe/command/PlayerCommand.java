@@ -2,7 +2,7 @@ package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.config.Config;
-import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerCommand implements CommandExecutor {
     private Sidebar sidebar;
-    private MessageManager message;
+    private Messenger message;
     private Config config;
 
     public PlayerCommand(SimpleSidebar plugin) {
@@ -45,13 +45,13 @@ public class PlayerCommand implements CommandExecutor {
                         return true;
                     }
 
-                    if (!config.allowChangeAfk && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                    if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
                         message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
                         return true;
                     }
 
-                    if (!sidebar.setSidebar(player, sidebarIndex)) {
-                        message.sendToPlayer(player, sidebarIndex + " is not an registered sidebar index");
+                    if (!sidebar.setSidebar(player, args[0])) {
+                        message.sendToPlayer(player, "Sidebar with name " + args[0] + " could not be found");
                         return true;
                     }
                 }

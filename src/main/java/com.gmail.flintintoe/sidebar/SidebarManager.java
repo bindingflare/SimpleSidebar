@@ -3,7 +3,7 @@
 //import com.gmail.flintintoe.SimpleSidebar;
 //import com.gmail.flintintoe.config.ConfigFile;
 //import com.gmail.flintintoe.config.Config;
-//import com.gmail.flintintoe.message.MessageManager;
+//import com.gmail.flintintoe.message.Messenger;
 //import com.gmail.flintintoe.placeholder.Placeholder;
 //import com.gmail.flintintoe.timer.CustomSidebarUpdater;
 //import com.gmail.flintintoe.timer.SidebarUpdater;
@@ -21,7 +21,7 @@
 //public class SidebarManager {
 //    private Placeholder playerPholder;
 //    private Config configM;
-//    private MessageManager messageM;
+//    private Messenger messageM;
 //
 //    // BukkitRunnables
 //    private SidebarUpdater globalUpdater;

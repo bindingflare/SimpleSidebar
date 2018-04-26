@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.playerproperty;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.message.MessageManager;
+import com.gmail.flintintoe.message.Messenger;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerStatistic {
 
-    private MessageManager messageM;
+    private Messenger messageM;
 
     public PlayerStatistic(SimpleSidebar plugin) {
         messageM = plugin.getMessenger();
