@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <entry_points version="2.0">
+      <entry_point TYPE="field" FQNAME="com.gmail.flintintoe.sidebar.Sidebar config" />
+      <entry_point TYPE="field" FQNAME="com.gmail.flintintoe.sidebar.Sidebar placeholder" />
+      <entry_point TYPE="field" FQNAME="com.gmail.flintintoe.playerproperty.PlayerStatistic messageM" />
+      <entry_point TYPE="field" FQNAME="com.gmail.flintintoe.playerproperty.PlayerRegion wGPlugin" />
+    </entry_points>
+    <pattern value="com.gmail.flintintoe.timer.SidebarUpdater" method="SidebarUpdater" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" />
+    <pattern value="com.gmail.flintintoe.sidebar.Sidebar" />
+    <pattern value="com.gmail.flintintoe.sidebar.Sidebar" method="Sidebar" />
+    <pattern value="com.gmail.flintintoe.playerproperty.PlayerStatistic" />
+    <pattern value="com.gmail.flintintoe.playerproperty.PlayerStatistic" method="PlayerStatistic" />
+    <pattern value="com.gmail.flintintoe.playerproperty.PlayerRegion" method="getRegionList" />
+    <pattern value="com.gmail.flintintoe.playerproperty.PlayerRegion" />
+    <pattern value="com.gmail.flintintoe.command.AdminCommand" />
+    <pattern value="com.gmail.flintintoe.command.AdminCommand" method="AdminCommand" />
+    <pattern value="com.gmail.flintintoe.config.Config" />
+    <pattern value="com.gmail.flintintoe.config.Config" method="Config" />
+    <pattern value="com.gmail.flintintoe.timer.CustomSidebarUpdater" method="CustomSidebarUpdater" />
+    <pattern value="com.gmail.flintintoe.command.PlayerCommand" />
+    <pattern value="com.gmail.flintintoe.command.PlayerCommand" method="PlayerCommand" />
+    <pattern value="com.gmail.flintintoe.placeholder.Placeholder" />
+    <pattern value="com.gmail.flintintoe.placeholder.Placeholder" method="Placeholder" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="playerChat" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="PlayerEvent" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="playerJoin" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="playerLeave" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="playerMine" />
+    <pattern value="com.gmail.flintintoe.event.PlayerEvent" method="playerMove" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" method="getMessenger" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" method="getPgConfig" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" method="getPlaceholder" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" method="onDisable" />
+    <pattern value="com.gmail.flintintoe.SimpleSidebar" method="onEnable" />
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

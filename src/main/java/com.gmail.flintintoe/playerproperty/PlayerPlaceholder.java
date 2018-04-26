@@ -21,7 +21,7 @@
 //    private PlayerRegion playerRegion;
 //
 //    public PlayerPlaceholder(SimpleSidebar plugin) {
-//        configM = plugin.getConfigMan();
+//        configM = plugin.getPgConfig();
 //        playerEco = plugin.getPlEconomy();
 //        sidebarM = plugin.getSidebar();
 //        playerStat = plugin.getPlStatistic();

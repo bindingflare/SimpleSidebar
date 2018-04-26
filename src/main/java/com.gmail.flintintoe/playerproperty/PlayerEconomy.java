@@ -24,7 +24,7 @@ public class PlayerEconomy {
                 economy = rsp.getProvider();
             }
         }
-        plugin.getConfigMan().isEconomyEnabled = true;
+        plugin.getPgConfig().setEconomyEnabled(true);
         return true;
     }
 

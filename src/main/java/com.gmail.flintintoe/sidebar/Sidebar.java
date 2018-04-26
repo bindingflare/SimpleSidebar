@@ -17,7 +17,6 @@ import java.util.List;
 
 public class Sidebar {
     private Placeholder placeholder;
-
     private Config config;
 
     // BukkitRunnables
@@ -33,7 +32,7 @@ public class Sidebar {
 
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
-        config = plugin.getConfigMan();
+        config = plugin.getPgConfig();
     }
 
     public void setupUpdater(SimpleSidebar plugin) {
@@ -47,7 +46,7 @@ public class Sidebar {
         }
     }
 
-    public boolean loadSidebars() {
+    public void loadSidebars() {
         List<String> names = new ArrayList<>();
         List<String> headers = new ArrayList<>();
         // List inside a list = list squared lol
@@ -87,7 +86,7 @@ public class Sidebar {
             }
 
             // For each line...
-            for (int j = 0; i < entriesSize; j++) {
+            for (int j = 0; j < entriesSize; j++) {
                 sidebars[i] = new String[entriesSize][];
 
                 String entry = entries.get(j);
@@ -128,9 +127,9 @@ public class Sidebar {
                 sidebars[i][j][k] = entry.substring(lastIndex);
             }
         }
-        return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean setSidebar(Player player, String sidebarName) {
         // Search sidebarName
         for (int i = 0; i < aliases.length; i++) {
@@ -149,7 +148,7 @@ public class Sidebar {
         return false;
     }
 
-    private void setSidebar(Player player, int sidebarIndex) {
+    public void setSidebar(Player player, int sidebarIndex) {
         Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective sbObj = sb.registerNewObjective(sidebarIndex + "", "dummy");
 
@@ -159,7 +158,7 @@ public class Sidebar {
         String[][] entries = sidebars[sidebarIndex];
 
         for (int i = 0; i < entries.length; i++) {
-            String entry = "";
+            StringBuilder entry = new StringBuilder();
 
             for (int j = 0; j < entries[i].length; j++) {
                 String part = entries[i][j];
@@ -170,10 +169,10 @@ public class Sidebar {
                     part = placeholder.setTargetPh(part);
                 }
 
-                entry += part;
+                entry.append(part);
             }
 
-            sbObj.getScore(entry).setScore(i);
+            sbObj.getScore(entry.toString()).setScore(i);
         }
     }
 

@@ -3,7 +3,6 @@ package com.gmail.flintintoe;
 import com.gmail.flintintoe.command.AdminCommand;
 import com.gmail.flintintoe.command.PlayerCommand;
 import com.gmail.flintintoe.config.Config;
-import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.event.PlayerEvent;
 import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.placeholder.Placeholder;
@@ -27,51 +26,52 @@ public class SimpleSidebar extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
-        // PRIORITY 1
+        // PRIORITY 1 //
+        // Messenger
         messenger = new Messenger();
 
-
+        // Config
         config = new Config(this);
-
-        // PRIORITY 2
-        if (config.getBoolean(ConfigFile.config, "plugin_enabled")) {
-            // PlayerXXXX classes
-            pStatistic = new PlayerStatistic(this);
-
-            pEconomy = new PlayerEconomy();
-            if (!pEconomy.setupEconomy(this)) {
-                messenger.sendToConsole("Vault dependency not found. Economy features will be disabled");
-            }
-
-            pRegion = new PlayerRegion();
-            if (!pRegion.setupWorldGuard(this)) {
-                messenger.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
-            }
-
-            // PRIORITY 3
-            // Placeholders is first
-            ph = new Placeholder(this);
-            if (config.getAfkTimer() != 0) {
-                ph.setCustomUpd(this);
-            }
-
-            sidebar = new Sidebar(this);
-
-            // Sidebar
-            sidebar.setupUpdater(this);
-            if (!sidebar.loadSidebars()) {
-                messenger.sendToConsole("Fatal: Sidebar module has failed to load sidebars");
-                messenger.sendToConsole("Info: Disabling plugin...");
-                this.getServer().getPluginManager().disablePlugin(this);
-            }
-            // Commands
-            this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
-            this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
-            // Events
-            pm.registerEvents(new PlayerEvent(this), this);
-        } else {
-            getServer().getPluginManager().disablePlugin(this);
+        if (!config.setupConfig(this)) {
+            messenger.sendToConsole("Disabling plugin...");
         }
+        config.loadConfig();
+        config.checkConfig(this);
+
+        // PRIORITY 2 //
+        // Statistic
+        pStatistic = new PlayerStatistic(this);
+
+        // Economy
+        pEconomy = new PlayerEconomy();
+        if (!pEconomy.setupEconomy(this)) {
+            messenger.sendToConsole("Vault dependency not found. Economy features will be disabled");
+        }
+
+        // Region
+        pRegion = new PlayerRegion();
+        if (!pRegion.setupWorldGuard(this)) {
+            messenger.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
+        }
+
+        // PRIORITY 3 //
+        // Placeholder
+        ph = new Placeholder(this);
+        if (config.getAfkTimer() != 0) {
+            ph.setCustomUpd(this);
+        }
+
+        // Sidebar
+        sidebar = new Sidebar(this);
+        sidebar.setupUpdater(this);
+        sidebar.loadSidebars();
+
+        // Commands
+        this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
+        this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
+
+        // Events
+        pm.registerEvents(new PlayerEvent(this), this);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class SimpleSidebar extends JavaPlugin {
         }
     }
 
-    public Config getConfigMan() {
+    public Config getPgConfig() {
         return config;
     }
 

@@ -6,6 +6,7 @@
 # Simple Sidebar - by xFlarinFlint (flintintoe or Flarin)
 
 # Edit messages sent by this plugin here.
+messages_version: 1.0.0
 
 messages:
 - "This feature is coming soon..."

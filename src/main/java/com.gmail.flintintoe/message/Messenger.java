@@ -8,14 +8,11 @@ import org.bukkit.entity.Player;
 public class Messenger {
     private ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 
-    private String consoleHeader = "[SimpleSidebar] ";
-    private String header = "[&aSidebar&r] ";
-
     public void sendToPlayer(Player player, String message) {
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', header + message));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "[&aSidebar&r] " + message));
     }
 
     public void sendToConsole(String message) {
-        console.sendMessage(consoleHeader + message);
+        console.sendMessage("[SimpleSidebar] " + message);
     }
 }

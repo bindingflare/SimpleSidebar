@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -18,17 +19,17 @@ public class PlayerEvent implements Listener {
 
     public PlayerEvent(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
-        config = plugin.getConfigMan();
+        config = plugin.getPgConfig();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (config.setOnLogin) {
+        if (config.isSetOnLogin()) {
             sidebar.setSidebar(player, 0);
             // If customUpdater is active, add player name to its update list
-            if (config.afkTimer != 0) {
+            if (config.getAfkTimer() != 0) {
                 sidebar.getCustomUpdater().set(player.getDisplayName());
             }
         }
@@ -39,27 +40,48 @@ public class PlayerEvent implements Listener {
         String playerName = event.getPlayer().getDisplayName();
 
         // If customUpdater is active, remove player name to its update list
-        if (config.afkTimer != 0) {
+        if (config.getAfkTimer() != 0) {
             sidebar.getCustomUpdater().remove(playerName);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerMove(PlayerMoveEvent event) {
-        String playerName = event.getPlayer().getDisplayName();
+        Player player = event.getPlayer();
 
         // If customUpdater is active, reset player afkTimer when the player moves 1 block
-        if (config.afkTimer != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
-            sidebar.getCustomUpdater().resetCooldown(playerName);
+        if (config.getAfkTimer() != 0 && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
+            sidebar.getCustomUpdater().resetCooldown(player.getDisplayName());
+        }
+
+        if (config.isUpdatePhAsync()) {
+            sidebar.updateSidebar(player);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerMine(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+
+        if (config.getAfkTimer() != 0) {
+            sidebar.getCustomUpdater().resetCooldown(player.getDisplayName());
+        }
+
+        if (config.isUpdatePhAsync()) {
+            sidebar.updateSidebar(player);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerChat(AsyncPlayerChatEvent event) {
-        String playerName = event.getPlayer().getDisplayName();
+        Player player = event.getPlayer();
 
-        if (config.afkTimer != 0) {
-            sidebar.getCustomUpdater().resetCooldown(playerName);
+        if (config.getAfkTimer() != 0) {
+            sidebar.getCustomUpdater().resetCooldown(player.getDisplayName());
+        }
+
+        if (config.isUpdatePhAsync()) {
+            sidebar.updateSidebar(player);
         }
     }
 

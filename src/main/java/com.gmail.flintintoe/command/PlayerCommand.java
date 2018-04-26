@@ -17,14 +17,13 @@ public class PlayerCommand implements CommandExecutor {
     public PlayerCommand(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
         message = plugin.getMessenger();
-        config = plugin.getConfigMan();
+        config = plugin.getPgConfig();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!(sender instanceof Player)) {
             message.sendToConsole("Only a player can run this command");
-            return true;
         } else {
             if (sender.hasPermission("simplesidebar.use")) {
                 Player player = (Player) sender;
@@ -36,35 +35,32 @@ public class PlayerCommand implements CommandExecutor {
                 }
                 // Set sidebar of self
                 else if (args.length == 1) {
-                    int sidebarIndex;
+                    // -2 so that when sidebar count is 0 and sidebarIndex is -1... that thing does not happen
+                    int sidebarIndex = -2;
 
                     try {
                         sidebarIndex = Integer.parseInt(args[0]);
                     } catch (Exception e) {
-                        message.sendToPlayer(player, "Argument must be a number");
-                        return true;
-                    }
-
-                    if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                        message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                        return true;
-                    }
-
-                    if (!sidebar.setSidebar(player, args[0])) {
-                        message.sendToPlayer(player, "Sidebar with name " + args[0] + " could not be found");
-                        return true;
+                        if (!sidebar.setSidebar(player, args[0])) {
+                            message.sendToPlayer(player, "Sidebar with name " + args[0] + " could not be found");
+                        }
+                    } finally {
+                        if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                            message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                        } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
+                            sidebar.setSidebar(player, sidebarIndex);
+                        }
                     }
                 }
                 // Too many arguments
                 else {
                     message.sendToPlayer(player, "Too many arguments!");
-                    return true;
                 }
             } else {
                 message.sendToPlayer((Player) sender, "You do not have the permission to use this command");
             }
         }
 
-        return false;
+        return true;
     }
 }

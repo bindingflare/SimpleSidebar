@@ -36,7 +36,7 @@
 //
 //    public SidebarManager(SimpleSidebar plugin) {
 //        playerPholder = plugin.getPlaceholder();
-//        configM = plugin.getConfigMan();
+//        configM = plugin.getPgConfig();
 //        messageM = plugin.getMessenger();
 //
 //        // Setup sidebar
