@@ -1,0 +1,14 @@
+---
+engines:
+  checkstyle
+  pmd
+  
+coverage:
+   enabled: false
+#   exclude_paths:
+#     - config/engines.yml
+
+languages:
+  java:
+    extensions:
+      - '-css.resource'
