@@ -1,0 +1,11 @@
+---
+engines:
+  checkstyle:
+    enabled: true
+  pmd:
+    enabled: true
+  
+coverage:
+   enabled: false
+#   exclude_paths:
+#     - config/engines.yml
