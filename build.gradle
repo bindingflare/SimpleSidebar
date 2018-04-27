@@ -6,20 +6,14 @@ version = 'pre0.7.0'
 
 description = "A Minecraft Spigot plugin for customizable sidebars"
 
-task buildplugin
-
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 }
 
-buildplugin {
-
-}
-
 repositories {
     maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots'}
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
     maven { url = "http://maven.sk89q.com/repo/" }
     maven { url = "http://repo.maven.apache.org/maven2" }

@@ -116,6 +116,7 @@ public class Sidebar {
                 int partCount = Iterables.size(parts);
                 sidebars[i][j] = new String[partCount];
 
+                // For each part of line...
                 int count = 0;
                 for (String part : parts) {
                     // Alternate between tags and text
@@ -160,16 +161,18 @@ public class Sidebar {
 
         String[][] entries = sidebars[sidebarIndex];
 
+        // For each line...
         for (int i = 0; i < entries.length; i++) {
             StringBuilder entry = new StringBuilder();
 
+            // For each part of line...
             for (int j = 0; j < entries[i].length; j++) {
                 String part = entries[i][j];
 
-                if (part.indexOf("%") == 0) {
+                if (part.charAt(0) == '%') {
                     // Send word without the '%'
                     part = placeholder.setPh(player, part.substring(1));
-                    part = placeholder.setTargetPh(part);
+                    part = placeholder.setTargetPh(part.substring(1));
                 }
 
                 entry.append(part);
