@@ -2,7 +2,7 @@
 engines:
   checkstyle:
     enabled: true
-  pmd:
+  pmdjava:
     enabled: true
   
 coverage:
