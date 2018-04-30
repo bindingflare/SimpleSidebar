@@ -17,6 +17,7 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 ***
 ## Releases order
 Pre-release → Release candidate → Official release
+
 Semantic versioning: prefix + MAJOR.MINOR.PATCH + suffix
 #### Releases
 | Suffix        | Meaning           | Shown in releases |
