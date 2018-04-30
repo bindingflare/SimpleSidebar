@@ -6,7 +6,6 @@
 
 #### Note
 If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most definitely rushed by me who got excited (lol).
-
 ## Latest commit build
 ![Github commit](https://img.shields.io/badge/Commit-v0.7.0b__pre3-orange.svg?style=for-the-badge&label=Build)
 ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit)
@@ -17,22 +16,23 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 2018/4/15 - First release! v0.6.0_BETA
 ***
 ## Releases order
-
 Pre-release → Release candidate → Official release
+Semantic versioning: prefix + MAJOR.MINOR.PATCH + suffix
+#### Releases
+| Suffix        | Meaning           | Shown in releases |
+|:-------------:|:------------------|:-----------------:|
+| \_pre           | pre-release       | No                |
+| \_RC(X)         | release candidate | Yes               |
+| \_r             | release           | Yes               |
+#### Commits
+| Prefix        | Meaning         | Changes final |
+|:-------------:|:----------------|:--------------|
+| x             | experimental    | No            |
+| s             | remote save     | No            |
+| b             | build succeeded | Yes           |
+| t             | tested          | Yes           |
 
-Pre-releases and release candidates are only for MINOR versions (e.g 1.1.0)
-Official releases can follow up with PATCH versions (e.g 1.1.1)
-
-#### For commits only:
-
-| Prefix        | Meaning         |
-|:-------------:|:--------------- |
-| x             | experimental    | 
-| s             | remote save     |
-| b             | build succeeded |
-| t             | tested          |
-
-Until a PATCH is at least built successfully the changes are not final.
+Changes final does not mean that the feature will be final in future builds.
 ***
 ## Todo
 - Placeholder API support
