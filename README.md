@@ -1,37 +1,42 @@
 # A simple sidebar plugin for Minecraft Spigot
-### Latest release build
+## Latest release build
 ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=for-the-badge&label=Release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release)
 ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
 
-- Customization options
-- Multiple sidebars support
 #### Note
 If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most definitely rushed by me who got excited (lol).
-
-### Latest commit build
-![Github commit](https://img.shields.io/badge/Commit-0.7.0s__pre2-orange.svg?style=for-the-badge&label=Build)
+## Latest commit build
+![Github commit](https://img.shields.io/badge/Commit-v0.7.0b__pre3-orange.svg?style=for-the-badge&label=Build)
 ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit)
 ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
-
-- Sidebar and Placeholder rewrite (In progress)
-- Commands redo (To do)
-
+***
 ## News
 
 2018/4/15 - First release! v0.6.0_BETA
-
+***
 ## Releases order
+Pre-release → Release candidate → Official release
 
-Pre-release --> Release candidate --> Official release
+Semantic versioning: prefix + MAJOR.MINOR.PATCH + suffix
+#### Releases
+| Suffix        | Meaning           | Shown in releases |
+|:-------------:|:------------------|:-----------------:|
+| \_pre           | pre-release       | No                |
+| \_RC(X)         | release candidate | Yes               |
+| \_r             | release           | Yes               |
+#### Commits
+| Prefix        | Meaning         | Changes final |
+|:-------------:|:----------------|:--------------|
+| x             | experimental    | No            |
+| s             | remote save     | No            |
+| b             | build succeeded | Yes           |
+| t             | tested          | Yes           |
 
-Pre-releases and release candidates are only for MINOR versions (e.g 1.0.0)
-Official releases can follow up with PATCH versions (e.g 1.0.1)
-
+Changes final does not mean that the feature will be final in future builds.
+***
 ## Todo
-- Thorough testing
-- Placeholder class enhancements
-- More placeholders
 - Placeholder API support
-- Messages.yml
+- Static/ custom variables support
+- messages.yml
 
