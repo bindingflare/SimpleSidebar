@@ -1,4 +1,6 @@
 # A simple sidebar plugin for Minecraft Spigot
+To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
+
 ## Latest release build &nbsp; &nbsp; &nbsp; ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release) ![GitHub Release Date](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release) ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
 
 ### Release notes:
@@ -21,6 +23,7 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 - Possibly add placeholders.yml
 ***
 ## News
+
 ### 2018/MAY/3
 (Coming soon)
 ### 2018/APR/15
@@ -29,19 +32,20 @@ First release! v0.6.0_BETA
 ## Releases order
 Commit → Pre-release → Release candidate → Official release
 
-Semantic versioning: vMAJOR.MINOR.PATCH + suffix
-#### Releases
+## Semantic versioning
+vMAJOR.MINOR.PATCH + suffix
+#### For releases
 | Suffix        | Meaning           | Shown in releases |
 |:-------------:|:------------------|:-----------------:|
-| \_pre         | pre-release       | No                |
+| \_pre(X)      | pre-release       | No                |
 | \_RC(X)       | release candidate | Yes               |
-| (nothing)     | release           | Yes               |
-#### Commits
+|               | release           | Yes               |
+#### For commits
 | Suffix        | Meaning         | Changes final |
 |:-------------:|:----------------|:--------------|
 | x             | experimental    | No            |
 | s             | remote save     | No            |
-| b             | build succeeded | Yes           |
+| b             | build succeeded | Yes/ No       |
 | t             | tested          | Yes           |
 
 Changes final does not mean that the feature will stay final in future builds.
@@ -51,3 +55,6 @@ Changes final does not mean that the feature will stay final in future builds.
 - Static/ custom variables support
 - messages.yml
 
+## External links
+Spigot resource page: (Coming soon)
+Github.io page: https://flintintoe.github.io/SimpleSidebar/
