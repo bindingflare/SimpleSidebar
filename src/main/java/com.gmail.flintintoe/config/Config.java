@@ -38,6 +38,7 @@ public class Config {
 
     public boolean setupConfig(SimpleSidebar plugin) {
         if (!plugin.getDataFolder().exists()) {
+            //noinspection ResultOfMethodCallIgnored
             plugin.getDataFolder().mkdirs();
         }
 

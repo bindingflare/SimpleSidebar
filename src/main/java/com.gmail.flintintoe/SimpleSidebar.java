@@ -1,6 +1,7 @@
 package com.gmail.flintintoe;
 
-import com.gmail.flintintoe.command.AdminCommand;
+import com.gmail.flintintoe.command.ConsoleCommand;
+import com.gmail.flintintoe.command.PlayerAdminCommand;
 import com.gmail.flintintoe.command.PlayerCommand;
 import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.event.PlayerEvent;
@@ -72,7 +73,8 @@ public class SimpleSidebar extends JavaPlugin {
 
         // Commands
         this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
-        this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
+        this.getCommand("sidebaradmin").setExecutor((new ConsoleCommand(this)));
+        this.getCommand("sidebaradmin").setExecutor((new PlayerAdminCommand(this)));
 
         // Events
         pm.registerEvents(new PlayerEvent(this), this);

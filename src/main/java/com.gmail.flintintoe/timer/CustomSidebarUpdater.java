@@ -50,7 +50,7 @@ public class CustomSidebarUpdater extends BukkitRunnable {
     public void set(Player player, int sidebarIndex) {
         String playerName = player.getDisplayName();
 
-        if (!playersOnCooldown.containsKey(playerName) && sidebarIndex >= 0 && sidebarIndex < sbCount) {
+        if (sidebarIndex >= 0 && sidebarIndex < sbCount) {
             playersOnCooldown.put(playerName, interval);
             playerSetSidebar.put(playerName, sidebarIndex);
         }

@@ -22,41 +22,33 @@ public class PlayerCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (!(sender instanceof Player)) {
-            message.sendToConsole("Only a player can run this command");
-        } else {
+        if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (sender.hasPermission("simplesidebar.use")) {
-                // Help message
-                if (args.length == 0) {
-                    // TODO Maybe also have a help menu printed
-                    message.sendToPlayer(player, "This command requires at least 1 argument");
-                }
-                // Set sidebar of self
-                else if (args.length == 1) {
-                    // -2 so that when sidebar count is 0 and sidebarIndex is -1... that thing does not happen
-                    int sidebarIndex = -2;
+                if (args.length == 1) {
+                    int sidebarIndex;
 
                     try {
                         sidebarIndex = Integer.parseInt(args[0]);
                     } catch (Exception e) {
-                        if (!sidebar.setSidebar(player, args[0])) {
-                            message.sendToPlayer(player, "Sidebar with name " + args[0] + " could not be found");
-                        }
+                        message.sendToPlayer(player, "Error code PC-001-ARG_NOT_INTEGER");
                         return true;
                     }
+
                     if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                        message.sendToPlayer(player, "Error code PC-002-AFK_SIDEBAR_ACCESS_DENIED");
                         message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                    } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
+                        return true;
+                    } else if (sidebarIndex >= 0 && sidebarIndex < sidebar.getSidebarCount()) {
+                        message.sendToPlayer(player, "Setting your sidebar to " + sidebarIndex + "...");
                         sidebar.setSidebar(player, sidebarIndex);
+                        return true;
+                    } else {
+                        message.sendToPlayer(player, "Error code PC-003-INDEX_OUT_OF_BOUNDS");
+                        return true;
                     }
-                    return true;
-                } else {
-                    message.sendToPlayer(player, "Too many arguments!");
                 }
-            } else {
-                message.sendToPlayer(player, "You do not have the permission to use this command");
             }
         }
 

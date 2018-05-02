@@ -33,6 +33,12 @@ public class Sidebar {
     private String[][][] sidebars;
     private int sidebarCount = 0;
 
+    // Using special UTF-8 tags:
+    // U+0FC4 - Tibetan Symbol Dril Bu
+    // U+0FC5 - Tibetan Symbol Rdo Rje
+    private final char PLAYER_TAG_SYMBOL = '࿄';
+    private final char TARGET_TAG_SYMBOL = '࿅';
+
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
         config = plugin.getPgConfig();
@@ -140,9 +146,9 @@ public class Sidebar {
                         }
 
                         if (args.get(0).substring(0, 2).equalsIgnoreCase("p/")) {
-                            sidebars[i][j][count] = "^" + part;
+                            sidebars[i][j][count] = TARGET_TAG_SYMBOL + part;
                         } else {
-                            sidebars[i][j][count] = "%" + part;
+                            sidebars[i][j][count] = PLAYER_TAG_SYMBOL + part;
                         }
                     }
                     count++;
@@ -191,26 +197,24 @@ public class Sidebar {
         int entryScore = entries.length;
 
         // For each line...
-        for (int i = 0; i < entries.length; i++) {
-            StringBuilder entry = new StringBuilder();
+        for (String[] entry : entries) {
+            StringBuilder strB = new StringBuilder();
 
             // For each part of line...
-            for (int j = 0; j < entries[i].length; j++) {
-                String part = entries[i][j];
-
+            for (String part : entry) {
                 if (part.length() != 0) {
-                    if (part.charAt(0) == '%') {
+                    if (part.charAt(0) == PLAYER_TAG_SYMBOL) {
                         // Send word without the '%'
                         part = placeholder.setPh(player, part.substring(1));
-                    } else if (part.charAt(0) == '^') {
+                    } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
                         // Send word without the '^'
                         part = placeholder.setTargetPh(part.substring(1));
                     }
                 }
-                entry.append(part);
+                strB.append(part);
             }
 
-            if (entry.toString().trim().length() == 0) {
+            if (strB.toString().trim().length() == 0) {
                 spaceCount++;
 
                 StringBuilder emtpyEntry = new StringBuilder();
@@ -218,14 +222,26 @@ public class Sidebar {
                     emtpyEntry.append(" ");
                 }
 
-                entry = emtpyEntry;
+                strB = emtpyEntry;
             }
 
-            sbObj.getScore(ChatColor.translateAlternateColorCodes('&', entry.toString())).setScore(entryScore);
+            String output = strB.toString();
+            // Remove overflow characters (if any)
+            if (output.length() > 40) {
+                output = output.substring(0, 40);
+            }
+
+            sbObj.getScore(ChatColor.translateAlternateColorCodes('&', output)).setScore(entryScore);
             entryScore--;
         }
 
         player.setScoreboard(sb);
+
+        // Update hashmap in CustomUpdater if needed
+        // If customUpdater is active, add player name to its update list
+        if (config.getAfkTimer() != 0) {
+            customUpdater.set(player, sidebarIndex);
+        }
     }
 
     public void setAFKSidebar(Player player) {
@@ -234,7 +250,23 @@ public class Sidebar {
         }
     }
 
-    private int getSidebarIndexOf(Player player) {
+    public String getSidebarName(int sidebarIndex) {
+        if (sidebarIndex < 0 && sidebarIndex >= sidebarCount) {
+            return null;
+        }
+
+        return names[sidebarIndex];
+    }
+
+    public String[] getSidebarAliases(int sidebarIndex) {
+        if (sidebarIndex < 0 && sidebarIndex >= sidebarCount) {
+            return null;
+        }
+
+        return aliases[sidebarIndex].clone();
+    }
+
+    public int getSidebarIndexOf(Player player) {
         int sidebarIndex;
 
         try {
@@ -242,6 +274,7 @@ public class Sidebar {
         } catch (Exception e) {
             sidebarIndex = -1;
         }
+
         return sidebarIndex;
     }
 
