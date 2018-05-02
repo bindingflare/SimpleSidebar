@@ -1,8 +1,5 @@
 # A simple sidebar plugin for Minecraft Spigot
-## Latest release build
-![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release)
-![GitHub Release Date](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release)
-![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
+## Latest release build ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release) ![GitHub Release Date](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release) ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
 
 ### Release notes:
 - More of a test release than a actual release (Also read note below).
@@ -11,9 +8,7 @@
 #### Note:
 If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most definitely rushed by me who got excited (lol).
 
-## Latest commit build
-![Github commit](https://img.shields.io/badge/Commit-v0.7.0t__pre6-orange.svg?style=flat-square&label=Build)
-![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit)
+## Latest commit build ![Github commit](https://img.shields.io/badge/Commit-v0.7.0t__pre6-orange.svg?style=flat-square&label=Build) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit)
 ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
 ### Changes:
