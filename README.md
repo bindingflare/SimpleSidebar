@@ -77,5 +77,6 @@ Changes final does not mean that the feature will stay final in future builds.
 - messages.yml
 
 ## External links
-Spigot resource page: (Coming soon)
+Spigot resource page: https://www.spigotmc.org/resources/simplesidebar.56344/
+
 Github.io page: https://flintintoe.github.io/SimpleSidebar/
