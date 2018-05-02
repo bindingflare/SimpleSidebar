@@ -33,7 +33,7 @@ If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most de
 First release! v0.6.0_BETA
 ***
 ## Releases order
-Pre-release → Release candidate → Official release
+Commit → Pre-release → Release candidate → Official release
 
 Semantic versioning: vMAJOR.MINOR.PATCH + suffix
 #### Releases
@@ -50,7 +50,7 @@ Semantic versioning: vMAJOR.MINOR.PATCH + suffix
 | b             | build succeeded | Yes           |
 | t             | tested          | Yes           |
 
-Changes final does not mean that the feature will be final in future builds.
+Changes final does not mean that the feature will stay final in future builds.
 ***
 ## Planned for future releases
 - Placeholder API support
