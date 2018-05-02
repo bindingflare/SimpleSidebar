@@ -10,22 +10,22 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 #### Note:
 If you are thinking of getting the release 0.6.0-BETA, **don't**. It was most definitely rushed by me who got excited (lol).
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.0t__pre6-orange.svg?style=flat-square&label=Build) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.0__RC1-orange.svg?style=flat-square&label=Build) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
-### Changes:
-- Fixed more errors in Sidebar and Placeholder classes.
-- SimpleSidebar plugin now in workable state
+### Changes
+- Fixed commands not working properly
+- Changed tag structure (now uses . instead of _) to work well with statistic values
 
-### Todo:
-- Fix commands
-- Fix stat placeholder (_ not allowed)
+### Todo
+- Test special cases of plugin settings (in config.yml)
+- Allow use of names and aliases to set sidebar using commands.
 - Allow use of \ to cancel _ or %
 - Possibly add placeholders.yml
 ***
 ## News
 
-### 2018/MAY/3
-(Coming soon)
+### 2018/MAY/2
+First release candidate of v0.7.0 released.
 ### 2018/APR/15
 First release! v0.6.0_BETA
 ***
