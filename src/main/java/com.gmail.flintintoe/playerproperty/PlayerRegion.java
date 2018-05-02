@@ -32,13 +32,12 @@ public class PlayerRegion {
         World world = player.getWorld();
         Location location = player.getLocation();
 
-       Set<ProtectedRegion> set = wGPlugin.getRegionManager(world).getApplicableRegions(location).getRegions();
+        Set<ProtectedRegion> set = wGPlugin.getRegionManager(world).getApplicableRegions(location).getRegions();
 
         List<String> regions = new ArrayList<>();
 
         // Keeping all parent classes for now
         // This part could change (or another method be added)
-        int count = 0;
         for (ProtectedRegion region : set) {
             regions.add(region.getId());
         }

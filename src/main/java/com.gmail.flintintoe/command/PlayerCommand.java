@@ -25,9 +25,9 @@ public class PlayerCommand implements CommandExecutor {
         if (!(sender instanceof Player)) {
             message.sendToConsole("Only a player can run this command");
         } else {
-            if (sender.hasPermission("simplesidebar.use")) {
-                Player player = (Player) sender;
+            Player player = (Player) sender;
 
+            if (sender.hasPermission("simplesidebar.use")) {
                 // Help message
                 if (args.length == 0) {
                     // TODO Maybe also have a help menu printed
@@ -44,23 +44,22 @@ public class PlayerCommand implements CommandExecutor {
                         if (!sidebar.setSidebar(player, args[0])) {
                             message.sendToPlayer(player, "Sidebar with name " + args[0] + " could not be found");
                         }
-                    } finally {
-                        if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                            message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                        } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
-                            sidebar.setSidebar(player, sidebarIndex);
-                        }
+                        return true;
                     }
-                }
-                // Too many arguments
-                else {
+                    if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                        message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                    } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
+                        sidebar.setSidebar(player, sidebarIndex);
+                    }
+                    return true;
+                } else {
                     message.sendToPlayer(player, "Too many arguments!");
                 }
             } else {
-                message.sendToPlayer((Player) sender, "You do not have the permission to use this command");
+                message.sendToPlayer(player, "You do not have the permission to use this command");
             }
         }
 
-        return true;
+        return false;
     }
 }

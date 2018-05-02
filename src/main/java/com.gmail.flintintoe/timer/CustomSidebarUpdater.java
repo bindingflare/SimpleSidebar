@@ -15,28 +15,31 @@ public class CustomSidebarUpdater extends BukkitRunnable {
     private Sidebar sidebar;
 
     private int interval;
+    private int sbCount;
+
     private boolean afkSb;
     private boolean afkUpdate;
 
-    public CustomSidebarUpdater(Sidebar sidebar, int interval, boolean afkUpdate) {
+    public CustomSidebarUpdater(Sidebar sidebar, int interval, int sbCount, boolean afkUpdate) {
         this.sidebar = sidebar;
         this.interval = interval;
         afkSb = interval == 0;
+        this.sbCount = sbCount;
         this.afkUpdate = afkUpdate;
     }
 
     @Override
     public void run() {
         for (String playerName : playersOnCooldown.keySet()) {
-            Player player = Bukkit.getPlayer(playerName);
-
             int timeLeft = playersOnCooldown.get(playerName);
+
+            Player player = Bukkit.getPlayer(playerName);
 
             if (timeLeft >= 0) {
                 sidebar.setSidebar(player, playerSetSidebar.get(playerName));
             } else if (timeLeft == -1 && afkSb) {
                 sidebar.setAFKSidebar(player);
-            } else if (timeLeft < -1 && afkUpdate) {
+            } else if (afkUpdate) {
                 sidebar.updateSidebar(player);
             }
 
@@ -44,44 +47,44 @@ public class CustomSidebarUpdater extends BukkitRunnable {
         }
     }
 
-    public boolean set(String playerName) {
-        if (!playersOnCooldown.containsKey(playerName)) {
-            playersOnCooldown.put(playerName, interval);
-            playerSetSidebar.put(playerName, sidebar.getSidebarIndexOf(Bukkit.getPlayer(playerName)));
-            // TODO need checker for above method that can return -1
-            return true;
-        }
+    public void set(Player player, int sidebarIndex) {
+        String playerName = player.getDisplayName();
 
-        return false;
+        if (!playersOnCooldown.containsKey(playerName) && sidebarIndex >= 0 && sidebarIndex < sbCount) {
+            playersOnCooldown.put(playerName, interval);
+            playerSetSidebar.put(playerName, sidebarIndex);
+        }
     }
 
-    public boolean remove(String playerName) {
+    public void remove(Player player) {
+        String playerName = player.getDisplayName();
+
         if (playersOnCooldown.containsKey(playerName)) {
             playersOnCooldown.remove(playerName);
             playerSetSidebar.remove(playerName);
-            return true;
         }
-
-        return false;
     }
 
-    public boolean resetCooldown(String playerName) {
+    public void resetCooldown(Player player) {
+        String playerName = player.getDisplayName();
+
         if (playersOnCooldown.containsKey(playerName)) {
             playersOnCooldown.put(playerName, interval);
-            return true;
         }
-
-        return false;
     }
 
-    public int getTime(String playerName) {
+    public int getTime(Player player) {
+        String playerName = player.getDisplayName();
+
         if (playersOnCooldown.containsKey(playerName)) {
             return playersOnCooldown.get(playerName);
         }
         return -(interval + 1);
     }
 
-    public int getAfkTime(String playerName) {
+    public int getAfkTime(Player player) {
+        String playerName = player.getDisplayName();
+
         if (playersOnCooldown.containsKey(playerName)) {
             return playersOnCooldown.get(playerName);
         }

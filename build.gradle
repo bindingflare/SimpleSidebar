@@ -6,6 +6,9 @@ version = 'pre0.7.0'
 
 description = "A Minecraft Spigot plugin for customizable sidebars"
 
+sourceSets.main.resources.srcDirs = [ "src/main/java" ]
+sourceSets.main.resources.includes = [ "**/*.yml" ]
+
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'

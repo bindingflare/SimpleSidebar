@@ -10,6 +10,7 @@ import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
 import com.gmail.flintintoe.playerproperty.PlayerStatistic;
 import com.gmail.flintintoe.sidebar.Sidebar;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +35,7 @@ public class SimpleSidebar extends JavaPlugin {
         config = new Config(this);
         if (!config.setupConfig(this)) {
             messenger.sendToConsole("Disabling plugin...");
+            Bukkit.getPluginManager().disablePlugin(this);
         }
         config.loadConfig();
         config.checkConfig(this);
@@ -60,8 +62,8 @@ public class SimpleSidebar extends JavaPlugin {
 
         // Sidebar
         sidebar = new Sidebar(this);
-        sidebar.setupUpdater(this);
         sidebar.loadSidebars();
+        sidebar.setupUpdater(this);
 
         // Placeholder Ext.
         if (config.getAfkTimer() != 0) {

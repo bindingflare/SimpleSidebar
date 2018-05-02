@@ -9,13 +9,13 @@ import com.gmail.flintintoe.timer.SidebarUpdater;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Sidebar {
@@ -44,7 +44,7 @@ public class Sidebar {
             globalUpdater = new SidebarUpdater(this);
             globalUpdater.runTaskTimer(plugin, 20L, config.getUpdateTimer() * 20);
         } else {
-            customUpdater = new CustomSidebarUpdater(this, config.getAfkTimer(), config.isAfkPhUpdate());
+            customUpdater = new CustomSidebarUpdater(this, config.getAfkTimer(), sidebarCount, config.isAfkPhUpdate());
             customUpdater.runTaskTimer(plugin, 20L, config.getUpdateTimer() * 20);
         }
     }
@@ -71,7 +71,7 @@ public class Sidebar {
                 aliases.add(config.getStrings(ConfigFile.SIDEBARS, path.toString() + ".aliases"));
             } else {
                 // Add empty list if no path
-                List<String> emptyList = Arrays.asList("");
+                List<String> emptyList = new ArrayList<>();
                 aliases.add(emptyList);
             }
         }
@@ -108,6 +108,7 @@ public class Sidebar {
             sidebars[i] = new String[entriesSize][];
 
             // For each line...
+            // TODO Exception for \% so that % can still be used as a character
             for (int j = 0; j < entriesSize; j++) {
                 String entry = entries.get(j);
                 Iterable<String> parts = Splitter.on('%').split(entry);
@@ -118,16 +119,41 @@ public class Sidebar {
 
                 // For each part of line...
                 int count = 0;
+//                StringBuilder line = new StringBuilder();
+
                 for (String part : parts) {
                     // Alternate between tags and text
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
+//                        line.append(part);
                     } else {
-                        sidebars[i][j][count] = "%" + part;
+                        List<String> args = placeholder.getArgs(part);
+
+                        if (args.size() == 0) {
+                            // Create dummy array if empty
+                            args.add("  ");
+                        }
+
+                        if (args.get(0).length() < 2) {
+                            // Add spaces if args.get(0).length() is less than 2
+                            args.set(0, args.get(0) + "  ");
+                        }
+
+                        if (args.get(0).substring(0, 2).equalsIgnoreCase("p/")) {
+                            sidebars[i][j][count] = "^" + part;
+                        } else {
+                            sidebars[i][j][count] = "%" + part;
+                        }
                     }
                     count++;
                 }
+//                // Check for possibility of empty line
+//                if (line.toString().trim().length() == 0) {
+//                    sidebars[i][j][0] = "*" + sidebars[i][j][0];
+//                }
             }
+
+            // TODO test for duplicates here
         }
 
         int i = 0;
@@ -156,10 +182,13 @@ public class Sidebar {
         Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective sbObj = sb.registerNewObjective(sidebarIndex + "", "dummy");
 
-        sbObj.setDisplayName(headers[sidebarIndex]);
+        sbObj.setDisplayName(ChatColor.translateAlternateColorCodes('&', headers[sidebarIndex]));
         sbObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         String[][] entries = sidebars[sidebarIndex];
+
+        int spaceCount = 0;
+        int entryScore = entries.length;
 
         // For each line...
         for (int i = 0; i < entries.length; i++) {
@@ -169,17 +198,34 @@ public class Sidebar {
             for (int j = 0; j < entries[i].length; j++) {
                 String part = entries[i][j];
 
-                if (part.charAt(0) == '%') {
-                    // Send word without the '%'
-                    part = placeholder.setPh(player, part.substring(1));
-                    part = placeholder.setTargetPh(part.substring(1));
+                if (part.length() != 0) {
+                    if (part.charAt(0) == '%') {
+                        // Send word without the '%'
+                        part = placeholder.setPh(player, part.substring(1));
+                    } else if (part.charAt(0) == '^') {
+                        // Send word without the '^'
+                        part = placeholder.setTargetPh(part.substring(1));
+                    }
                 }
-
                 entry.append(part);
             }
 
-            sbObj.getScore(entry.toString()).setScore(i);
+            if (entry.toString().trim().length() == 0) {
+                spaceCount++;
+
+                StringBuilder emtpyEntry = new StringBuilder();
+                for (int j = 0; j < spaceCount; j++) {
+                    emtpyEntry.append(" ");
+                }
+
+                entry = emtpyEntry;
+            }
+
+            sbObj.getScore(ChatColor.translateAlternateColorCodes('&', entry.toString())).setScore(entryScore);
+            entryScore--;
         }
+
+        player.setScoreboard(sb);
     }
 
     public void setAFKSidebar(Player player) {
@@ -188,7 +234,7 @@ public class Sidebar {
         }
     }
 
-    public int getSidebarIndexOf(Player player) {
+    private int getSidebarIndexOf(Player player) {
         int sidebarIndex;
 
         try {
@@ -208,7 +254,8 @@ public class Sidebar {
     }
 
     public void updateSidebar(Player player) {
-        setSidebar(player, getSidebarIndexOf(player));
+        if (getSidebarIndexOf(player) != -1)
+            setSidebar(player, getSidebarIndexOf(player));
     }
 
     public int getSidebarCount() {

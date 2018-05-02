@@ -37,51 +37,29 @@ public class Config {
     }
 
     public boolean setupConfig(SimpleSidebar plugin) {
-        File sidebarFile;
-        File messageFile;
-        File configFile;
-
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
         }
-        // Load Files
-        sidebarFile = new File(plugin.getDataFolder(), "sidebars.yml");
-        messageFile = new File(plugin.getDataFolder(), "messages.yml");
-        configFile = new File(plugin.getDataFolder(), "config.yml");
+
+        // Load files
+        File sidebarFile  = new File(plugin.getDataFolder(), "sidebars.yml");
+        File messageFile = new File(plugin.getDataFolder(), "messages.yml");
+        File configFile= new File(plugin.getDataFolder(), "config.yml");
+
         // Load FileConfigs
         sidebarConfig = new YamlConfiguration();
         messageConfig = new YamlConfiguration();
         configConfig = new YamlConfiguration();
+
         // Copy if file does not exist
         if (!sidebarFile.exists()) {
-            try {
-                messenger.sendToConsole("Creating a copy of SIDEBARS.yml");
-                sidebarFile.getParentFile().mkdirs();
-                plugin.saveResource("sidebars.yml", false);
-
-            } catch (Exception e) {
-                return false;
-            }
+            saveConfig(plugin, "sidebar", sidebarFile);
         }
         if (!messageFile.exists()) {
-            try {
-                messenger.sendToConsole("Creating a copy of MESSAGES.yml");
-                messageFile.getParentFile().mkdirs();
-                plugin.saveResource("messages.yml", false);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            saveConfig(plugin, "messages", messageFile);
         }
         if (!configFile.exists()) {
-            try {
-                messenger.sendToConsole("Creating a copy of CONFIG.yml");
-                configFile.getParentFile().mkdirs();
-                plugin.saveResource("config.yml", false);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            saveConfig(plugin, "config", configFile);
         }
         // Load files for use
         try {
@@ -114,13 +92,22 @@ public class Config {
     public void checkConfig(SimpleSidebar plugin) {
         // Using rudimentary CONFIG checking for now
         if (configConfig.getDouble("config_version") != 1.2) {
-            messenger.sendToConsole("You are currently using an old CONFIG.yml");
+            messenger.sendToConsole("Old config.yml detected");
         }
         if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
-            messenger.sendToConsole("You are currently using an old SIDEBARS.yml");
+            messenger.sendToConsole("Old sidebars.yml detected");
         }
         if (messageConfig.getDouble("messages_version") != 1.0) {
-            messenger.sendToConsole("You are currently using an old MESSAGES.yml");
+            messenger.sendToConsole("Old messages.yml detected");
+        }
+    }
+
+    private void saveConfig(SimpleSidebar plugin, String fileName, File file) {
+        try {
+            messenger.sendToConsole("Creating a copy of " + file.getName());
+            plugin.saveResource(file.getName(), false);
+        } catch (Exception e) {
+            messenger.sendToConsole("Error: Error while saving " + fileName + ".yml");
         }
     }
 

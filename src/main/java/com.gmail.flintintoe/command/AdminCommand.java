@@ -25,10 +25,10 @@ public class AdminCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         // Player
         if (sender instanceof Player) {
+            Player player = (Player) sender;
+
             if (sender.hasPermission("simplesidebar.admin")) {
                 if (args.length == 2) {
-                    // Player who sent the command
-                    Player player = (Player) sender;
                     // Player where the command will apply to
                     Player target = Bukkit.getPlayer(args[0]);
 
@@ -45,19 +45,22 @@ public class AdminCommand implements CommandExecutor {
                             } else {
                                 message.sendToPlayer(player, "Set the sidebar of " + args[0] + " to " + args[1]);
                             }
-                        } finally {
-                            if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                                message.sendToPlayer(player, "You cannot set" + args[0] + "'s sidebar to the AFK sidebar");
-                            } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
-                                sidebar.setSidebar(target, sidebarIndex);
-                            }
+                            return true;
                         }
+                        if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                            message.sendToPlayer(player, "You cannot set" + args[0] + "'s sidebar to the AFK sidebar");
+                        } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
+                            sidebar.setSidebar(target, sidebarIndex);
+                        }
+                        return true;
                     } else {
                         message.sendToPlayer(player, "The player " + args[0] + " was not found");
                     }
                 } else {
-                    message.sendToPlayer((Player) sender, "You do not have the permission to use this command");
+                    message.sendToPlayer(player, "Too many arguments!");
                 }
+            } else {
+                message.sendToPlayer(player, "You do not have the permission to use this command");
             }
         } else {
             // Server console
@@ -77,19 +80,20 @@ public class AdminCommand implements CommandExecutor {
                         } else {
                             message.sendToConsole("Set the sidebar of " + args[0] + " to " + args[1]);
                         }
-                    } finally {
-                        if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                            message.sendToConsole("You cannot set" + args[0] + "'s sidebar to the AFK sidebar");
-                        } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
-                            sidebar.setSidebar(target, sidebarIndex);
-                        }
+                        return true;
                     }
+                    if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                        message.sendToConsole("You cannot set" + args[0] + "'s sidebar to the AFK sidebar");
+                    } else if (sidebarIndex > -1 && sidebarIndex < sidebar.getSidebarCount()) {
+                        sidebar.setSidebar(target, sidebarIndex);
+                    }
+                    return true;
                 } else {
                     message.sendToConsole("The player " + args[0] + "was not found");
                 }
             }
         }
 
-        return true;
+        return false;
     }
 }

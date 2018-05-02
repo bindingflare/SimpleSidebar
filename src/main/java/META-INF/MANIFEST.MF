@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: com.gmail.flintintoe.SimpleSidebar
-Main-Class: SimpleSidebar
-
+Class-Path: com.gmail.flintintoe
+Main-Class: com.gmail.flintintoe.SimpleSidebar
