@@ -36,8 +36,15 @@ public class Sidebar {
     // Using special UTF-8 tags:
     // U+0FC4 - Tibetan Symbol Dril Bu
     // U+0FC5 - Tibetan Symbol Rdo Rje
+    // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
     private final char PLAYER_TAG_SYMBOL = '࿄';
     private final char TARGET_TAG_SYMBOL = '࿅';
+
+    // Keeping final chars organized here
+    @SuppressWarnings("FieldCanBeLocal")
+    private final char TAG_SYMBOL = '%';
+    @SuppressWarnings("FieldCanBeLocal")
+    private final char ALT_TAG_SYMBOL = '࿇';
 
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
@@ -83,12 +90,11 @@ public class Sidebar {
         }
         sidebarCount = sidebarNum - 1;
 
-        // Initialize class Arrays
+        // Initialize class String Arrays
         this.names = new String[sidebarCount];
         this.headers = new String[sidebarCount];
-        this.aliases = new String[sidebarCount][];
 
-        // Partly initialize sidebars Array
+        this.aliases = new String[sidebarCount][];
         sidebars = new String[sidebarCount][][];
 
         // For each sidebar...
@@ -113,35 +119,59 @@ public class Sidebar {
 
             sidebars[i] = new String[entriesSize][];
 
-            // For each line...
-            // TODO Exception for \% so that % can still be used as a character
+            // For each entry...
             for (int j = 0; j < entriesSize; j++) {
                 String entry = entries.get(j);
-                Iterable<String> parts = Splitter.on('%').split(entry);
+
+                // Change masked % into another character
+                String entryCopy = entry;
+                List<Integer> indexes = new ArrayList<>();
+                while (entryCopy.contains(Character.toString(TAG_SYMBOL))) {
+                    int index = entryCopy.indexOf(TAG_SYMBOL);
+                    if ((char) (index - 1) == '\\') {
+                        indexes.add(index);
+                    } else {
+                        entryCopy.replace(Character.toString(TAG_SYMBOL), " ");
+                    }
+                }
+
+                char[] characters = entry.toCharArray();
+                for (int index : indexes) {
+                    characters[index] = ALT_TAG_SYMBOL;
+                }
+                entry = String.copyValueOf(characters);
+
+                // Duplicate checker
+                for(int k = 0; k < j; k++) {
+                    if(entries.get(k).equals(entry)) {
+                        entry += " ";
+                    }
+                }
+
+                // Get parts of entry
+                Iterable<String> parts = Splitter.on(TAG_SYMBOL).split(entry);
 
                 // Get number of parts
                 int partCount = Iterables.size(parts);
                 sidebars[i][j] = new String[partCount];
 
-                // For each part of line...
+                // For each part of entry...
                 int count = 0;
-//                StringBuilder line = new StringBuilder();
 
                 for (String part : parts) {
+                    // Revert entries back into tag symbols
+                    part = part.replaceAll(Character.toString(ALT_TAG_SYMBOL), Character.toString(TAG_SYMBOL));
+
                     // Alternate between tags and text
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
-//                        line.append(part);
                     } else {
                         List<String> args = placeholder.getArgs(part);
 
+                        // Prevent errors in the following code
                         if (args.size() == 0) {
-                            // Create dummy array if empty
                             args.add("  ");
-                        }
-
-                        if (args.get(0).length() < 2) {
-                            // Add spaces if args.get(0).length() is less than 2
+                        } else if (args.get(0).length() < 2) {
                             args.set(0, args.get(0) + "  ");
                         }
 
@@ -153,16 +183,8 @@ public class Sidebar {
                     }
                     count++;
                 }
-//                // Check for possibility of empty line
-//                if (line.toString().trim().length() == 0) {
-//                    sidebars[i][j][0] = "*" + sidebars[i][j][0];
-//                }
             }
-
-            // TODO test for duplicates here
         }
-
-        int i = 0;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

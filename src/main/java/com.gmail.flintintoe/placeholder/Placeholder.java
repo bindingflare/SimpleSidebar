@@ -155,7 +155,7 @@ public class Placeholder {
         Player target = Bukkit.getPlayer(args.get(0).substring(2));
 
         if (target == null) {
-            return "{ERROR}";
+            return "";
         }
 
         if (args.size() == 1) {

@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class PlayerCommand implements CommandExecutor {
     private Sidebar sidebar;
     private Messenger message;
@@ -26,7 +28,28 @@ public class PlayerCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             if (sender.hasPermission("simplesidebar.use")) {
-                if (args.length == 1) {
+                if (args.length == 0) {
+                    // Get sidebar index of player
+                    int sidebarIndex = sidebar.getSidebarIndexOf(player);
+
+                    String name = sidebar.getSidebarName(sidebarIndex);
+                    String[] aliases = sidebar.getSidebarAliases(sidebarIndex);
+
+                    if (name != null) {
+                        message.sendToPlayer(player, args[0] + " is using sidebar " + name + " (Index: " + sidebarIndex + ")");
+                        message.sendToPlayer(player, "Aliases: " + Arrays.toString(aliases));
+                        return true;
+                    } else {
+                        message.sendToPlayer(player, "Error code AC-002-NAME_NOT_FOUND");
+                    }
+                }
+                else if (args.length == 1) {
+                    // Check using name, alias
+                    if (sidebar.setSidebar(player, args[1])) {
+                        message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar name or alias " + args[1]);
+                    }
+
+                    // Check using sidebar index
                     int sidebarIndex;
 
                     try {

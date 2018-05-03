@@ -30,6 +30,7 @@ public class PlayerAdminCommand implements CommandExecutor {
 
             if (sender.hasPermission("simplesidebar.admin")) {
                 if (args.length == 1) {
+                    // Get sidebar index of target
                     Player target = Bukkit.getPlayer(args[0]);
 
                     if (target == null) {
@@ -50,6 +51,7 @@ public class PlayerAdminCommand implements CommandExecutor {
                         message.sendToPlayer(player, "Error code AC-002-NAME_NOT_FOUND");
                     }
                 } else if (args.length == 2) {
+                    // Get sidebar index of target
                     Player target = Bukkit.getPlayer(args[0]);
 
                     if (target == null) {
@@ -57,6 +59,12 @@ public class PlayerAdminCommand implements CommandExecutor {
                         return true;
                     }
 
+                    // Check using name, alias
+                    if (sidebar.setSidebar(target, args[1])) {
+                        message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar name or alias " + args[1]);
+                    }
+
+                    // Check using sidebar index
                     int sidebarIndex;
 
                     try {
