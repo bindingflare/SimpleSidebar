@@ -30,7 +30,7 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 - Allow dupicate entries in sidebar
 - Possibly add placeholders.yml
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.0__RC1-orange.svg?style=flat-square&label=Build) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.0__RC1-orange.svg?style=flat-square&label=Build) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
 ### Changes
 - Fixed commands not working properly
@@ -38,10 +38,10 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 ### Todo
 - Test special cases of plugin settings (in config.yml)
-- Allow use of names and aliases to set sidebar using commands.
-- Allow use of \ to cancel _ or %
-- Allow duplicate entries in sidebar
-- Possibly add placeholders.yml
+- ~~Allow use of names and aliases to set sidebar using commands.~~ 0.7.1
+- ~~Allow use of \ to cancel . or %~~ 0.7.1
+- ~~Allow duplicate entries in sidebar~~ 0.7.1
+- Possibly add placeholders.yml and Placeholder API support
 ***
 ## News
 
@@ -57,19 +57,19 @@ Commit → Pre-release → Release candidate → Official release
 vMAJOR.MINOR.PATCH + suffix
 #### For releases
 | Suffix        | Meaning           | Shown in releases |
-|:-------------:|:------------------|:-----------------:|
+|:--------------|:------------------|:------------------|
 | \_pre(X)      | pre-release       | No                |
 | \_RC(X)       | release candidate | Yes               |
 |               | release           | Yes               |
 #### For commits
-| Suffix        | Meaning         | Changes final |
-|:-------------:|:----------------|:--------------|
-| x             | experimental    | No            |
-| s             | remote save     | No            |
-| b             | build succeeded | Yes/ No       |
-| t             | tested          | Yes           |
+| Suffix | Meaning        | Changes are final |
+|:-------|:---------------|:------------------|
+| x      | experimental   | No                |
+| s      | remote save    | No                |
+| b      | build success  | Yes/ No           |
+| t      | feature tested | Yes               |
 
-Changes final does not mean that the feature will stay final in future builds.
+\**Changes final does not mean that the feature will stay final in future builds.*
 ***
 ## Planned for future releases
 - Placeholder API support
