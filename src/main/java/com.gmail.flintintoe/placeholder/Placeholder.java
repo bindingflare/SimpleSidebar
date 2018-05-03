@@ -27,10 +27,11 @@ public class Placeholder {
 
     private CustomSidebarUpdater customUpdater;
 
-    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "date", "time", "region", "stat", "mstat", "estat"};
+    // EMPTY will be a future placeholder
+    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "date", "EMPTY", "region", "stat", "mstat", "estat"};
     private final String[] TARGET_PLACEHOLDERS = {"balance", "x", "y", "z", "region"};
 
-    private final String DIVIDER = ".";
+    private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
         config = plugin.getPgConfig();
@@ -40,112 +41,92 @@ public class Placeholder {
         region = plugin.getPlRegion();
     }
 
-    public String setPh(Player player, String tag) {
+    public String setPlaceholder(Player player, String tag) {
         String wordWithPh = "";
 
-        if (tag.length() > 0) {
-            String keyword = getKeyword(tag);
-            List<String> args = getArgs(tag);
+        String keyword = getKeyword(tag);
+        List<String> args = getArgs(tag);
 
-            if (args.size() == 0) {
-                // player
-                if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[0])) {
-                    wordWithPh = player.getDisplayName();
+        if (args.size() == 0) {
+            // player
+            if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[0])) {
+                wordWithPh = player.getDisplayName();
+            }
+            // x
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[1])) {
+                wordWithPh += player.getLocation().getBlockX();
+            }
+            // y
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[2])) {
+                wordWithPh += player.getLocation().getBlockX();
+            }
+            // z
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[3])) {
+                wordWithPh += player.getLocation().getBlockX();
+            }
+            // balance
+            else if (config.isEconomyEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[4])) {
+                wordWithPh += economy.getBalance(player);
+            }
+            // timezone
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[5])) {
+                wordWithPh = ZonedDateTime.now().withFixedOffsetZone().getOffset().getId();
+            }
+            // AFK
+            else if (customUpdater != null) {
+                // afktime
+                if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[6])) {
+                    wordWithPh += customUpdater.getAfkTime(player);
                 }
-                // x
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[1])) {
-                    wordWithPh += player.getLocation().getBlockX();
+                // afktimeleft
+                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[7])) {
+                    wordWithPh += customUpdater.getTime(player);
                 }
-                // y
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[2])) {
-                    wordWithPh += player.getLocation().getBlockX();
-                }
-                // z
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[3])) {
-                    wordWithPh += player.getLocation().getBlockX();
-                }
-                // balance
-                else if (config.isEconomyEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[4])) {
-                    wordWithPh += economy.getBalance(player);
-                }
-                // timezone
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[5])) {
-                    wordWithPh = ZonedDateTime.now().withFixedOffsetZone().getOffset().getId();
-                }
-                // AFK
-                else if (customUpdater != null) {
-                    // afktime
-                    if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[6])) {
-                        wordWithPh += customUpdater.getAfkTime(player);
-                    }
-                    // afktimeleft
-                    if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[7])) {
-                        wordWithPh += customUpdater.getTime(player);
-                    }
-                }
-            } else if (args.size() == 1) {
-                // date
-                if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[8])) {
-                    ZoneId currentZone = ZoneId.systemDefault();
-                    ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
+            }
+        } else if (args.size() == 1) {
+            // datetime
+            if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[8])) {
+                ZoneId currentZone = ZoneId.systemDefault();
+                ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-                    DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
-                    wordWithPh = formatterBuilder.appendPattern(args.get(0)).toFormatter().format(currentDateTime);
+                DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
+                wordWithPh = formatterBuilder.appendPattern(args.get(0)).toFormatter().format(currentDateTime);
+            }
+            // region
+            else if (config.isRegionEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[10])) {
+                List<String> regions = region.getRegionList(player);
+                int i;
+
+                try {
+                    i = Integer.parseInt(args.get(0)) - 1;
+                } catch (Exception e) {
+                    i = -1;
                 }
-                // time
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[9])) {
-                    ZoneId currentZone = ZoneId.systemDefault();
-                    ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
 
-                    DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
-                    wordWithPh = formatterBuilder.appendPattern(args.get(0)).toFormatter().format(currentDateTime);
+                if (!(i == -1 || i > regions.size() - 1)) {
+                    wordWithPh = regions.get(i);
                 }
-                // region
-                else if (config.isRegionEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[10])) {
-                    List<String> regions = region.getRegionList(player);
-                    int i;
-
-                    try {
-                        i = Integer.parseInt(args.get(0)) - 1;
-                    } catch (Exception e) {
-                        i = -1;
-                    }
-
-                    if (i == -1) {
-                        wordWithPh = "";
-                    } else if (i > regions.size() - 1) {
-                        wordWithPh = "";
-                    } else {
-                        wordWithPh = regions.get(i);
-                    }
-                }
-                // stat
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[11])) {
-                    wordWithPh += statistic.getPlayerStat(player, args.get(0));
-                }
-            } else if (args.size() == 2) {
-                // mstat
-                if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[12])) {
-                    String materialName = args.get(1);
-
-                    Material material = Material.getMaterial(materialName);
-
-                    wordWithPh += statistic.getPlayerStat(player, args.get(0), material);
-                }
-                // estat
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[13])) {
-                    String entityName = args.get(1);
-
-                    EntityType entityType = EntityType.valueOf(entityName);
-
-                    wordWithPh += statistic.getPlayerStat(player, args.get(0), entityType);
-                }
+            }
+            // stat
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[11])) {
+                wordWithPh += statistic.getPlayerStat(player, args.get(0));
+            }
+        } else if (args.size() == 2) {
+            // mstat
+            if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[12])) {
+                Material material = Material.getMaterial(args.get(1));
+                wordWithPh += statistic.getPlayerStat(player, args.get(0), material);
+            }
+            // estat
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[13])) {
+                EntityType entityType = EntityType.valueOf(args.get(1));
+                wordWithPh += statistic.getPlayerStat(player, args.get(0), entityType);
             }
         }
         return wordWithPh;
     }
 
-    public String setTargetPh(String word) {
+    public String setTargetPlaceholder(String word) {
         String wordWithPh = "";
 
         String property = getKeyword(word);
@@ -155,7 +136,7 @@ public class Placeholder {
         Player target = Bukkit.getPlayer(args.get(0).substring(2));
 
         if (target == null) {
-            return "{ERROR}";
+            return wordWithPh;
         }
 
         if (args.size() == 1) {
@@ -175,9 +156,7 @@ public class Placeholder {
             else if (property.equalsIgnoreCase(TARGET_PLACEHOLDERS[3])) {
                 wordWithPh = "" + target.getLocation().getBlockX();
             }
-        }
-        // Other player's region
-        else if (args.size() == 2) {
+        } else if (args.size() == 2) {
             // region
             if (config.isRegionEnabled() && property.equalsIgnoreCase(TARGET_PLACEHOLDERS[4])) {
                 List<String> regions = region.getRegionList(target);
@@ -189,11 +168,7 @@ public class Placeholder {
                     i = -1;
                 }
 
-                if (i == -1) {
-                    wordWithPh = "";
-                } else if (i > regions.size() - 1) {
-                    wordWithPh = "";
-                } else {
+                if (!(i == -1 || i > regions.size() - 1)) {
                     wordWithPh = regions.get(i);
                 }
             }
@@ -205,15 +180,15 @@ public class Placeholder {
     private String getKeyword(String tag) {
         String property = tag;
 
-        if (tag.contains(DIVIDER)) {
-            property = tag.substring(0, tag.indexOf(DIVIDER));
+        if (tag.contains(TAG_DIVIDER)) {
+            property = tag.substring(0, tag.indexOf(TAG_DIVIDER));
         }
 
         return property;
     }
 
     public List<String> getArgs(String tag) {
-        Iterable<String> argsIterable = Splitter.on(DIVIDER).split(tag);
+        Iterable<String> argsIterable = Splitter.on(TAG_DIVIDER).split(tag);
         List<String> args = new ArrayList<>();
 
         for (String arg : argsIterable) {

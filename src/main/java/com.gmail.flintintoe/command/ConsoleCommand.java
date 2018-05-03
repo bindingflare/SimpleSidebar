@@ -1,7 +1,6 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
@@ -19,13 +18,13 @@ public class ConsoleCommand implements CommandExecutor {
     public ConsoleCommand(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
         message = plugin.getMessenger();
-        Config config = plugin.getPgConfig();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!(sender instanceof Player)) {
             if (args.length == 1) {
+                // Get sidebar index of target
                 Player target = Bukkit.getPlayer(args[0]);
 
                 if (target == null) {
@@ -46,6 +45,7 @@ public class ConsoleCommand implements CommandExecutor {
                     message.sendToConsole("Error code CC-002-NAME_NOT_FOUND");
                 }
             } else if (args.length == 2) {
+                // Get sidebar index of target
                 Player target = Bukkit.getPlayer(args[0]);
 
                 if (target == null) {
@@ -53,6 +53,12 @@ public class ConsoleCommand implements CommandExecutor {
                     return true;
                 }
 
+                // Check using name, alias
+                if (sidebar.setSidebar(target, args[1])) {
+                    message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar name or alias " + args[1]);
+                }
+
+                // Check using sidebar index
                 int sidebarIndex;
 
                 try {
@@ -63,7 +69,7 @@ public class ConsoleCommand implements CommandExecutor {
                 }
 
                 if (sidebarIndex >= 0 && sidebarIndex < sidebar.getSidebarCount()) {
-                    message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar index " + sidebarIndex);
+                    message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar index " + args[1]);
                     sidebar.setSidebar(target, sidebarIndex);
                     return true;
                 } else {
