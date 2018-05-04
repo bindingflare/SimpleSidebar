@@ -1,7 +1,6 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ public class ConsoleCommand implements CommandExecutor {
     public ConsoleCommand(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
         message = plugin.getMessenger();
-        Config config = plugin.getPgConfig();
     }
 
     @Override

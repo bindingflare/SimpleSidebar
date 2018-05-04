@@ -24,53 +24,50 @@ public class PlayerCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player && sender.hasPermission("simplesidebar.use")) {
             Player player = (Player) sender;
 
-            if (sender.hasPermission("simplesidebar.use")) {
-                if (args.length == 0) {
-                    // Get sidebar index of player
-                    int sidebarIndex = sidebar.getSidebarIndexOf(player);
+            if (args.length == 0) {
+                // Get sidebar index of player
+                int sidebarIndex = sidebar.getSidebarIndexOf(player);
 
-                    String name = sidebar.getSidebarName(sidebarIndex);
-                    String[] aliases = sidebar.getSidebarAliases(sidebarIndex);
+                String name = sidebar.getSidebarName(sidebarIndex);
+                String[] aliases = sidebar.getSidebarAliases(sidebarIndex);
 
-                    if (name != null) {
-                        message.sendToPlayer(player, args[0] + " is using sidebar " + name + " (Index: " + sidebarIndex + ")");
-                        message.sendToPlayer(player, "Aliases: " + Arrays.toString(aliases));
-                        return true;
-                    } else {
-                        message.sendToPlayer(player, "Error code AC-002-NAME_NOT_FOUND");
-                    }
+                if (name != null) {
+                    message.sendToPlayer(player, "You are using sidebar " + name + " (Index: " + sidebarIndex + ")");
+                    message.sendToPlayer(player, "Aliases: " + Arrays.toString(aliases));
+                    return true;
+                } else {
+                    message.sendToPlayer(player, "Error code AC-002-NAME_NOT_FOUND");
                 }
-                else if (args.length == 1) {
-                    // Check using name, alias
-                    if (sidebar.setSidebar(player, args[1])) {
-                        message.sendToConsole("Setting sidebar of " + args[0] + " to sidebar name or alias " + args[1]);
-                    }
+            } else if (args.length == 1) {
+                // Check using name, alias
+                if (sidebar.setSidebar(player, args[0])) {
+                    message.sendToConsole("Setting your sidebar to sidebar name or alias " + args[0]);
+                }
 
-                    // Check using sidebar index
-                    int sidebarIndex;
+                // Check using sidebar index
+                int sidebarIndex;
 
-                    try {
-                        sidebarIndex = Integer.parseInt(args[0]);
-                    } catch (Exception e) {
-                        message.sendToPlayer(player, "Error code PC-001-ARG_NOT_INTEGER");
-                        return true;
-                    }
+                try {
+                    sidebarIndex = Integer.parseInt(args[0]);
+                } catch (Exception e) {
+                    message.sendToPlayer(player, "Error code PC-001-ARG_NOT_INTEGER");
+                    return true;
+                }
 
-                    if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                        message.sendToPlayer(player, "Error code PC-002-AFK_SIDEBAR_ACCESS_DENIED");
-                        message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                        return true;
-                    } else if (sidebarIndex >= 0 && sidebarIndex < sidebar.getSidebarCount()) {
-                        message.sendToPlayer(player, "Setting your sidebar to " + sidebarIndex + "...");
-                        sidebar.setSidebar(player, sidebarIndex);
-                        return true;
-                    } else {
-                        message.sendToPlayer(player, "Error code PC-003-INDEX_OUT_OF_BOUNDS");
-                        return true;
-                    }
+                if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
+                    message.sendToPlayer(player, "Error code PC-002-AFK_SIDEBAR_ACCESS_DENIED");
+                    message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
+                    return true;
+                } else if (sidebarIndex >= 0 && sidebarIndex < sidebar.getSidebarCount()) {
+                    message.sendToPlayer(player, "Setting your sidebar to " + sidebarIndex + "...");
+                    sidebar.setSidebar(player, sidebarIndex);
+                    return true;
+                } else {
+                    message.sendToPlayer(player, "Error code PC-003-INDEX_OUT_OF_BOUNDS");
+                    return true;
                 }
             }
         }

@@ -22,7 +22,7 @@ public class Sidebar {
     private Placeholder placeholder;
     private Config config;
 
-    // BukkitRunnables
+    // Bukkit Runnables
     private SidebarUpdater globalUpdater;
     private CustomSidebarUpdater customUpdater;
 
@@ -131,7 +131,7 @@ public class Sidebar {
                     if ((char) (index - 1) == '\\') {
                         indexes.add(index);
                     } else {
-                        entryCopy.replace(Character.toString(TAG_SYMBOL), " ");
+                        entryCopy = entryCopy.replace(Character.toString(TAG_SYMBOL), " ");
                     }
                 }
 
@@ -227,10 +227,10 @@ public class Sidebar {
                 if (part.length() != 0) {
                     if (part.charAt(0) == PLAYER_TAG_SYMBOL) {
                         // Send word without the '%'
-                        part = placeholder.setPh(player, part.substring(1));
+                        part = placeholder.setPlaceholder(player, part.substring(1));
                     } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
                         // Send word without the '^'
-                        part = placeholder.setTargetPh(part.substring(1));
+                        part = placeholder.setTargetPlaceholder(part.substring(1));
                     }
                 }
                 strB.append(part);
