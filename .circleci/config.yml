@@ -43,5 +43,7 @@ workflows:
       - build:
           filters:
             branches:
-              only: master
+              ignore:
+                - release
+                - gh-pages
 
