@@ -1,7 +1,7 @@
 # A simple sidebar plugin for Minecraft Spigot
 To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
-## Latest release build &nbsp; &nbsp; &nbsp; ![GitHub release](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release) ![GitHub Release Date](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release) ![license](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
+## Latest release build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release) ![2](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release) ![3](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
 
 ### Release notes:
 
@@ -30,7 +30,7 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 - Allow dupicate entries in sidebar
 - Possibly add placeholders.yml
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.1s-orange.svg?style=flat-square&label=Build) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.7.1s-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
 ### Changes
 - Added feature to allow use of \ to cancel %
