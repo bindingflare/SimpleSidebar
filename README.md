@@ -30,17 +30,21 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 - Allow dupicate entries in sidebar
 - Possibly add placeholders.yml
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.0__RC1-orange.svg?style=flat-square&label=Build) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![Github commit](https://img.shields.io/badge/Commit-v0.7.1s-orange.svg?style=flat-square&label=Build) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![CircleCI branch](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![Codacy branch grade](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
 ### Changes
-- Fixed commands not working properly
-- Changed tag structure (now uses . instead of \_) to work well with statistic values
+- Added feature to allow use of \ to cancel %
+- Added feature to allow duplicate entries in a sidebar
+- Added feature to set sidebar using name or alias through commands
+- Untested fixes to commands
+- Untested fixes to startup (loading sidebars)
+- Adjustments to Placeholder class
 
 ### Todo
 - Test special cases of plugin settings (in config.yml)
-- ~~Allow use of names and aliases to set sidebar using commands.~~ 0.7.1
-- ~~Allow use of \ to cancel . or %~~ 0.7.1
-- ~~Allow duplicate entries in sidebar~~ 0.7.1
+- ~~Allow use of names and aliases to set sidebar using commands.~~ 0.7.1s
+- ~~Allow use of \ to cancel . or %~~ 0.7.1s
+- ~~Allow duplicate entries in sidebar~~ 0.7.1s
 - Possibly add placeholders.yml and Placeholder API support
 ***
 ## News
