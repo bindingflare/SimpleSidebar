@@ -3,25 +3,7 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 ## Latest release build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/github/release/flintintoe/SimpleSidebar.svg?style=flat-square&label=Release) ![2](https://img.shields.io/github/release-date/flintintoe/SimpleSidebar.svg?style=flat-square&label=Last%20release) ![3](https://img.shields.io/github/license/flintintoe/SimpleSidebar.svg?style=flat-square&label=License)
 
-### Release notes:
-
-#### Rewritten
-- Rewritten Placeholder and Sidebar java files
-- Rewritten code for grabbing data from sidebar.yml. Looks much different now
-
-#### Added
-- Added more events and Async update support using events
-- Added more options in config.yml
-- Added working support for statistics, regions, date and time (with timezone) placeholders (Did I mention location as well?)
-- Added warning when a config file is outdated (No automatic updates yet -.-)
-
-#### Fixed
-- Fixed commands not working properly
-- Fixed CustomSidebarUpdater not working as intended
-
-#### Changed
-- Changed tag structure (now uses . instead of \_) to work well with statistic values
-- Changed messaging to better reflect on what information should be presented to the player/ console
+Check releases for release notes
 
 ### Todo:
 - Test special cases of plugin settings (in config.yml)
