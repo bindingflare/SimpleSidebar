@@ -5,32 +5,19 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 Check releases for release notes
 
-### Todo:
-- Test special cases of plugin settings (in config.yml)
-- Allow use of names and aliases to set sidebar using commands
-- Allow use of \ to cancel _ or %
-- Allow dupicate entries in sidebar
+## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.7.4__RC2-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+
+[See changes](https://github.com/flintintoe/SimpleSidebar/commit/b0d414ec0ae718f0ad5234c85096fb682598de5f)
+
+## Todo:
+- Test out duplicates allowed feature (Just realised i didnt test that)
+- Add Placeholder API support
 - Possibly add placeholders.yml
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.7.1s-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
-
-### Changes
-- Added feature to allow use of \ to cancel %
-- Added feature to allow duplicate entries in a sidebar
-- Added feature to set sidebar using name or alias through commands
-- Untested fixes to commands
-- Untested fixes to startup (loading sidebars)
-- Adjustments to Placeholder class
-
-### Todo
-- Test special cases of plugin settings (in config.yml)
-- ~~Allow use of names and aliases to set sidebar using commands.~~ 0.7.1s
-- ~~Allow use of \ to cancel . or %~~ 0.7.1s
-- ~~Allow duplicate entries in sidebar~~ 0.7.1s
-- Possibly add placeholders.yml and Placeholder API support
 ***
 ## News
-
+### 2018/MAY/6
+Second release candidate of v0.7.0 released!
 ### 2018/MAY/2
 First release candidate of v0.7.0 released!
 ### 2018/APR/15
@@ -65,4 +52,4 @@ vMAJOR.MINOR.PATCH + suffix
 ## External links
 Spigot resource page: https://www.spigotmc.org/resources/simplesidebar.56344/
 
-Github.io page: https://flintintoe.github.io/SimpleSidebar/
+Github.io page (Outdated): https://flintintoe.github.io/SimpleSidebar/
