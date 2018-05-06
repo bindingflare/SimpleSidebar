@@ -34,7 +34,7 @@ public class SidebarRunnable extends BukkitRunnable {
             for (String playerName : playersOnCooldown.keySet()) {
                 int timeLeft = playersOnCooldown.get(playerName);
 
-                if (!(playerSetSidebar.get(playerName) == -1)) {
+                if (playerSetSidebar.get(playerName) != -1) {
                     Player player = Bukkit.getPlayer(playerName);
 
                     if (timeLeft >= 0) {
