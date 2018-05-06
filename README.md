@@ -7,7 +7,8 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 ## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.7.4__RC2-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
-[See changes](https://github.com/flintintoe/SimpleSidebar/commit/b0d414ec0ae718f0ad5234c85096fb682598de5f)
+[See changes](https://github.com/flintintoe/SimpleSidebar/commit/b0d414ec0ae718f0ad5234c85096fb682598de5f) \
+[See changes (2)](https://github.com/flintintoe/SimpleSidebar/commit/78b75cc49891b6d895ef8a340d24786c021e82f4)
 
 ## Todo:
 - Test out duplicates allowed feature (Just realised i didnt test that)
