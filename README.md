@@ -17,7 +17,7 @@ Check releases for release notes
 ***
 ## News
 ### 2018/MAY/6
-Second release candidate of v0.7.0 released!
+Second release candidate (v0.7.4_RC2) released!
 ### 2018/MAY/2
 First release candidate of v0.7.0 released!
 ### 2018/APR/15
