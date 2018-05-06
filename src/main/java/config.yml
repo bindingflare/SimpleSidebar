@@ -8,39 +8,34 @@
 # Edit plugin configurations here.
 
 # Please do not change this value to avoid unexpected errors
-config_version: 1.2
+config_version: 1.3
+
 
 #### Plugin
 
 # Enable this plugin
 plugin_enabled: true
 
-### Default sidebar
+# Allow admins to bypass the allow_change_afk (if allow_change_afk is set to false)
+admin_bypass: true
 
-# If this is true, the first sidebar will be loaded when a player joins the server
-set_on_login: true
+# Set to first sidebar (Index 1) when a player joins the server
+set_on_login: false
+
 
 ### AFK sidebar
 
 # Duration of inactivity in seconds for a player to go into AFK mode
 # Set to 0 to disable AFK sidebar feature
-afk_timer: 30
+afk_timer: 60
+
 # Allow people to set themselves to AFK
 allow_change_afk: false
-# If this is true, placeholders will be updated regularly in afk sidebar
-afk_placeholder_update: true
-
-### Optimisation (for performance)
-
-# Update sidebar only when placeholders update (May cause lag)
-update_placholder_async: true
-
-# Setting to update specific placeholders is coming soon
-
-# Update sidebar on set intervals
-update_sidebar_sync: false
-# Set the delay in seconds between each automatic sidebar update
-sidebar_update_timer: 1
 
 
+### Sidebar update
 
+# Set the delay in seconds between each synchronous sidebar update
+update_timer: 1
+# If this is true, placeholders will be updated on set update timer even when afk
+update_sidebar_sync_afk: false

@@ -4,8 +4,7 @@ import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.placeholder.Placeholder;
-import com.gmail.flintintoe.timer.CustomSidebarUpdater;
-import com.gmail.flintintoe.timer.SidebarUpdater;
+import com.gmail.flintintoe.timer.SidebarRunnable;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
@@ -21,10 +20,7 @@ import java.util.List;
 public class Sidebar {
     private Placeholder placeholder;
     private Config config;
-
-    // BukkitRunnables
-    private SidebarUpdater globalUpdater;
-    private CustomSidebarUpdater customUpdater;
+    private SidebarRunnable runnable;
 
     // {Sidebar number} -> {Entry number} -> {Entry part}
     private String[] names;
@@ -36,23 +32,20 @@ public class Sidebar {
     // Using special UTF-8 tags:
     // U+0FC4 - Tibetan Symbol Dril Bu
     // U+0FC5 - Tibetan Symbol Rdo Rje
+    // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
     private final char PLAYER_TAG_SYMBOL = '࿄';
     private final char TARGET_TAG_SYMBOL = '࿅';
+
+    // Keeping final chars organized here
+    @SuppressWarnings("FieldCanBeLocal")
+    private final char TAG_SYMBOL = '%';
+    @SuppressWarnings("FieldCanBeLocal")
+    private final char ALT_TAG_SYMBOL = '࿇';
 
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
         config = plugin.getPgConfig();
-    }
-
-    public void setupUpdater(SimpleSidebar plugin) {
-        // Use custom updater or the standard
-        if (config.isUpdatePhSync() && config.getAfkTimer() != 0) {
-            globalUpdater = new SidebarUpdater(this);
-            globalUpdater.runTaskTimer(plugin, 20L, config.getUpdateTimer() * 20);
-        } else {
-            customUpdater = new CustomSidebarUpdater(this, config.getAfkTimer(), sidebarCount, config.isAfkPhUpdate());
-            customUpdater.runTaskTimer(plugin, 20L, config.getUpdateTimer() * 20);
-        }
+        runnable = plugin.getRunnable();
     }
 
     public void loadSidebars() {
@@ -83,12 +76,11 @@ public class Sidebar {
         }
         sidebarCount = sidebarNum - 1;
 
-        // Initialize class Arrays
+        // Initialize class String Arrays
         this.names = new String[sidebarCount];
         this.headers = new String[sidebarCount];
-        this.aliases = new String[sidebarCount][];
 
-        // Partly initialize sidebars Array
+        this.aliases = new String[sidebarCount][];
         sidebars = new String[sidebarCount][][];
 
         // For each sidebar...
@@ -113,35 +105,59 @@ public class Sidebar {
 
             sidebars[i] = new String[entriesSize][];
 
-            // For each line...
-            // TODO Exception for \% so that % can still be used as a character
+            // For each entry...
             for (int j = 0; j < entriesSize; j++) {
                 String entry = entries.get(j);
-                Iterable<String> parts = Splitter.on('%').split(entry);
+
+                // Change masked % into another character
+                String entryCopy = entry;
+                List<Integer> indexes = new ArrayList<>();
+                while (entryCopy.contains(Character.toString(TAG_SYMBOL))) {
+                    int index = entryCopy.indexOf(TAG_SYMBOL);
+                    if ((char) (index - 1) == '\\') {
+                        indexes.add(index);
+                    } else {
+                        entryCopy = entryCopy.replace(Character.toString(TAG_SYMBOL), " ");
+                    }
+                }
+
+                char[] characters = entry.toCharArray();
+                for (int index : indexes) {
+                    characters[index] = ALT_TAG_SYMBOL;
+                }
+                entry = String.copyValueOf(characters);
+
+                // Duplicate checker
+                for (int k = 0; k < j; k++) {
+                    if (entries.get(k).equals(entry)) {
+                        entry += " ";
+                    }
+                }
+
+                // Get parts of entry
+                Iterable<String> parts = Splitter.on(TAG_SYMBOL).split(entry);
 
                 // Get number of parts
                 int partCount = Iterables.size(parts);
                 sidebars[i][j] = new String[partCount];
 
-                // For each part of line...
+                // For each part of entry...
                 int count = 0;
-//                StringBuilder line = new StringBuilder();
 
                 for (String part : parts) {
+                    // Revert entries back into tag symbols
+                    part = part.replaceAll(Character.toString(ALT_TAG_SYMBOL), Character.toString(TAG_SYMBOL));
+
                     // Alternate between tags and text
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
-//                        line.append(part);
                     } else {
                         List<String> args = placeholder.getArgs(part);
 
+                        // Prevent errors in the following code
                         if (args.size() == 0) {
-                            // Create dummy array if empty
                             args.add("  ");
-                        }
-
-                        if (args.get(0).length() < 2) {
-                            // Add spaces if args.get(0).length() is less than 2
+                        } else if (args.get(0).length() < 2) {
                             args.set(0, args.get(0) + "  ");
                         }
 
@@ -153,30 +169,22 @@ public class Sidebar {
                     }
                     count++;
                 }
-//                // Check for possibility of empty line
-//                if (line.toString().trim().length() == 0) {
-//                    sidebars[i][j][0] = "*" + sidebars[i][j][0];
-//                }
             }
-
-            // TODO test for duplicates here
         }
-
-        int i = 0;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean setSidebar(Player player, String sidebarName) {
+    public boolean setAndUpdateSidebar(Player player, String sidebarName) {
         // Search sidebarName
         for (int i = 0; i < aliases.length; i++) {
             if (names[i].equalsIgnoreCase(sidebarName)) {
-                setSidebar(player, i);
+                setAndUpdateSidebar(player, i);
                 return true;
             }
 
             for (int j = 0; j < aliases[i].length; j++) {
                 if (aliases[i][j].equalsIgnoreCase(sidebarName)) {
-                    setSidebar(player, i);
+                    setAndUpdateSidebar(player, i);
                     return true;
                 }
             }
@@ -185,6 +193,8 @@ public class Sidebar {
     }
 
     public void setSidebar(Player player, int sidebarIndex) {
+        String playerName = player.getDisplayName();
+
         Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective sbObj = sb.registerNewObjective(sidebarIndex + "", "dummy");
 
@@ -204,11 +214,9 @@ public class Sidebar {
             for (String part : entry) {
                 if (part.length() != 0) {
                     if (part.charAt(0) == PLAYER_TAG_SYMBOL) {
-                        // Send word without the '%'
-                        part = placeholder.setPh(player, part.substring(1));
+                        part = placeholder.setPlaceholder(player, part.substring(1));
                     } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
-                        // Send word without the '^'
-                        part = placeholder.setTargetPh(part.substring(1));
+                        part = placeholder.setTargetPlaceholder(part.substring(1));
                     }
                 }
                 strB.append(part);
@@ -236,18 +244,69 @@ public class Sidebar {
         }
 
         player.setScoreboard(sb);
-
-        // Update hashmap in CustomUpdater if needed
-        // If customUpdater is active, add player name to its update list
-        if (config.getAfkTimer() != 0) {
-            customUpdater.set(player, sidebarIndex);
-        }
     }
 
-    public void setAFKSidebar(Player player) {
-        if (config.isAllowAfkSet() && config.getAfkTimer() != 0) {
-            setSidebar(player, sidebars.length - 1);
+    public void setAndUpdateSidebar(Player player, int sidebarIndex) {
+        runnable.updateSidebarIndex(player.getDisplayName(), sidebarIndex);
+
+        setSidebar(player, sidebarIndex);
+    }
+
+    // Return values
+    // 0 - No errors
+    // 1 - Query not found, Integer negative
+    // 2 - Cannot set to AFK sidebar
+    // 3 - Index out of bounds
+    // 4 - Unexpected error
+    //
+    // NOTE:
+    // Also registers the player to the SidebarRunnable automatically
+    public int querySidebar(Player player, String query) {
+        // Check query
+        int sidebarIndex = getSidebarIndexOf(query);
+
+        // Check if query is an String positive
+        if (sidebarIndex == -1) {
+            for (char c : query.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return 1;
+                }
+            }
         }
+        // Try to set sidebar (For String query)
+        else {
+            // Check if setting AFK sb
+            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
+                return 2;
+            }
+
+            setAndUpdateSidebar(player, sidebarIndex);
+            runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
+            return 0;
+        }
+
+        // sidebarIndex will always be -1 at this point
+
+        try {
+            sidebarIndex = Integer.parseInt(query) - 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 4;
+        }
+
+        // Set sidebar (For int query)
+        if (sidebarIndex != -1) {
+            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
+                return 2;
+            } else if (sidebarIndex < -1 || sidebarIndex >= getSidebarCount()) {
+                return 3;
+            } else {
+                setAndUpdateSidebar(player, sidebarIndex);
+                runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
+                return 0;
+            }
+        }
+        return 3;
     }
 
     public String getSidebarName(int sidebarIndex) {
@@ -266,6 +325,21 @@ public class Sidebar {
         return aliases[sidebarIndex].clone();
     }
 
+    private int getSidebarIndexOf(String sidebarName) {
+        for (int i = 0; i < aliases.length; i++) {
+            if (names[i].equalsIgnoreCase(sidebarName)) {
+                return i;
+            }
+
+            for (int j = 0; j < aliases[i].length; j++) {
+                if (aliases[i][j].equalsIgnoreCase(sidebarName)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
     public int getSidebarIndexOf(Player player) {
         int sidebarIndex;
 
@@ -278,17 +352,14 @@ public class Sidebar {
         return sidebarIndex;
     }
 
-    public CustomSidebarUpdater getCustomUpdater() {
-        return customUpdater;
-    }
+    public void updateSidebar(Player player, boolean updateAfkTime) {
+        if (updateAfkTime) {
+            runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
+        }
 
-    public SidebarUpdater getGlobalUpdater() {
-        return globalUpdater;
-    }
-
-    public void updateSidebar(Player player) {
-        if (getSidebarIndexOf(player) != -1)
+        if (getSidebarIndexOf(player) != -1) {
             setSidebar(player, getSidebarIndexOf(player));
+        }
     }
 
     public int getSidebarCount() {

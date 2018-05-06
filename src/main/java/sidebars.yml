@@ -36,10 +36,10 @@ sidebars:
     entries:
     - ""
     - " Welcome, &a%player%&r!"
-    - "   Today is %date%"
+    - "   Today is %datetime.dd/MM/yyyy%"
     - ""
     - "   [&bTime&r]"
-    - "    %time.HH:mm:ss, dd/MM/yyyy%  %timezone%"
+    - "    %time.HH:mm:ss% %timezone%"
     - "   [&bCash&r]"
     - "     $%balance%"
     - "   [&bRegions&r]"

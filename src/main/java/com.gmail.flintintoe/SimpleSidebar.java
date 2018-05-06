@@ -1,7 +1,6 @@
 package com.gmail.flintintoe;
 
-import com.gmail.flintintoe.command.ConsoleCommand;
-import com.gmail.flintintoe.command.PlayerAdminCommand;
+import com.gmail.flintintoe.command.AdminCommand;
 import com.gmail.flintintoe.command.PlayerCommand;
 import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.event.PlayerEvent;
@@ -11,8 +10,8 @@ import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
 import com.gmail.flintintoe.playerproperty.PlayerStatistic;
 import com.gmail.flintintoe.sidebar.Sidebar;
+import com.gmail.flintintoe.timer.SidebarRunnable;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimpleSidebar extends JavaPlugin {
@@ -20,6 +19,7 @@ public class SimpleSidebar extends JavaPlugin {
     private Messenger messenger;
     private Config config;
     private Sidebar sidebar;
+    private SidebarRunnable runnable;
     private Placeholder ph;
     private PlayerEconomy pEconomy;
     private PlayerStatistic pStatistic;
@@ -27,7 +27,6 @@ public class SimpleSidebar extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        PluginManager pm = getServer().getPluginManager();
         // PRIORITY 1 //
         // Messenger
         messenger = new Messenger();
@@ -54,39 +53,35 @@ public class SimpleSidebar extends JavaPlugin {
         // Region
         pRegion = new PlayerRegion();
         if (!pRegion.setupWorldGuard(this)) {
-            messenger.sendToConsole("WorldGaurd and WorldEdit dependency not found. Region features will be disabled");
+            messenger.sendToConsole("WorldGuard and WorldEdit dependency not found. Region features will be disabled");
         }
 
         // PRIORITY 3 //
+        // Runnable
+        runnable = new SidebarRunnable(this);
+        runnable.runTaskTimer(this, 20L, 20L);
+
         // Placeholder
         ph = new Placeholder(this);
 
         // Sidebar
         sidebar = new Sidebar(this);
         sidebar.loadSidebars();
-        sidebar.setupUpdater(this);
 
-        // Placeholder Ext.
-        if (config.getAfkTimer() != 0) {
-            ph.setCustomUpd(this);
-        }
+        // Set sidebar variable of SidebarRunnable after creating Sidebar object
+        runnable.setSidebarObject(sidebar);
 
         // Commands
         this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
-        this.getCommand("sidebaradmin").setExecutor((new ConsoleCommand(this)));
-        this.getCommand("sidebaradmin").setExecutor((new PlayerAdminCommand(this)));
+        this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
 
         // Events
-        pm.registerEvents(new PlayerEvent(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
     }
 
     @Override
     public void onDisable() {
-        if (config.getAfkTimer() == 0) {
-            sidebar.getGlobalUpdater().cancel();
-        } else {
-            sidebar.getCustomUpdater().cancel();
-        }
+        runnable.cancel();
     }
 
     public Config getPgConfig() {
@@ -99,6 +94,10 @@ public class SimpleSidebar extends JavaPlugin {
 
     public PlayerEconomy getPlEconomy() {
         return pEconomy;
+    }
+
+    public SidebarRunnable getRunnable() {
+        return runnable;
     }
 
     public Placeholder getPlaceholder() {
