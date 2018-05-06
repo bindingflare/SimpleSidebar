@@ -5,7 +5,7 @@ import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
 import com.gmail.flintintoe.playerproperty.PlayerStatistic;
-import com.gmail.flintintoe.timer.CustomSidebarUpdater;
+import com.gmail.flintintoe.timer.SidebarRunnable;
 import com.google.common.base.Splitter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,16 +25,17 @@ public class Placeholder {
     private PlayerEconomy economy;
     private PlayerRegion region;
 
-    private CustomSidebarUpdater customUpdater;
+    private SidebarRunnable runnable;
 
     // EMPTY will be a future placeholder
-    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "date", "EMPTY", "region", "stat", "mstat", "estat"};
+    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "datetime", "EMPTY", "region", "stat", "mstat", "estat"};
     private final String[] TARGET_PLACEHOLDERS = {"balance", "x", "y", "z", "region"};
 
     private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
         config = plugin.getPgConfig();
+        runnable = plugin.getRunnable();
 
         statistic = plugin.getPlStatistic();
         economy = plugin.getPlEconomy();
@@ -72,16 +73,13 @@ public class Placeholder {
             else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[5])) {
                 wordWithPh = ZonedDateTime.now().withFixedOffsetZone().getOffset().getId();
             }
-            // AFK
-            else if (customUpdater != null) {
-                // afktime
-                if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[6])) {
-                    wordWithPh += customUpdater.getAfkTime(player);
-                }
-                // afktimeleft
-                else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[7])) {
-                    wordWithPh += customUpdater.getTime(player);
-                }
+            // afktime
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[6])) {
+                wordWithPh += runnable.getAfkTime(player.getDisplayName());
+            }
+            // afktimeleft
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[7])) {
+                wordWithPh += runnable.getTime(player.getDisplayName());
             }
         } else if (args.size() == 1) {
             // datetime
@@ -215,9 +213,5 @@ public class Placeholder {
         }
 
         return false;
-    }
-
-    public void setCustomUpd(SimpleSidebar plugin) {
-        customUpdater = plugin.getSidebar().getCustomUpdater();
     }
 }

@@ -1,7 +1,6 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.command.Command;
@@ -14,64 +13,61 @@ import java.util.Arrays;
 public class PlayerCommand implements CommandExecutor {
     private Sidebar sidebar;
     private Messenger message;
-    private Config config;
 
     public PlayerCommand(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
         message = plugin.getMessenger();
-        config = plugin.getPgConfig();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (sender instanceof Player && sender.hasPermission("simplesidebar.use")) {
+        if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                // Get sidebar index of player
-                int sidebarIndex = sidebar.getSidebarIndexOf(player);
+                if (player.hasPermission("simplesidebar.see")) {
+                    int sidebarIndex = sidebar.getSidebarIndexOf(player);
 
-                String name = sidebar.getSidebarName(sidebarIndex);
-                String[] aliases = sidebar.getSidebarAliases(sidebarIndex);
-
-                if (name != null) {
-                    message.sendToPlayer(player, "You are using sidebar " + name + " (Index: " + sidebarIndex + ")");
-                    message.sendToPlayer(player, "Aliases: " + Arrays.toString(aliases));
-                    return true;
+                    if (sidebarIndex != -1) {
+                        message.sendToPlayer(player, "Your sidebar is " + sidebar.getSidebarName(sidebarIndex));
+                        message.sendToPlayer(player, "  Index: " + (sidebarIndex + 1));
+                        message.sendToPlayer(player, "  Aliases: " + Arrays.toString(sidebar.getSidebarAliases(sidebarIndex)));
+                    } else {
+                        message.sendErrorMessage(player, "You do not have a sidebar set");
+                    }
                 } else {
-                    message.sendToPlayer(player, "Error code AC-002-NAME_NOT_FOUND");
+                    message.sendErrorMessage(player, "simplesidebar.see permission required");
                 }
+                return true;
+
             } else if (args.length == 1) {
-                // Check using name, alias
-                if (sidebar.setSidebar(player, args[0])) {
-                    message.sendToConsole("Setting your sidebar to sidebar name or alias " + args[0]);
-                }
+                if (player.hasPermission("simplesidebar.use")) {
+                    int returnCode = sidebar.querySidebar(player, args[0]);
 
-                // Check using sidebar index
-                int sidebarIndex;
-
-                try {
-                    sidebarIndex = Integer.parseInt(args[0]);
-                } catch (Exception e) {
-                    message.sendToPlayer(player, "Error code PC-001-ARG_NOT_INTEGER");
-                    return true;
-                }
-
-                if (!config.isAllowAfkSet() && sidebarIndex == sidebar.getSidebarCount() - 1) {
-                    message.sendToPlayer(player, "Error code PC-002-AFK_SIDEBAR_ACCESS_DENIED");
-                    message.sendToPlayer(player, "You cannot set your sidebar to the AFK sidebar");
-                    return true;
-                } else if (sidebarIndex >= 0 && sidebarIndex < sidebar.getSidebarCount()) {
-                    message.sendToPlayer(player, "Setting your sidebar to " + sidebarIndex + "...");
-                    sidebar.setSidebar(player, sidebarIndex);
-                    return true;
+                    if (returnCode == 0) {
+                        message.sendToPlayer(player, "Set your sidebar to " + args[0]);
+                    } else if (returnCode == 1) {
+                        message.sendErrorMessage(player, "Sidebar with the query name does not exist, or the number is a negative number");
+                    } else if (returnCode == 2) {
+                        message.sendErrorMessage(player, "You do not have the permission to set your sidebar to AFK sidebar " + args[0]);
+                    } else if (returnCode == 3) {
+                        message.sendErrorMessage(player, "Sidebar index is out of bounds");
+                    } else if (returnCode == 4) {
+                        message.sendErrorMessage(player, "Unexpected error");
+                        message.sendToPlayer(player, "Please try again");
+                    }
                 } else {
-                    message.sendToPlayer(player, "Error code PC-003-INDEX_OUT_OF_BOUNDS");
-                    return true;
+                    message.sendErrorMessage(player, "simplesidebar.see permission required");
                 }
-            }
-        }
+                return true;
 
-        return false;
+            } else {
+                message.sendErrorMessage(player, "Too many arguments");
+                return true;
+            }
+        } else {
+            message.sendErrorMessage("This command is only for players");
+            return true;
+        }
     }
 }

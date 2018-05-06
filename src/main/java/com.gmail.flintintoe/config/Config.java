@@ -15,22 +15,21 @@ public class Config {
     private FileConfiguration messageConfig;
     private FileConfiguration configConfig;
 
+    private File dataFolder;
+
     // Automatic settings
     private boolean isEconomyEnabled = false;
     private boolean isRegionEnabled = false;
 
     // Settings
     private boolean setOnLogin;
+    private boolean adminBypass;
 
     private int afkTimer;
+    private int updateTimer;
 
     private boolean allowAfkSet;
     private boolean afkPhUpdate;
-
-    private boolean updatePhAsync;
-    private boolean updatePhSync;
-
-    private int updateTimer;
 
     public Config(SimpleSidebar plugin) {
         messenger = plugin.getMessenger();
@@ -42,10 +41,12 @@ public class Config {
             plugin.getDataFolder().mkdirs();
         }
 
+        dataFolder = plugin.getDataFolder();
+
         // Load files
-        File sidebarFile  = new File(plugin.getDataFolder(), "sidebars.yml");
-        File messageFile = new File(plugin.getDataFolder(), "messages.yml");
-        File configFile= new File(plugin.getDataFolder(), "config.yml");
+        File sidebarFile  = new File(dataFolder, "sidebars.yml");
+        File messageFile = new File(dataFolder, "messages.yml");
+        File configFile= new File(dataFolder, "config.yml");
 
         // Load FileConfigs
         sidebarConfig = new YamlConfiguration();
@@ -75,24 +76,38 @@ public class Config {
         return getBoolean(ConfigFile.CONFIG, "plugin_enabled");
     }
 
-
     public void loadConfig() {
         setOnLogin = getBoolean(ConfigFile.CONFIG, "set_on_login");
+        adminBypass = getBoolean(ConfigFile.CONFIG, "admin_bypass");
 
         afkTimer = getValue(ConfigFile.CONFIG, "afk_timer");
 
         allowAfkSet = getBoolean(ConfigFile.CONFIG, "allow_change_afk");
-        afkPhUpdate = getBoolean(ConfigFile.CONFIG, "afk_placeholder_update");
+        afkPhUpdate = getBoolean(ConfigFile.CONFIG, "update_sidebar_sync_afk");
 
-        updatePhAsync = getBoolean(ConfigFile.CONFIG, "update_placeholder_async");
-        updatePhSync = getBoolean(ConfigFile.CONFIG, "update_placeholder_sync");
+        updateTimer = getValue(ConfigFile.CONFIG, "update_timer");
+        // Check if updateSidebarIndex timer is out of bounds
+        if (updateTimer <= 0) {
+            messenger.sendErrorMessage("Cannot set updateSidebarIndex timer to less than 1 second. Using default value 1 second instead");
+            updateTimer = 1;
+        }
+    }
 
-        updateTimer = getValue(ConfigFile.CONFIG, "sidebar_update_timer");
+    public void reloadConfig() {
+        try {
+            sidebarConfig.load(new File(dataFolder, "sidebars.yml"));
+            messageConfig.load(new File(dataFolder, "messages.yml"));
+            configConfig.load(new File(dataFolder, "config.yml"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        loadConfig();
     }
 
     public void checkConfig(SimpleSidebar plugin) {
         // Using rudimentary CONFIG checking for now
-        if (configConfig.getDouble("config_version") != 1.2) {
+        if (configConfig.getDouble("config_version") != 1.3) {
             messenger.sendToConsole("Old config.yml detected");
         }
         if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
@@ -152,7 +167,7 @@ public class Config {
         return -1;
     }
 
-    private boolean getBoolean(ConfigFile configFile, String path) {
+    public boolean getBoolean(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getBoolean(path);
         } else if (configFile == ConfigFile.MESSAGES) {
@@ -188,6 +203,7 @@ public class Config {
         return null;
     }
 
+    // Getters and setters
     public boolean isEconomyEnabled() {
         return isEconomyEnabled;
     }
@@ -204,59 +220,28 @@ public class Config {
         isRegionEnabled = regionEnabled;
     }
 
+    // Getters only
     public boolean isSetOnLogin() {
         return setOnLogin;
     }
 
-//    public void setSetOnLogin(boolean setOnLogin) {
-//        this.setOnLogin = setOnLogin;
-//    }
+    public boolean isAdminBypass() {
+        return adminBypass;
+    }
 
     public int getAfkTimer() {
         return afkTimer;
     }
 
-//    public void setAfkTimer(int afkTimer) {
-//        this.afkTimer = afkTimer;
-//    }
-
     public boolean isAllowAfkSet() {
         return allowAfkSet;
     }
-
-//    public void setAllowAfkSet(boolean allowAfkSet) {
-//        this.allowAfkSet = allowAfkSet;
-//    }
 
     public boolean isAfkPhUpdate() {
         return afkPhUpdate;
     }
 
-//    public void setAfkPhUpdate(boolean afkPhUpdate) {
-//        this.afkPhUpdate = afkPhUpdate;
-//    }
-
-    public boolean isUpdatePhAsync() {
-        return updatePhAsync;
-    }
-
-//    public void setUpdatePhAsync(boolean updatePhAsync) {
-//        this.updatePhAsync = updatePhAsync;
-//    }
-
-    public boolean isUpdatePhSync() {
-        return updatePhSync;
-    }
-
-//    public void setUpdatePhSync(boolean updatePhSync) {
-//        this.updatePhSync = updatePhSync;
-//    }
-
     public int getUpdateTimer() {
         return updateTimer;
     }
-
-//    public void setUpdateTimer(int updateTimer) {
-//        this.updateTimer = updateTimer;
-//    }
 }
