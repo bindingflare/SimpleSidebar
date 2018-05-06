@@ -45,4 +45,4 @@ workflows:
             branches:
               ignore:
                 - release
-- gh-pages
+                - gh-pages
