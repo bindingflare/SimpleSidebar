@@ -14,3 +14,5 @@ All contributions are welcome! When you want to add or tailor a feature make sur
 2. On the main menu click "Check out from Version Control" --> Git
 3. Copy paste this repository URL (https://github.com/flintintoe/SimpleSidebar/)
 4. ... (WIP)
+
+If you are wondering why this repository looks larger than expected, blame worldedit dependency not having an updated link for the latest version, requiring the offline jar in lib in the repository itself (The jar is 1.65 MB).
