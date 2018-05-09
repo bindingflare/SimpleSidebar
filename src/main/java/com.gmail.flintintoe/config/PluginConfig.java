@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.List;
 
-public class Config {
+public class PluginConfig {
     private Messenger messenger;
 
     private FileConfiguration sidebarConfig;
@@ -31,7 +31,7 @@ public class Config {
     private boolean allowAfkSet;
     private boolean afkPhUpdate;
 
-    public Config(SimpleSidebar plugin) {
+    public PluginConfig(SimpleSidebar plugin) {
         messenger = plugin.getMessenger();
     }
 
@@ -88,7 +88,7 @@ public class Config {
         updateTimer = getValue(ConfigFile.CONFIG, "update_timer");
         // Check if updateSidebarIndex timer is out of bounds
         if (updateTimer <= 0) {
-            messenger.sendErrorMessage("Cannot set updateSidebarIndex timer to less than 1 second. Using default value 1 second instead");
+            messenger.sendError("Cannot set updateSidebarIndex timer to less than 1 second. Using default value 1 second instead");
             updateTimer = 1;
         }
     }
@@ -108,22 +108,22 @@ public class Config {
     public void checkConfig(SimpleSidebar plugin) {
         // Using rudimentary CONFIG checking for now
         if (configConfig.getDouble("config_version") != 1.3) {
-            messenger.sendToConsole("Old config.yml detected");
+            messenger.send("Old config.yml detected");
         }
         if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
-            messenger.sendToConsole("Old sidebars.yml detected");
+            messenger.send("Old sidebars.yml detected");
         }
         if (messageConfig.getDouble("messages_version") != 1.0) {
-            messenger.sendToConsole("Old messages.yml detected");
+            messenger.send("Old messages.yml detected");
         }
     }
 
     private void saveConfig(SimpleSidebar plugin, String fileName, File file) {
         try {
-            messenger.sendToConsole("Creating a copy of " + file.getName());
+            messenger.send("Creating a copy of " + file.getName());
             plugin.saveResource(file.getName(), false);
         } catch (Exception e) {
-            messenger.sendToConsole("Error: Error while saving " + fileName + ".yml");
+            messenger.send("Error: Error while saving " + fileName + ".yml");
         }
     }
 

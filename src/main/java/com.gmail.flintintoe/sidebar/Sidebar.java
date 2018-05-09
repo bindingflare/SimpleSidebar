@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.sidebar;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.placeholder.Placeholder;
 import com.gmail.flintintoe.timer.SidebarRunnable;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Sidebar {
     private Placeholder placeholder;
-    private Config config;
+    private PluginConfig config;
     private SidebarRunnable runnable;
 
     // {Sidebar number} -> {Entry number} -> {Entry part}
@@ -44,7 +44,7 @@ public class Sidebar {
 
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
-        config = plugin.getPgConfig();
+        config = plugin.getPluginConfig();
         runnable = plugin.getRunnable();
     }
 
@@ -252,61 +252,14 @@ public class Sidebar {
         setSidebar(player, sidebarIndex);
     }
 
-    // Return values
-    // 0 - No errors
-    // 1 - Query not found, Integer negative
-    // 2 - Cannot set to AFK sidebar
-    // 3 - Index out of bounds
-    // 4 - Unexpected error
-    //
-    // NOTE:
-    // Also registers the player to the SidebarRunnable automatically
-    public int querySidebar(Player player, String query) {
-        // Check query
-        int sidebarIndex = getSidebarIndexOf(query);
-
-        // Check if query is an String positive
-        if (sidebarIndex == -1) {
-            for (char c : query.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return 1;
-                }
-            }
-        }
-        // Try to set sidebar (For String query)
-        else {
-            // Check if setting AFK sb
-            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
-                return 2;
-            }
-
-            setAndUpdateSidebar(player, sidebarIndex);
+    public void updateSidebar(Player player, boolean updateAfkTime) {
+        if (updateAfkTime) {
             runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
-            return 0;
         }
 
-        // sidebarIndex will always be -1 at this point
-
-        try {
-            sidebarIndex = Integer.parseInt(query) - 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 4;
+        if (getSidebarIndexOf(player) != -1) {
+            setSidebar(player, getSidebarIndexOf(player));
         }
-
-        // Set sidebar (For int query)
-        if (sidebarIndex != -1) {
-            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
-                return 2;
-            } else if (sidebarIndex < -1 || sidebarIndex >= getSidebarCount()) {
-                return 3;
-            } else {
-                setAndUpdateSidebar(player, sidebarIndex);
-                runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
-                return 0;
-            }
-        }
-        return 3;
     }
 
     public String getSidebarName(int sidebarIndex) {
@@ -352,14 +305,56 @@ public class Sidebar {
         return sidebarIndex;
     }
 
-    public void updateSidebar(Player player, boolean updateAfkTime) {
-        if (updateAfkTime) {
-            runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
+    // Return values
+    // 0 - No errors
+    // 1 - Query not found, Integer negative
+    // 2 - Cannot set to AFK sidebar
+    // 3 - Index out of bounds
+    // 4 - Unexpected error
+    //
+    // NOTE:
+    // Also registers the player to the SidebarRunnable automatically
+    public int querySidebarIndexOf(String query) {
+        // Check query
+        int sidebarIndex = getSidebarIndexOf(query);
+
+        // Check if query is an String positive
+        if (sidebarIndex == -1) {
+            for (char c : query.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return -1;
+                }
+            }
+        }
+        // Try to set sidebar (For String query)
+        else {
+            // Check if setting AFK sb
+            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
+                return -2;
+            }
+            return 0;
         }
 
-        if (getSidebarIndexOf(player) != -1) {
-            setSidebar(player, getSidebarIndexOf(player));
+        // sidebarIndex will always be -1 at this point
+
+        try {
+            sidebarIndex = Integer.parseInt(query) - 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -4;
         }
+
+        // Set sidebar (For int query)
+        if (sidebarIndex != -1) {
+            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
+                return -2;
+            } else if (sidebarIndex < -1 || sidebarIndex >= getSidebarCount()) {
+                return -3;
+            } else {
+                return 0;
+            }
+        }
+        return -3;
     }
 
     public int getSidebarCount() {

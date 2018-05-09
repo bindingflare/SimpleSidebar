@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.timer;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,12 +15,12 @@ public class SidebarRunnable extends BukkitRunnable {
     private HashMap<String, Integer> playerSetSidebar = new HashMap<>();
 
     private Sidebar sidebar;
-    private Config config;
+    private PluginConfig config;
 
     private int interval;
 
     public SidebarRunnable(SimpleSidebar plugin) {
-        config = plugin.getPgConfig();
+        config = plugin.getPluginConfig();
         interval = config.getUpdateTimer();
     }
 

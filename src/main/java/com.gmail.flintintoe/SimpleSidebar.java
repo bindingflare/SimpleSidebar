@@ -1,8 +1,9 @@
 package com.gmail.flintintoe;
 
 import com.gmail.flintintoe.command.AdminCommand;
+import com.gmail.flintintoe.command.CommandOutput;
 import com.gmail.flintintoe.command.PlayerCommand;
-import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.event.PlayerEvent;
 import com.gmail.flintintoe.message.Messenger;
 import com.gmail.flintintoe.placeholder.Placeholder;
@@ -17,13 +18,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SimpleSidebar extends JavaPlugin {
 
     private Messenger messenger;
-    private Config config;
+    private PluginConfig config;
     private Sidebar sidebar;
     private SidebarRunnable runnable;
     private Placeholder ph;
     private PlayerEconomy pEconomy;
     private PlayerStatistic pStatistic;
     private PlayerRegion pRegion;
+    private CommandOutput output;
 
     @Override
     public void onEnable() {
@@ -31,10 +33,10 @@ public class SimpleSidebar extends JavaPlugin {
         // Messenger
         messenger = new Messenger();
 
-        // Config
-        config = new Config(this);
+        // PluginConfig
+        config = new PluginConfig(this);
         if (!config.setupConfig(this)) {
-            messenger.sendToConsole("Disabling plugin...");
+            messenger.send("Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
         config.loadConfig();
@@ -47,13 +49,13 @@ public class SimpleSidebar extends JavaPlugin {
         // Economy
         pEconomy = new PlayerEconomy();
         if (!pEconomy.setupEconomy(this)) {
-            messenger.sendToConsole("Vault dependency not found. Economy features will be disabled");
+            messenger.send("Vault dependency not found. Economy features will be disabled");
         }
 
         // Region
         pRegion = new PlayerRegion();
         if (!pRegion.setupWorldGuard(this)) {
-            messenger.sendToConsole("WorldGuard and WorldEdit dependency not found. Region features will be disabled");
+            messenger.send("WorldGuard and WorldEdit dependency not found. Region features will be disabled");
         }
 
         // PRIORITY 3 //
@@ -72,8 +74,10 @@ public class SimpleSidebar extends JavaPlugin {
         runnable.setSidebarObject(sidebar);
 
         // Commands
-        this.getCommand("sidebar").setExecutor(new PlayerCommand(this));
-        this.getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
+        getCommand("sidebar").setExecutor(new PlayerCommand(this));
+        getCommand("sidebaradmin").setExecutor((new AdminCommand(this)));
+        // Command output
+        output = new CommandOutput(this);
 
         // Events
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
@@ -84,7 +88,7 @@ public class SimpleSidebar extends JavaPlugin {
         runnable.cancel();
     }
 
-    public Config getPgConfig() {
+    public PluginConfig getPluginConfig() {
         return config;
     }
 
@@ -92,7 +96,7 @@ public class SimpleSidebar extends JavaPlugin {
         return messenger;
     }
 
-    public PlayerEconomy getPlEconomy() {
+    public PlayerEconomy getPlayerEconomy() {
         return pEconomy;
     }
 
@@ -108,11 +112,15 @@ public class SimpleSidebar extends JavaPlugin {
         return sidebar;
     }
 
-    public PlayerStatistic getPlStatistic() {
+    public PlayerStatistic getPlayerStatistic() {
         return pStatistic;
     }
 
-    public PlayerRegion getPlRegion() {
+    public PlayerRegion getPlayerRegion() {
         return pRegion;
+    }
+
+    public CommandOutput getCommandOutput() {
+        return output;
     }
 }

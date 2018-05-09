@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.event;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import com.gmail.flintintoe.timer.SidebarRunnable;
 import org.bukkit.entity.Player;
@@ -18,11 +18,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerEvent implements Listener {
     private Sidebar sidebar;
     private SidebarRunnable runnable;
-    private Config config;
+    private PluginConfig config;
 
     public PlayerEvent(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
-        config = plugin.getPgConfig();
+        config = plugin.getPluginConfig();
         runnable = plugin.getRunnable();
     }
 

@@ -1,7 +1,7 @@
 package com.gmail.flintintoe.placeholder;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
 import com.gmail.flintintoe.playerproperty.PlayerStatistic;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Placeholder {
-    private Config config;
+    private PluginConfig config;
 
     private PlayerStatistic statistic;
     private PlayerEconomy economy;
@@ -34,12 +34,12 @@ public class Placeholder {
     private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
-        config = plugin.getPgConfig();
+        config = plugin.getPluginConfig();
         runnable = plugin.getRunnable();
 
-        statistic = plugin.getPlStatistic();
-        economy = plugin.getPlEconomy();
-        region = plugin.getPlRegion();
+        statistic = plugin.getPlayerStatistic();
+        economy = plugin.getPlayerEconomy();
+        region = plugin.getPlayerRegion();
     }
 
     public String setPlaceholder(Player player, String tag) {
