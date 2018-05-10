@@ -1,12 +1,11 @@
 package com.gmail.flintintoe.placeholder;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.PluginConfig;
-import com.gmail.flintintoe.playerproperty.PlayerEconomy;
 import com.gmail.flintintoe.playerproperty.PlayerRegion;
 import com.gmail.flintintoe.playerproperty.PlayerStatistic;
 import com.gmail.flintintoe.timer.SidebarRunnable;
 import com.google.common.base.Splitter;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -19,27 +18,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Placeholder {
-    private PluginConfig config;
-
     private PlayerStatistic statistic;
-    private PlayerEconomy economy;
+    private Economy economy;
     private PlayerRegion region;
 
     private SidebarRunnable runnable;
 
     // EMPTY will be a future placeholder
-    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "datetime", "EMPTY", "region", "stat", "mstat", "estat"};
+    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "datetime", "region", "stat", "mstat", "estat", "serverstat"};
     private final String[] TARGET_PLACEHOLDERS = {"balance", "x", "y", "z", "region"};
 
     private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
-        config = plugin.getPluginConfig();
-        runnable = plugin.getRunnable();
+        runnable = plugin.getsRunnable();
 
         statistic = plugin.getPlayerStatistic();
-        economy = plugin.getPlayerEconomy();
         region = plugin.getPlayerRegion();
+    }
+
+    public void setup(SimpleSidebar plugin) {
+        economy = plugin.getPlayerEconomy().getEconomy();
     }
 
     public String setPlaceholder(Player player, String tag) {
@@ -66,7 +65,7 @@ public class Placeholder {
                 wordWithPh += player.getLocation().getBlockX();
             }
             // balance
-            else if (config.isEconomyEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[4])) {
+            else if (economy.isEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[4])) {
                 wordWithPh += economy.getBalance(player);
             }
             // timezone
@@ -91,7 +90,7 @@ public class Placeholder {
                 wordWithPh = formatterBuilder.appendPattern(args.get(0)).toFormatter().format(currentDateTime);
             }
             // region
-            else if (config.isRegionEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[10])) {
+            else if (region.isEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[9])) {
                 List<String> regions = region.getRegionList(player);
                 int i;
 
@@ -106,8 +105,12 @@ public class Placeholder {
                 }
             }
             // stat
-            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[11])) {
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[10])) {
                 wordWithPh += statistic.getPlayerStat(player, args.get(0));
+            }
+            // serverstat
+            if (keyword.equalsIgnoreCase((PLAYER_PLACEHOLDERS[11]))) {
+                wordWithPh = "TODO";
             }
         } else if (args.size() == 2) {
             // mstat
@@ -156,7 +159,7 @@ public class Placeholder {
             }
         } else if (args.size() == 2) {
             // region
-            if (config.isRegionEnabled() && property.equalsIgnoreCase(TARGET_PLACEHOLDERS[4])) {
+            if (region.isEnabled() && property.equalsIgnoreCase(TARGET_PLACEHOLDERS[4])) {
                 List<String> regions = region.getRegionList(target);
                 int i;
 
@@ -175,7 +178,7 @@ public class Placeholder {
         return wordWithPh;
     }
 
-    private String getKeyword(String tag) {
+    public String getKeyword(String tag) {
         String property = tag;
 
         if (tag.contains(TAG_DIVIDER)) {

@@ -21,7 +21,7 @@ public class CommandOutput {
         config = plugin.getPluginConfig();
         sidebar = plugin.getSidebar();
         messenger = plugin.getMessenger();
-        runnable = plugin.getRunnable();
+        runnable = plugin.getsRunnable();
     }
 
     public void playerSidebarInfo(CommandSender sender, int sidebarIndex) {
@@ -103,10 +103,11 @@ public class CommandOutput {
         long startTime = System.nanoTime();
 
         messenger.send(sender, "Reloading config...");
-        config.reloadConfig();
+        config.loadFiles();
+        config.loadConfig();
 
         if (!config.getBoolean(ConfigFile.CONFIG, "plugin_enabled")) {
-            messenger.sendError(sender, "Cannot deactivate plugin through a config reload");
+            messenger.sendError(sender, "Cannot deactivate plugin through a config loadFiles");
         }
 
         messenger.send(sender, "Reloading sidebars");

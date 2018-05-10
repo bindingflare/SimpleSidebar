@@ -21,8 +21,7 @@ public class PlayerStatistic {
         try {
             result = player.getStatistic(Statistic.valueOf(statName));
         } catch (Exception e) {
-            messageM.sendToConsole("Error code PS-001-INVALID_PARAMETERS");
-            messageM.sendToConsole("Stat required additional parameters or returned null. Parameters used: None");
+            messageM.sendError("Stat required additional parameters or returned null. Parameters used: None");
         }
         return result;
     }
@@ -33,8 +32,7 @@ public class PlayerStatistic {
         try {
             result = player.getStatistic(Statistic.valueOf(statName), material);
         } catch (Exception e) {
-            messageM.sendToConsole("Error code PS-002-INVALID_PARAMETERS");
-            messageM.sendToConsole("Stat required additional parameters or returned null. Parameters used: Material");
+            messageM.sendError("Stat required additional parameters or returned null. Parameters used: Material");
         }
         return result;
     }
@@ -45,8 +43,7 @@ public class PlayerStatistic {
         try {
             result = player.getStatistic(Statistic.valueOf(statName), entityType);
         } catch (Exception e) {
-            messageM.sendToConsole("Error code PS-002-INVALID_PARAMETERS");
-            messageM.sendToConsole("Stat required additional parameters or returned null. Parameters used: Entity");
+            messageM.sendError("Stat required additional parameters or returned null. Parameters used: Entity");
         }
         return result;
     }

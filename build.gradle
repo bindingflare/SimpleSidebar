@@ -20,6 +20,7 @@ repositories {
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
     maven { url = "http://maven.sk89q.com/repo/" }
     maven { url = "http://repo.maven.apache.org/maven2" }
+    maven { url = "http://repo.extendedclip.com/content/repositories/placeholderapi/"}
     mavenLocal()
 }
 
@@ -29,5 +30,6 @@ dependencies {
     //compile group: 'org.bukkit', name: 'bukkit', version: '1.12.2-R0.1-SNAPSHOT'
     compile group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
     compile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'me.clip', name: 'placeholderapi', version: '2.8.6'
     compile fileTree(dir: 'libs', include: '*.jar')
 }

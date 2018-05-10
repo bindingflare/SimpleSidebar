@@ -19,6 +19,8 @@ public class PlayerCommand implements CommandExecutor {
         output = plugin.getCommandOutput();
     }
 
+    // TODO Check whether sender.haspermission works
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (sender instanceof Player) {
@@ -33,7 +35,7 @@ public class PlayerCommand implements CommandExecutor {
 
             } else if (args.length == 1) {
                 if (sender.hasPermission("simplesidebar.use")) {
-                    output.playerSetSidebar(sender, sidebar.getSidebarIndexOf(((Player) sender), args[0]));
+                    output.playerSetSidebar(sender, sidebar.querySidebarIndexOf(args[0]));
                 } else {
                     messenger.sendError(sender, "simplesidebar.see permission required");
                 }

@@ -4,6 +4,7 @@ import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.placeholder.Placeholder;
+import com.gmail.flintintoe.placeholder.RemotePlaceholder;
 import com.gmail.flintintoe.timer.SidebarRunnable;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -21,6 +22,7 @@ public class Sidebar {
     private Placeholder placeholder;
     private PluginConfig config;
     private SidebarRunnable runnable;
+    private RemotePlaceholder rPlaceholder;
 
     // {Sidebar number} -> {Entry number} -> {Entry part}
     private String[] names;
@@ -33,22 +35,24 @@ public class Sidebar {
     // U+0FC4 - Tibetan Symbol Dril Bu
     // U+0FC5 - Tibetan Symbol Rdo Rje
     // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
+
+    // For instance char ALT_TAG_SYMBOL;
+    // U+0FC8 - Tibetan Symbol Phur Pa
     private final char PLAYER_TAG_SYMBOL = '࿄';
     private final char TARGET_TAG_SYMBOL = '࿅';
-
-    // Keeping final chars organized here
-    @SuppressWarnings("FieldCanBeLocal")
-    private final char TAG_SYMBOL = '%';
-    @SuppressWarnings("FieldCanBeLocal")
-    private final char ALT_TAG_SYMBOL = '࿇';
+    private final char REMOTE_TAG_SYMBOL = '࿇';
 
     public Sidebar(SimpleSidebar plugin) {
         placeholder = plugin.getPlaceholder();
         config = plugin.getPluginConfig();
-        runnable = plugin.getRunnable();
+        runnable = plugin.getsRunnable();
+        rPlaceholder = plugin.getRemotePlaceholder();
     }
 
     public void loadSidebars() {
+        final char TAG_SYMBOL = '%';
+        final char ALT_TAG_SYMBOL = '࿈';
+
         List<String> names = new ArrayList<>();
         List<String> headers = new ArrayList<>();
         // List inside a list = list squared lol
@@ -152,19 +156,23 @@ public class Sidebar {
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
                     } else {
-                        List<String> args = placeholder.getArgs(part);
+                        if (placeholder.isKeyword(placeholder.getKeyword(part))) {
+                            List<String> args = placeholder.getArgs(part);
 
-                        // Prevent errors in the following code
-                        if (args.size() == 0) {
-                            args.add("  ");
-                        } else if (args.get(0).length() < 2) {
-                            args.set(0, args.get(0) + "  ");
-                        }
+                            // Prevent errors in the following code
+                            if (args.size() == 0) {
+                                args.add("  ");
+                            } else if (args.get(0).length() < 2) {
+                                args.set(0, args.get(0) + "  ");
+                            }
 
-                        if (args.get(0).substring(0, 2).equalsIgnoreCase("p/")) {
-                            sidebars[i][j][count] = TARGET_TAG_SYMBOL + part;
+                            if (args.get(0).substring(0, 2).equalsIgnoreCase("p/")) {
+                                sidebars[i][j][count] = TARGET_TAG_SYMBOL + part;
+                            } else {
+                                sidebars[i][j][count] = PLAYER_TAG_SYMBOL + part;
+                            }
                         } else {
-                            sidebars[i][j][count] = PLAYER_TAG_SYMBOL + part;
+                            sidebars[i][j][count] = REMOTE_TAG_SYMBOL + part;
                         }
                     }
                     count++;
@@ -217,6 +225,8 @@ public class Sidebar {
                         part = placeholder.setPlaceholder(player, part.substring(1));
                     } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
                         part = placeholder.setTargetPlaceholder(part.substring(1));
+                    } else if (part.charAt(0) == REMOTE_TAG_SYMBOL) {
+                        part = rPlaceholder.setRemotePlaceholder(player, part);
                     }
                 }
                 strB.append(part);
@@ -312,8 +322,7 @@ public class Sidebar {
     // 3 - Index out of bounds
     // 4 - Unexpected error
     //
-    // NOTE:
-    // Also registers the player to the SidebarRunnable automatically
+    // NOTE: Also registers the player to the SidebarRunnable automatically
     public int querySidebarIndexOf(String query) {
         // Check query
         int sidebarIndex = getSidebarIndexOf(query);

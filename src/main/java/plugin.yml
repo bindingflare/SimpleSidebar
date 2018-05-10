@@ -4,7 +4,7 @@ version: 0.7.4_RC2
 main: com.gmail.flintintoe.SimpleSidebar
 
 depend: []
-softdepend: [Vault, WorldGuard, WorldEdit]
+softdepend: [Vault, WorldGuard, WorldEdit, PlaceholderAPI]
 
 commands:
   sidebar:

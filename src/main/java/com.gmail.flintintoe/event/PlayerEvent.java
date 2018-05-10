@@ -23,7 +23,7 @@ public class PlayerEvent implements Listener {
     public PlayerEvent(SimpleSidebar plugin) {
         sidebar = plugin.getSidebar();
         config = plugin.getPluginConfig();
-        runnable = plugin.getRunnable();
+        runnable = plugin.getsRunnable();
     }
 
     @EventHandler(priority = EventPriority.HIGH)

@@ -33,9 +33,14 @@ public class Messenger {
         }
     }
 
+    public void sendFatalError(String errorString) {
+        console.sendMessage("[SimpleSidebar] A fatal error occurred: " + errorString);
+        console.sendMessage(colorCode("Use the link https://github.com/flintintoe/SimpleSidebar/issues if you believe this is an error"));
+    }
+
     public void sendFatalError(CommandSender sender, String errorString) {
         if (sender instanceof Player) {
-            sender.sendMessage(colorCode("[&aSidebar&r] An error occurred: " + errorString));
+            sender.sendMessage(colorCode("[&aSidebar&r] A fatal error occurred: " + errorString));
             sender.sendMessage(colorCode("[&aSidebar&r] Please contact your server administrator"));
         } else {
             console.sendMessage("[SimpleSidebar] An error occurred: " + errorString);

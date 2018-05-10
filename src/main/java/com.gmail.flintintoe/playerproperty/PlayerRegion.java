@@ -15,6 +15,8 @@ import java.util.Set;
 public class PlayerRegion {
     private WorldGuardPlugin wGPlugin;
 
+    private boolean isEnabled = false;
+
     public boolean setupWorldGuard(SimpleSidebar plugin) {
         Plugin wGPlugin = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 
@@ -24,7 +26,8 @@ public class PlayerRegion {
         }
 
         this.wGPlugin = (WorldGuardPlugin) wGPlugin;
-        plugin.getPluginConfig().setRegionEnabled(true);
+
+        isEnabled = true;
         return true;
     }
 
@@ -43,5 +46,9 @@ public class PlayerRegion {
         }
 
         return regions;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }

@@ -14,12 +14,12 @@ public class PluginConfig {
     private FileConfiguration sidebarConfig;
     private FileConfiguration messageConfig;
     private FileConfiguration configConfig;
+    private FileConfiguration placeholderConfig;
 
-    private File dataFolder;
-
-    // Automatic settings
-    private boolean isEconomyEnabled = false;
-    private boolean isRegionEnabled = false;
+    private File sidebarFile;
+    private File messageFile;
+    private File configFile;
+    private File placeholderFile;
 
     // Settings
     private boolean setOnLogin;
@@ -35,23 +35,23 @@ public class PluginConfig {
         messenger = plugin.getMessenger();
     }
 
-    public boolean setupConfig(SimpleSidebar plugin) {
-        if (!plugin.getDataFolder().exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            plugin.getDataFolder().mkdirs();
+    public boolean setup(SimpleSidebar plugin) {
+        File pluginFolder = plugin.getDataFolder();
+
+        if (!(pluginFolder.exists() && pluginFolder.mkdirs())) {
+            messenger.sendFatalError("Failed to create plugin folder!");
         }
-
-        dataFolder = plugin.getDataFolder();
-
         // Load files
-        File sidebarFile  = new File(dataFolder, "sidebars.yml");
-        File messageFile = new File(dataFolder, "messages.yml");
-        File configFile= new File(dataFolder, "config.yml");
+        sidebarFile = new File(pluginFolder, "sidebars.yml");
+        messageFile = new File(pluginFolder, "messages.yml");
+        configFile = new File(pluginFolder, "config.yml");
+        placeholderFile = new File(pluginFolder, "placeholders.yml");
 
         // Load FileConfigs
         sidebarConfig = new YamlConfiguration();
         messageConfig = new YamlConfiguration();
         configConfig = new YamlConfiguration();
+        placeholderConfig = new YamlConfiguration();
 
         // Copy if file does not exist
         if (!sidebarFile.exists()) {
@@ -64,16 +64,19 @@ public class PluginConfig {
             saveConfig(plugin, "config", configFile);
         }
         // Load files for use
+        loadFiles();
+        loadConfig();
+        return getBoolean(ConfigFile.CONFIG, "plugin_enabled");
+    }
+
+    public void loadFiles() {
         try {
             sidebarConfig.load(sidebarFile);
             messageConfig.load(messageFile);
             configConfig.load(configFile);
+            placeholderConfig.load(placeholderFile);
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
-
-        return getBoolean(ConfigFile.CONFIG, "plugin_enabled");
     }
 
     public void loadConfig() {
@@ -93,18 +96,6 @@ public class PluginConfig {
         }
     }
 
-    public void reloadConfig() {
-        try {
-            sidebarConfig.load(new File(dataFolder, "sidebars.yml"));
-            messageConfig.load(new File(dataFolder, "messages.yml"));
-            configConfig.load(new File(dataFolder, "config.yml"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        loadConfig();
-    }
-
     public void checkConfig(SimpleSidebar plugin) {
         // Using rudimentary CONFIG checking for now
         if (configConfig.getDouble("config_version") != 1.3) {
@@ -114,6 +105,9 @@ public class PluginConfig {
             messenger.send("Old sidebars.yml detected");
         }
         if (messageConfig.getDouble("messages_version") != 1.0) {
+            messenger.send("Old messages.yml detected");
+        }
+        if (placeholderConfig.getDouble("placeholders_version") != 1.0) {
             messenger.send("Old messages.yml detected");
         }
     }
@@ -136,6 +130,8 @@ public class PluginConfig {
             exists = messageConfig.isConfigurationSection(path);
         } else if (configFile == ConfigFile.CONFIG) {
             exists = configConfig.isConfigurationSection(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
+            return configConfig.isConfigurationSection(path);
         }
 
         return exists;
@@ -150,6 +146,8 @@ public class PluginConfig {
             exists = messageConfig.isList(path);
         } else if (configFile == ConfigFile.CONFIG) {
             exists = configConfig.isList(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
+            return configConfig.isList(path);
         }
 
         return exists;
@@ -161,6 +159,8 @@ public class PluginConfig {
         } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getInt(path);
         } else if (configFile == ConfigFile.CONFIG) {
+            return configConfig.getInt(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
             return configConfig.getInt(path);
         }
 
@@ -174,6 +174,8 @@ public class PluginConfig {
             return messageConfig.getBoolean(path);
         } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getBoolean(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
+            return configConfig.getBoolean(path);
         }
 
         return false;
@@ -185,6 +187,8 @@ public class PluginConfig {
         } else if (configFile == ConfigFile.MESSAGES) {
             return messageConfig.getString(path);
         } else if (configFile == ConfigFile.CONFIG) {
+            return configConfig.getString(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
             return configConfig.getString(path);
         }
 
@@ -198,29 +202,13 @@ public class PluginConfig {
             return messageConfig.getStringList(path);
         } else if (configFile == ConfigFile.CONFIG) {
             return configConfig.getStringList(path);
+        } else if (configFile == ConfigFile.PLACEHOLDERS) {
+            return configConfig.getStringList(path);
         }
 
         return null;
     }
 
-    // Getters and setters
-    public boolean isEconomyEnabled() {
-        return isEconomyEnabled;
-    }
-
-    public void setEconomyEnabled(boolean economyEnabled) {
-        isEconomyEnabled = economyEnabled;
-    }
-
-    public boolean isRegionEnabled() {
-        return isRegionEnabled;
-    }
-
-    public void setRegionEnabled(boolean regionEnabled) {
-        isRegionEnabled = regionEnabled;
-    }
-
-    // Getters only
     public boolean isSetOnLogin() {
         return setOnLogin;
     }

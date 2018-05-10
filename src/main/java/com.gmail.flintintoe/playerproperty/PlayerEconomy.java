@@ -2,43 +2,35 @@ package com.gmail.flintintoe.playerproperty;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class PlayerEconomy {
     private Economy economy;
 
-    public boolean setupEconomy(SimpleSidebar plugin) {
+    private boolean isEnabled = false;
 
-        // Check if Vault exists
-        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+    public boolean setup(SimpleSidebar plugin) {
+        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+
+        // Check if an economy plugin exists
+        if (rsp == null) {
             return false;
         } else {
-            // Check if an economy plugin exists
-            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
-
-            if (rsp == null) {
-                return false;
-            } else {
-                // Setup economy
-                economy = rsp.getProvider();
-            }
+            economy = rsp.getProvider();
         }
-        plugin.getPluginConfig().setEconomyEnabled(true);
+
+        isEnabled = true;
         return true;
     }
 
-    public double getBalance(Player player) {
-
-        double balance = 0D;
-
-        // Check if the target has been on the server at least once
-        // If not, send 0
-        if (player.hasPlayedBefore()) {
-            balance = economy.getBalance(player);
-        }
-        return balance;
+    public Economy getEconomy() {
+        return economy;
     }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
     // WARNING Possible error with new players when using these methods
 
 //    // Special return: Returns the new balance of the player

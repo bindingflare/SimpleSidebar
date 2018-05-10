@@ -2,6 +2,7 @@ package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.message.Messenger;
+import com.gmail.flintintoe.playerproperty.PlayerPermission;
 import com.gmail.flintintoe.sidebar.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -13,11 +14,13 @@ public class AdminCommand implements CommandExecutor {
     private Messenger messenger;
     private Sidebar sidebar;
     private CommandOutput output;
+    private PlayerPermission permission;
 
     public AdminCommand(SimpleSidebar plugin) {
         messenger = plugin.getMessenger();
         sidebar = plugin.getSidebar();
         output = plugin.getCommandOutput();
+        permission = plugin.getPlayerPermission();
     }
 
     @Override
@@ -27,7 +30,7 @@ public class AdminCommand implements CommandExecutor {
             return true;
         }
 
-        if (args[0].equals("reload") && sender.hasPermission("simplesidebaradmin.reload")) {
+        if (args[0].equals("loadFiles") && permission.has(sender, "simplesidebaradmin.loadFiles")) {
             output.reloadPlugin(sender);
             return true;
         }
@@ -40,16 +43,16 @@ public class AdminCommand implements CommandExecutor {
         }
 
         if (args.length == 1) {
-            if (sender.hasPermission("simplesidebaradmin.check")) {
-                output.playerSidebarInfo(sender, target, sidebar.querySidebarIndexOf(args[1]));
+            if (permission.has(sender,"simplesidebaradmin.check")) {
+                output.playerSidebarInfo(sender, target, sidebar.getSidebarIndexOf(target));
             } else {
                 messenger.sendError(sender, "simplesidebaradmin.check permission required");
             }
             return true;
 
         } else if (args.length == 2) {
-            if (sender.hasPermission("simplesidebaradmin.set")) {
-                output.playerSidebarInfo(sender, target, sidebar.querySidebarIndexOf(args[1]));
+            if (permission.has(sender,"simplesidebaradmin.set")) {
+                output.playerSetSidebar(sender, target, sidebar.querySidebarIndexOf(args[1]));
             } else {
                 messenger.sendError(sender, "simplesidebaradmin.set permission required");
             }
