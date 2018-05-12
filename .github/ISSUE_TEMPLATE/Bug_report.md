@@ -1,6 +1,6 @@
 ---
-Name: Bug report
-About: A bug report
+name: Bug report
+about: Report a bug
 
 ---
 | Plugin version | Spigot version |
