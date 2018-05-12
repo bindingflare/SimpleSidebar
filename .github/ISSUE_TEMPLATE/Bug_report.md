@@ -3,11 +3,12 @@ name: Bug report
 about: Report a bug
 
 ---
-<!-- Plugin version is the version of SimpleSidebar you are using. -->
-<!-- Spigot version is the version of Spigot you are using. -->
-| Plugin version | Spigot version |
-| :-- | :-- |
-| Text here | Text here |
+### Version
+<!-- State the versions of your server environment by replacing the "Text here"-->
+<!-- You do not need to make the "|" match up -->
+| Java | Spigot | Plugin |
+| :--  | :--    | :--    |
+| Text here | Text here | Text here |
 
 ### Dependencies used
 <!-- State the plugins you are using that SimpleSidebar depends on or uses here. -->
