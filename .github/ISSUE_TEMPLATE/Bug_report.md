@@ -1,5 +1,6 @@
 ---
-Issue: Bug report
+Name: Bug report
+About: A bug report
 Plugin version: Text here
 Spigot version: Text here
 
