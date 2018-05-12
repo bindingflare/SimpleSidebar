@@ -1,10 +1,11 @@
 ---
 Name: Bug report
 About: A bug report
-Plugin version: Text here
-Spigot version: Text here
 
 ---
+| Plugin version | Spigot version |
+| :-- | :-- |
+| Text here | Text here |
 <!-- Plugin version is the version of SimpleSidebar you are using. -->
 <!-- Spigot version is the version of Spigot you are using. -->
 
