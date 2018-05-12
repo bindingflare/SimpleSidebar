@@ -3,6 +3,8 @@ name: Bug report
 about: Report a bug
 
 ---
+<!-- Title does not need to state that this is a bug report, but should summarize what went wrong/ what the bug is -->
+
 ### Version
 <!-- State the versions of your server environment by replacing the "Text here"-->
 <!-- You do not need to make the "|" match up -->
@@ -18,6 +20,9 @@ None
 <!-- State when the bug happends here. You can list them out in steps. -->
 1. This is step 1
 2. Then...
+
+### Expected output
+<!-- State what you were expected before the bug occured -->
 
 ### Error log
 <!-- Copy and paste the error log snippet to replace the text "Text here". -->
