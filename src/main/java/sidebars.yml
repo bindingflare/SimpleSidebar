@@ -3,7 +3,7 @@
 #  \ \_/ /| |_| |/ _` | `__/ _ \
 #   > _ < |  _| | |_| | |  | __/
 #  /_/ \_\|_| |_|\__,_|_|  \___|
-# Simple Sidebar - by xFlarinFlint (flintintoe or Flarin)
+# Simple Sidebars - by xFlarinFlint (flintintoe or Flarin)
 
 # Edit sidebar configurations here.
 
@@ -39,7 +39,7 @@ sidebars:
     - "   Today is %datetime.dd/MM/yyyy%"
     - ""
     - "   [&bTime&r]"
-    - "    %time.HH:mm:ss% %timezone%"
+    - "    %datetime.HH:mm:ss% %timezone%"
     - "   [&bCash&r]"
     - "     $%balance%"
     - "   [&bRegions&r]"
@@ -72,17 +72,18 @@ sidebars:
     - " Diamond: %mstat.MINE_BLOCK.DIAMOND_ORE%"
     - ""
   3:
-    name: "illuminati"
+    name: "serverstat"
     aliases:
-    - "333"
-    - "triangle god"
-    header: "&4&lERROR 999 ILLUMINATI"
+    - "sstat"
+    - "server-info"
+    - "server-stats"
+    header: "&4&lServer statistics"
     entries:
-    - ""
-    - "This is special"
-    - ""
-    - ""
-    - ""
+    - "&lRAM"
+    - "Used: %server_ram_used%"
+    - "Free: %server_ram_free%"
+    - "Total: %server_ram_total%"
+    - "Max: %server_ram_max%"
     - ""
     - ""
     - ""

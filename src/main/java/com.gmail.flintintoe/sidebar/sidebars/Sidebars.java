@@ -1,11 +1,10 @@
-package com.gmail.flintintoe.sidebar;
+package com.gmail.flintintoe.sidebar.sidebars;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.PluginConfig;
 import com.gmail.flintintoe.config.ConfigFile;
-import com.gmail.flintintoe.placeholder.Placeholder;
-import com.gmail.flintintoe.placeholder.RemotePlaceholder;
-import com.gmail.flintintoe.timer.SidebarRunnable;
+import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.sidebar.SidebarManager;
+import com.gmail.flintintoe.sidebar.placeholder.Placeholder;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
@@ -18,44 +17,42 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sidebar {
-    private Placeholder placeholder;
-    private PluginConfig config;
-    private SidebarRunnable runnable;
-    private RemotePlaceholder rPlaceholder;
+/**
+ * Deals with loading, setting sidebars and getting sidebar information.
+ *
+ * @since v0.8.0_RC1
+ */
+public class Sidebars {
+    private SidebarManager sbManager;
+    private Config config;
+    private Placeholder ph;
 
-    // {Sidebar number} -> {Entry number} -> {Entry part}
     private String[] names;
     private String[] headers;
     private String[][] aliases;
-    private String[][][] sidebars;
+    private String[][][] sidebars; // {Sidebar index} -> {Entry number} -> {Entry part}
     private int sidebarCount = 0;
 
-    // Using special UTF-8 tags:
-    // U+0FC4 - Tibetan Symbol Dril Bu
-    // U+0FC5 - Tibetan Symbol Rdo Rje
-    // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
+    private final char PLAYER_TAG_SYMBOL = '࿄'; // U+0FC4 - Tibetan Symbol Dril Bu
+    private final char TARGET_TAG_SYMBOL = '࿅'; // U+0FC5 - Tibetan Symbol Rdo Rje
+    private final char REMOTE_TAG_SYMBOL = '࿇'; // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
 
-    // For instance char ALT_TAG_SYMBOL;
-    // U+0FC8 - Tibetan Symbol Phur Pa
-    private final char PLAYER_TAG_SYMBOL = '࿄';
-    private final char TARGET_TAG_SYMBOL = '࿅';
-    private final char REMOTE_TAG_SYMBOL = '࿇';
+    public Sidebars(SimpleSidebar plugin) {
+        sbManager = plugin.getSidebarManager();
+        ph = plugin.getSidebarManager().getPlaceholder();
 
-    public Sidebar(SimpleSidebar plugin) {
-        placeholder = plugin.getPlaceholder();
-        config = plugin.getPluginConfig();
-        runnable = plugin.getsRunnable();
-        rPlaceholder = plugin.getRemotePlaceholder();
+        config = plugin.getConfigManager();
+
+        // Load sidebars
+        load();
     }
 
-    public void loadSidebars() {
+    public void load() {
         final char TAG_SYMBOL = '%';
-        final char ALT_TAG_SYMBOL = '࿈';
+        final char ALT_TAG_SYMBOL = '࿈'; // U+0FC8 - Tibetan Symbol Phur Pa
 
         List<String> names = new ArrayList<>();
         List<String> headers = new ArrayList<>();
-        // List inside a list = list squared lol
         List<List<String>> aliases = new ArrayList<>();
 
         // Get names, headers, aliases
@@ -80,7 +77,7 @@ public class Sidebar {
         }
         sidebarCount = sidebarNum - 1;
 
-        // Initialize class String Arrays
+        // Initialize the arrays using the sidebar count
         this.names = new String[sidebarCount];
         this.headers = new String[sidebarCount];
 
@@ -101,7 +98,7 @@ public class Sidebar {
             // Get entries
             List<String> entries = config.getStrings(ConfigFile.SIDEBARS, "sidebars." + (i + 1) + ".entries");
 
-            // Sidebar entries limit: 15
+            // Sidebars entries limit: 15
             int entriesSize = entries.size();
             if (entries.size() > 15) {
                 entriesSize = 15;
@@ -135,6 +132,9 @@ public class Sidebar {
                 for (int k = 0; k < j; k++) {
                     if (entries.get(k).equals(entry)) {
                         entry += " ";
+                        entries.set(j, entry);
+                        // Check for duplicates again
+                        k = 0;
                     }
                 }
 
@@ -156,8 +156,8 @@ public class Sidebar {
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
                     } else {
-                        if (placeholder.isKeyword(placeholder.getKeyword(part))) {
-                            List<String> args = placeholder.getArgs(part);
+                        if (ph.isKeyword(ph.getKeyword(part))) {
+                            List<String> args = ph.getArgs(part);
 
                             // Prevent errors in the following code
                             if (args.size() == 0) {
@@ -172,7 +172,7 @@ public class Sidebar {
                                 sidebars[i][j][count] = PLAYER_TAG_SYMBOL + part;
                             }
                         } else {
-                            sidebars[i][j][count] = REMOTE_TAG_SYMBOL + part;
+                            sidebars[i][j][count] = REMOTE_TAG_SYMBOL + "%" + part + "%";
                         }
                     }
                     count++;
@@ -181,33 +181,28 @@ public class Sidebar {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean setAndUpdateSidebar(Player player, String sidebarName) {
-        // Search sidebarName
-        for (int i = 0; i < aliases.length; i++) {
-            if (names[i].equalsIgnoreCase(sidebarName)) {
-                setAndUpdateSidebar(player, i);
-                return true;
-            }
+    public void setEmptySidebar(Player player) {
+        String playerName = player.getDisplayName();
 
-            for (int j = 0; j < aliases[i].length; j++) {
-                if (aliases[i][j].equalsIgnoreCase(sidebarName)) {
-                    setAndUpdateSidebar(player, i);
-                    return true;
-                }
-            }
-        }
-        return false;
+        Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
+        sb.registerNewObjective("_", "dummy");
+
+        player.setScoreboard(sb);
     }
 
     public void setSidebar(Player player, int sidebarIndex) {
         String playerName = player.getDisplayName();
+        Scoreboard sb = player.getScoreboard();
 
-        Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective sbObj = sb.registerNewObjective(sidebarIndex + "", "dummy");
+        String modifier = "";
 
-        sbObj.setDisplayName(ChatColor.translateAlternateColorCodes('&', headers[sidebarIndex]));
-        sbObj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        // If objective already exists, add an objective with a "_";
+        if (sb.getObjective("_") != null) {
+            modifier = "_";
+        }
+
+        Objective objective = sb.registerNewObjective("_" + modifier, "dummy");
+        objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', headers[sidebarIndex]));
 
         String[][] entries = sidebars[sidebarIndex];
 
@@ -215,27 +210,34 @@ public class Sidebar {
         int entryScore = entries.length;
 
         // For each line...
-        for (String[] entry : entries) {
+        for (String[] entryParts : entries) {
             StringBuilder strB = new StringBuilder();
 
             // For each part of line...
-            for (String part : entry) {
-                if (part.length() != 0) {
-                    if (part.charAt(0) == PLAYER_TAG_SYMBOL) {
-                        part = placeholder.setPlaceholder(player, part.substring(1));
-                    } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
-                        part = placeholder.setTargetPlaceholder(part.substring(1));
-                    } else if (part.charAt(0) == REMOTE_TAG_SYMBOL) {
-                        part = rPlaceholder.setRemotePlaceholder(player, part);
+            for (int i = 0; i < entryParts.length; i++) {
+                // Append based on whether the part is a ph part or not
+                if (i % 2 == 1) {
+                    String part = entryParts[i];
+
+                    if (part.length() != 0) {
+                        if (part.charAt(0) == PLAYER_TAG_SYMBOL) {
+                            strB.append(ph.set(player, part.substring(1)));
+                        } else if (part.charAt(0) == TARGET_TAG_SYMBOL) {
+                            strB.append(ph.setForTarget(part.substring(1)));
+                        } else if (part.charAt(0) == REMOTE_TAG_SYMBOL) {
+                            strB.append(ph.setRemote(player, part.substring(1)));
+                        }
                     }
+                } else {
+                    strB.append(entryParts[i]);
                 }
-                strB.append(part);
             }
 
+            // Separate handler for empty entries
             if (strB.toString().trim().length() == 0) {
                 spaceCount++;
-
                 StringBuilder emtpyEntry = new StringBuilder();
+
                 for (int j = 0; j < spaceCount; j++) {
                     emtpyEntry.append(" ");
                 }
@@ -249,26 +251,17 @@ public class Sidebar {
                 output = output.substring(0, 40);
             }
 
-            sbObj.getScore(ChatColor.translateAlternateColorCodes('&', output)).setScore(entryScore);
+            objective.getScore(ChatColor.translateAlternateColorCodes('&', output)).setScore(entryScore);
             entryScore--;
         }
 
-        player.setScoreboard(sb);
-    }
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-    public void setAndUpdateSidebar(Player player, int sidebarIndex) {
-        runnable.updateSidebarIndex(player.getDisplayName(), sidebarIndex);
-
-        setSidebar(player, sidebarIndex);
-    }
-
-    public void updateSidebar(Player player, boolean updateAfkTime) {
-        if (updateAfkTime) {
-            runnable.updateSidebarTime(player.getDisplayName(), config.getAfkTimer());
-        }
-
-        if (getSidebarIndexOf(player) != -1) {
-            setSidebar(player, getSidebarIndexOf(player));
+        // Remove the old objective for existing player
+        if (modifier.equals("_")) {
+            sb.getObjective("_").unregister();
+        } else {
+            sb.getObjective("__").unregister();
         }
     }
 
@@ -303,26 +296,12 @@ public class Sidebar {
         return -1;
     }
 
-    public int getSidebarIndexOf(Player player) {
-        int sidebarIndex;
-
-        try {
-            sidebarIndex = Integer.parseInt(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName());
-        } catch (Exception e) {
-            sidebarIndex = -1;
-        }
-
-        return sidebarIndex;
-    }
-
     // Return values
     // 0 - No errors
     // 1 - Query not found, Integer negative
     // 2 - Cannot set to AFK sidebar
     // 3 - Index out of bounds
     // 4 - Unexpected error
-    //
-    // NOTE: Also registers the player to the SidebarRunnable automatically
     public int querySidebarIndexOf(String query) {
         // Check query
         int sidebarIndex = getSidebarIndexOf(query);
@@ -338,16 +317,16 @@ public class Sidebar {
         // Try to set sidebar (For String query)
         else {
             // Check if setting AFK sb
-            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
+            if (sidebarIndex == getSidebarCount() && !config.isAllowAfkSet()) {
                 return -2;
             }
-            return 0;
+            return sidebarIndex;
         }
 
         // sidebarIndex will always be -1 at this point
 
         try {
-            sidebarIndex = Integer.parseInt(query) - 1;
+            sidebarIndex = Integer.parseInt(query);
         } catch (Exception e) {
             e.printStackTrace();
             return -4;
@@ -360,7 +339,7 @@ public class Sidebar {
             } else if (sidebarIndex < -1 || sidebarIndex >= getSidebarCount()) {
                 return -3;
             } else {
-                return 0;
+                return sidebarIndex;
             }
         }
         return -3;

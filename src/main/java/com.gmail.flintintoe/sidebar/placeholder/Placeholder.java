@@ -1,47 +1,48 @@
-package com.gmail.flintintoe.placeholder;
+package com.gmail.flintintoe.sidebar.placeholder;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.playerproperty.PlayerRegion;
-import com.gmail.flintintoe.playerproperty.PlayerStatistic;
-import com.gmail.flintintoe.timer.SidebarRunnable;
+import com.gmail.flintintoe.sidebar.SidebarManager;
 import com.google.common.base.Splitter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Deals with getting the values of different placeholders defined by this plugin and externally.
+ *
+ * @since v0.8.0_RC1
+ */
 public class Placeholder {
-    private PlayerStatistic statistic;
+    private SidebarManager manager;
     private Economy economy;
-    private PlayerRegion region;
 
-    private SidebarRunnable runnable;
+    private Stat stat;
+    private Region region;
 
     // EMPTY will be a future placeholder
-    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime", "afktimeleft", "datetime", "region", "stat", "mstat", "estat", "serverstat"};
+    private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime",
+            "afktimeleft", "datetime", "region", "stat", "mstat", "estat", };
     private final String[] TARGET_PLACEHOLDERS = {"balance", "x", "y", "z", "region"};
 
     private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
-        runnable = plugin.getsRunnable();
+        economy = plugin.getEconomy();
+        manager = plugin.getSidebarManager();
 
-        statistic = plugin.getPlayerStatistic();
-        region = plugin.getPlayerRegion();
+        region = new Region(plugin.getwGPlugin());
+        stat = new Stat(plugin);
     }
 
-    public void setup(SimpleSidebar plugin) {
-        economy = plugin.getPlayerEconomy().getEconomy();
-    }
-
-    public String setPlaceholder(Player player, String tag) {
+    public String set(Player player, String tag) {
         String wordWithPh = "";
 
         String keyword = getKeyword(tag);
@@ -74,23 +75,22 @@ public class Placeholder {
             }
             // afktime
             else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[6])) {
-                wordWithPh += runnable.getAfkTime(player.getDisplayName());
+                wordWithPh += (-manager.getTracker().getCooldown(player.getDisplayName()));
             }
             // afktimeleft
             else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[7])) {
-                wordWithPh += runnable.getTime(player.getDisplayName());
+                wordWithPh += manager.getTracker().getCooldown(player.getDisplayName());
             }
         } else if (args.size() == 1) {
             // datetime
             if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[8])) {
-                ZoneId currentZone = ZoneId.systemDefault();
-                ZonedDateTime currentDateTime = ZonedDateTime.now(currentZone);
+                ZonedDateTime currentDateTime = ZonedDateTime.now();
+                DateTimeFormatter format = DateTimeFormatter.ofPattern(args.get(0));
 
-                DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
-                wordWithPh = formatterBuilder.appendPattern(args.get(0)).toFormatter().format(currentDateTime);
+                wordWithPh = currentDateTime.format(format);
             }
             // region
-            else if (region.isEnabled() && keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[9])) {
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[9])) {
                 List<String> regions = region.getRegionList(player);
                 int i;
 
@@ -106,28 +106,24 @@ public class Placeholder {
             }
             // stat
             else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[10])) {
-                wordWithPh += statistic.getPlayerStat(player, args.get(0));
-            }
-            // serverstat
-            if (keyword.equalsIgnoreCase((PLAYER_PLACEHOLDERS[11]))) {
-                wordWithPh = "TODO";
+                wordWithPh += stat.getPlayerStat(player, args.get(0));
             }
         } else if (args.size() == 2) {
             // mstat
-            if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[12])) {
+            if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[11])) {
                 Material material = Material.getMaterial(args.get(1));
-                wordWithPh += statistic.getPlayerStat(player, args.get(0), material);
+                wordWithPh += stat.getPlayerStat(player, args.get(0), material);
             }
             // estat
-            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[13])) {
+            else if (keyword.equalsIgnoreCase(PLAYER_PLACEHOLDERS[12])) {
                 EntityType entityType = EntityType.valueOf(args.get(1));
-                wordWithPh += statistic.getPlayerStat(player, args.get(0), entityType);
+                wordWithPh += stat.getPlayerStat(player, args.get(0), entityType);
             }
         }
         return wordWithPh;
     }
 
-    public String setTargetPlaceholder(String word) {
+    public String setForTarget(String word) {
         String wordWithPh = "";
 
         String property = getKeyword(word);
@@ -159,7 +155,7 @@ public class Placeholder {
             }
         } else if (args.size() == 2) {
             // region
-            if (region.isEnabled() && property.equalsIgnoreCase(TARGET_PLACEHOLDERS[4])) {
+            if (property.equalsIgnoreCase(TARGET_PLACEHOLDERS[4])) {
                 List<String> regions = region.getRegionList(target);
                 int i;
 
@@ -176,6 +172,14 @@ public class Placeholder {
         }
 
         return wordWithPh;
+    }
+
+    // TODO custom placeholders
+    public String setRemote(Player player, String tag) {
+        String wordWithPh = "";
+
+        return PlaceholderAPI.setPlaceholders(player, tag);
+
     }
 
     public String getKeyword(String tag) {

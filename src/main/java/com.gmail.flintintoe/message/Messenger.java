@@ -6,6 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Manages the messages sent by this plugin.
+ *
+ * @since v0.8.0_RC1
+ */
 public class Messenger {
     private ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 

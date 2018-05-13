@@ -1,122 +1,133 @@
 package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
-import com.gmail.flintintoe.config.ConfigFile;
-import com.gmail.flintintoe.config.PluginConfig;
+import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.message.Messenger;
-import com.gmail.flintintoe.sidebar.Sidebar;
-import com.gmail.flintintoe.timer.SidebarRunnable;
+import com.gmail.flintintoe.sidebar.sidebars.Sidebars;
+import com.gmail.flintintoe.sidebar.tracker.Tracker;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
+/**
+ * Deals with the output of commands (Includes executing commands).
+ *
+ * @since v0.8.0_RC1
+ */
 public class CommandOutput {
-    private PluginConfig config;
-    private Sidebar sidebar;
+    private Config configs;
+    private Sidebars sidebars;
     private Messenger messenger;
-    private SidebarRunnable runnable;
+    private Tracker tracker;
 
     public CommandOutput(SimpleSidebar plugin) {
-        config = plugin.getPluginConfig();
-        sidebar = plugin.getSidebar();
+        configs = plugin.getConfigManager();
         messenger = plugin.getMessenger();
-        runnable = plugin.getsRunnable();
+
+        sidebars = plugin.getSidebarManager().getSidebars();
+        tracker = plugin.getSidebarManager().getTracker();
     }
 
-    public void playerSidebarInfo(CommandSender sender, int sidebarIndex) {
+    public void ofInfo(CommandSender sender, Player target) {
+        int sidebarIndex = tracker.getIndex(sender.getName());
+
         if (sidebarIndex != -1) {
-            messenger.send(sender, "Sidebar details of " + sender.getName());
-            messenger.send(sender, "  Name: " + sidebar.getSidebarName(sidebarIndex));
-            messenger.send(sender, "  Index: " + (sidebarIndex + 1));
-            messenger.send(sender, "  Aliases: " + Arrays.toString(sidebar.getSidebarAliases(sidebarIndex)));
+            messenger.send(sender, target.getDisplayName() + "'s sidebar is " + sidebars.getSidebarName(sidebarIndex));
+            messenger.send(sender, "  Index: " + sidebarIndex);
+            messenger.send(sender, "  Aliases: " + Arrays.toString(sidebars.getSidebarAliases(sidebarIndex)));
         } else {
             messenger.sendError(sender, "You do not have a sidebar set");
         }
     }
 
-    public void playerSidebarInfo(CommandSender sender, Player target, int sidebarIndex) {
-        if (sidebarIndex != -1) {
-            messenger.send(sender, target.getDisplayName() + "'s sidebar is " + sidebar.getSidebarName(sidebarIndex));
-            messenger.send(sender, "  Index: " + (sidebarIndex + 1));
-            messenger.send(sender, "  Aliases: " + Arrays.toString(sidebar.getSidebarAliases(sidebarIndex)));
-        } else {
-            messenger.sendError(sender, "You do not have a sidebar set");
-        }
-    }
+    public void ofQuery(CommandSender sender, String query) {
+        Player player = (Player) sender;
 
-    public void playerSetSidebar(CommandSender sender, int returnCode) {
-        if (returnCode == -1) {
+        int sidebarIndex = sidebars.querySidebarIndexOf(query);
+
+        if (sidebarIndex == -1) {
             messenger.send(sender, "Either the sidebar with the query name does not exist, or the number is a negative number");
-        } else if (returnCode == -2) {
-            messenger.send(sender, "You cannot set your sidebar to the AFK sidebar");
-//            if (config.isAdminBypass()) {
-//                messenger.send("Set sidebar of " +  + " to " + args[1] + " using admin bypass");
-//                messenger.send(target, "Your sidebar has been changed to AFK sidebar " + args[1]);
+        } else if (sidebarIndex == -2) {
+            messenger.send(sender, "You cannot set your sidebars to the AFK sidebar");
+//            if (configs.isAdminBypass()) {
+//                messenger.send("Set sidebars of " +  + " to " + args[1] + " using admin bypass");
+//                messenger.send(target, "Your sidebars has been changed to AFK sidebars " + args[1]);
 //
-//                sidebar.setAndUpdateSidebar(target, sidebar.getSidebarCount() - 1);
+//                sidebars.setAndUpdateSidebar(target, sidebars.getSidebarCount() - 1);
 //            } else {
-//                messenger.sendError("You do not have the permission to set " + args[0] + "'s sidebar to AFK sidebar" + args[1]);
+//                messenger.sendError("You do not have the permission to set " + args[0] + "'s sidebars to AFK sidebars" + args[1]);
 //            }
-        } else if (returnCode == -3) {
+        } else if (sidebarIndex == -3) {
             messenger.send(sender, "Sidebar index is out of bounds");
-        } else if (returnCode == -4) {
+        } else if (sidebarIndex == -4) {
             messenger.sendError(sender, "Unexpected error");
             messenger.send(sender, "Please try again");
         } else {
-            messenger.send(sender, "Set your sidebar to " + sidebar.getSidebarName(returnCode) + "(Index: " + (returnCode + 1) + ")");
+            messenger.send(player, "Your sidebar has been changed to " + sidebars.getSidebarName(sidebarIndex) + " " +
+                    "(Index: " + sidebarIndex + ")");
 
-            sidebar.setAndUpdateSidebar((Player) sender, returnCode);
-            runnable.updateSidebarTime(((Player) sender).getDisplayName(), config.getAfkTimer());
-            messenger.send(sender, "DEBUG: " + sender.getName());
+            sidebars.setSidebar((Player) sender, sidebarIndex);
+            tracker.set(sender.getName(), sidebarIndex);
         }
     }
 
-    public void playerSetSidebar(CommandSender sender, Player target, int returnCode) {
-        if (returnCode == -1) {
+    public void ofQuery(CommandSender sender, Player target, String query) {
+        int sidebarIndex = sidebars.querySidebarIndexOf(query);
+
+        if (sidebarIndex == -1) {
             messenger.send(sender, "Either the sidebar with the query name does not exist, or the number is a negative number");
-        } else if (returnCode == -2) {
-            messenger.send(sender, "You cannot set your sidebar to the AFK sidebar");
-//            if (config.isAdminBypass()) {
-//                messenger.send("Set sidebar of " +  + " to " + args[1] + " using admin bypass");
-//                messenger.send(target, "Your sidebar has been changed to AFK sidebar " + args[1]);
+        } else if (sidebarIndex == -2) {
+            messenger.send(sender, "You cannot set your sidebar to the AFK sidebars");
+//            if (configs.isAdminBypass()) {
+//                messenger.send("Set sidebars of " +  + " to " + args[1] + " using admin bypass");
+//                messenger.send(target, "Your sidebars has been changed to AFK sidebars " + args[1]);
 //
-//                sidebar.setAndUpdateSidebar(target, sidebar.getSidebarCount() - 1);
+//                sidebars.setAndUpdateSidebar(target, sidebars.getSidebarCount() - 1);
 //            } else {
-//                messenger.sendError("You do not have the permission to set " + args[0] + "'s sidebar to AFK sidebar" + args[1]);
+//                messenger.sendError("You do not have the permission to set " + args[0] + "'s sidebars to AFK sidebars" + args[1]);
 //            }
-        } else if (returnCode == -3) {
+        } else if (sidebarIndex == -3) {
             messenger.send(sender, "Sidebar index is out of bounds");
-        } else if (returnCode == -4) {
+        } else if (sidebarIndex == -4) {
             messenger.sendError(sender, "Unexpected error");
             messenger.send(sender, "Please try again");
         } else {
-            messenger.send(sender, "Set sidebar of " + target.getDisplayName() + " to " + sidebar.getSidebarName(returnCode));
-            messenger.send(target, "Your sidebar has been changed to " + sidebar.getSidebarName(returnCode) + "(Index: " + (returnCode + 1) + ")");
+            messenger.send(sender, "Set sidebar of " + target.getDisplayName() + " to " + sidebars.getSidebarName(sidebarIndex));
+            messenger.send(target, "Your sidebar has been changed to " + sidebars.getSidebarName(sidebarIndex) + " (Index: " + sidebarIndex + ")");
 
-            sidebar.setAndUpdateSidebar((Player) sender, returnCode);
-            runnable.updateSidebarTime(((Player) sender).getDisplayName(), config.getAfkTimer());
+            sidebars.setSidebar((Player) sender, sidebarIndex);
+            tracker.set(sender.getName(), sidebarIndex);
         }
+    }
+
+    public void ofRemove(CommandSender sender) {
+        messenger.send(sender, "Setting your sidebar to an empty sidebar");
+        sidebars.setEmptySidebar((Player) sender);
+        tracker.set(sender.getName(), -1);
+    }
+
+    public void ofRemove(CommandSender sender, Player target) {
+        messenger.send(sender, "Setting the sidebar of " + target.getDisplayName() + " to an empty sidebar");
+        messenger.send(target, "Your sidebar has been changed to an empty sidebar");
+        sidebars.setEmptySidebar(target);
+        tracker.set(target.getDisplayName(), -1);
     }
 
     public void reloadPlugin(CommandSender sender) {
         long startTime = System.nanoTime();
 
-        messenger.send(sender, "Reloading config...");
-        config.loadFiles();
-        config.loadConfig();
-
-        if (!config.getBoolean(ConfigFile.CONFIG, "plugin_enabled")) {
-            messenger.sendError(sender, "Cannot deactivate plugin through a config loadFiles");
-        }
+        messenger.send(sender, "Reloading configs...");
+        configs.loadConfigFiles();
+        configs.loadConfig();
 
         messenger.send(sender, "Reloading sidebars");
-        sidebar.loadSidebars();
+        sidebars.load();
 
-        double timePassed = System.nanoTime() - startTime;
-        int seconds = Double.valueOf(timePassed / 1000).intValue();
-        int milliseconds = Double.valueOf(timePassed % 1000).intValue();
+        long timePassed = System.nanoTime() - startTime;
+        int seconds = Long.valueOf(timePassed).intValue() / 1000000000;
+        int milliseconds = Long.valueOf(timePassed).intValue() / 1000000;
 
-        messenger.send("Done! Took " + seconds + " seconds " + milliseconds + " milliseconds");
+        messenger.send(sender, "Done! Took " + seconds + " seconds " + milliseconds + " milliseconds");
     }
 }

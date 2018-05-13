@@ -2,40 +2,55 @@ package com.gmail.flintintoe.command;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.message.Messenger;
-import com.gmail.flintintoe.sidebar.Sidebar;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Handles the command "/sidebar".
+ *
+ * @since v0.8.0_RC1
+ */
 public class PlayerCommand implements CommandExecutor {
-    private Sidebar sidebar;
     private Messenger messenger;
     private CommandOutput output;
 
+    private Permission permission;
+
     public PlayerCommand(SimpleSidebar plugin) {
-        sidebar = plugin.getSidebar();
         messenger = plugin.getMessenger();
         output = plugin.getCommandOutput();
-    }
 
-    // TODO Check whether sender.haspermission works
+        permission = plugin.getPermission();
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (sender instanceof Player) {
 
             if (args.length == 0) {
-                if (sender.hasPermission("simplesidebar.see")) {
-                    output.playerSidebarInfo(sender, sidebar.getSidebarIndexOf((Player) sender));
+                if (permission.has(sender, "simplesidebar.see")) {
+                    output.ofInfo(sender, (Player) sender);
                 } else {
                     messenger.sendError(sender, "simplesidebar.see permission required");
                 }
                 return true;
 
             } else if (args.length == 1) {
-                if (sender.hasPermission("simplesidebar.use")) {
-                    output.playerSetSidebar(sender, sidebar.querySidebarIndexOf(args[0]));
+                if (args[0].equals("remove")) {
+                    if (permission.has(sender, "simplesidebar.use")) {
+                        output.ofRemove(sender);
+                        return true;
+                    } else {
+                        messenger.sendError(sender, "simplesidebar.see permission required");
+                        return true;
+                    }
+                }
+
+                if (permission.has(sender, "simplesidebar.use")) {
+                    output.ofQuery(sender, args[0]);
                 } else {
                     messenger.sendError(sender, "simplesidebar.see permission required");
                 }

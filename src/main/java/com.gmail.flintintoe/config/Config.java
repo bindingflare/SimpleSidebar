@@ -8,7 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.List;
 
-public class PluginConfig {
+public class Config {
+    private SimpleSidebar plugin;
     private Messenger messenger;
 
     private FileConfiguration sidebarConfig;
@@ -16,10 +17,7 @@ public class PluginConfig {
     private FileConfiguration configConfig;
     private FileConfiguration placeholderConfig;
 
-    private File sidebarFile;
-    private File messageFile;
-    private File configFile;
-    private File placeholderFile;
+    private File pluginFolder;
 
     // Settings
     private boolean setOnLogin;
@@ -31,51 +29,69 @@ public class PluginConfig {
     private boolean allowAfkSet;
     private boolean afkPhUpdate;
 
-    public PluginConfig(SimpleSidebar plugin) {
+    /**
+     * Manages the configuration files used by this plugin.
+     *
+     * @since v0.8.0_RC1
+     */
+    public Config(SimpleSidebar plugin) {
+        this.plugin = plugin;
         messenger = plugin.getMessenger();
     }
 
-    public boolean setup(SimpleSidebar plugin) {
-        File pluginFolder = plugin.getDataFolder();
+    public void setup() {
+        pluginFolder = plugin.getDataFolder();
 
-        if (!(pluginFolder.exists() && pluginFolder.mkdirs())) {
-            messenger.sendFatalError("Failed to create plugin folder!");
+        // Check if pluginFolder exists
+        if (!pluginFolder.exists()) {
+            pluginFolder.mkdirs();
+            messenger.send("Creating plugin folder...");
         }
-        // Load files
-        sidebarFile = new File(pluginFolder, "sidebars.yml");
-        messageFile = new File(pluginFolder, "messages.yml");
-        configFile = new File(pluginFolder, "config.yml");
-        placeholderFile = new File(pluginFolder, "placeholders.yml");
 
-        // Load FileConfigs
+        // Initialize file configs
         sidebarConfig = new YamlConfiguration();
         messageConfig = new YamlConfiguration();
         configConfig = new YamlConfiguration();
         placeholderConfig = new YamlConfiguration();
 
-        // Copy if file does not exist
-        if (!sidebarFile.exists()) {
-            saveConfig(plugin, "sidebar", sidebarFile);
-        }
-        if (!messageFile.exists()) {
-            saveConfig(plugin, "messages", messageFile);
-        }
-        if (!configFile.exists()) {
-            saveConfig(plugin, "config", configFile);
-        }
-        // Load files for use
-        loadFiles();
+        // Load file configs
+        loadConfigFiles();
+
+        // Check config versions
+        checkConfigFiles();
+
+        // Get settings from config.yml
         loadConfig();
-        return getBoolean(ConfigFile.CONFIG, "plugin_enabled");
     }
 
-    public void loadFiles() {
+    public void loadConfigFiles() {
+        File sidebarFile = new File(pluginFolder, "sidebars.yml");
+        File messageFile = new File(pluginFolder, "messages.yml");
+        File configFile = new File(pluginFolder, "config.yml");
+        File placeholderFile = new File(pluginFolder, "placeholders.yml");
+
+        // Check if file exists
+        if (!sidebarFile.exists()) {
+            saveConfigFile(sidebarFile);
+        }
+        if (!messageFile.exists()) {
+            saveConfigFile(messageFile);
+        }
+        if (!configFile.exists()) {
+            saveConfigFile(configFile);
+        }
+        if (!placeholderFile.exists()) {
+            saveConfigFile(placeholderFile);
+        }
+
+        // Load files
         try {
             sidebarConfig.load(sidebarFile);
             messageConfig.load(messageFile);
             configConfig.load(configFile);
             placeholderConfig.load(placeholderFile);
         } catch (Exception e) {
+            messenger.sendError("Failed to load configuration files");
         }
     }
 
@@ -89,16 +105,16 @@ public class PluginConfig {
         afkPhUpdate = getBoolean(ConfigFile.CONFIG, "update_sidebar_sync_afk");
 
         updateTimer = getValue(ConfigFile.CONFIG, "update_timer");
-        // Check if updateSidebarIndex timer is out of bounds
+        // Check if set timer is out of bounds
         if (updateTimer <= 0) {
-            messenger.sendError("Cannot set updateSidebarIndex timer to less than 1 second. Using default value 1 second instead");
+            messenger.sendError("Cannot set set timer to less than 1 second. Using default value 1 second instead");
             updateTimer = 1;
         }
     }
 
-    public void checkConfig(SimpleSidebar plugin) {
+    private void checkConfigFiles() {
         // Using rudimentary CONFIG checking for now
-        if (configConfig.getDouble("config_version") != 1.3) {
+        if (configConfig.getDouble("config_version") != 1.4) {
             messenger.send("Old config.yml detected");
         }
         if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
@@ -108,16 +124,16 @@ public class PluginConfig {
             messenger.send("Old messages.yml detected");
         }
         if (placeholderConfig.getDouble("placeholders_version") != 1.0) {
-            messenger.send("Old messages.yml detected");
+            messenger.send("Old placeholders.yml detected");
         }
     }
 
-    private void saveConfig(SimpleSidebar plugin, String fileName, File file) {
+    private void saveConfigFile(File file) {
         try {
             messenger.send("Creating a copy of " + file.getName());
             plugin.saveResource(file.getName(), false);
         } catch (Exception e) {
-            messenger.send("Error: Error while saving " + fileName + ".yml");
+            messenger.send("Error: Error while saving " + file.getName());
         }
     }
 
@@ -167,7 +183,7 @@ public class PluginConfig {
         return -1;
     }
 
-    public boolean getBoolean(ConfigFile configFile, String path) {
+    private boolean getBoolean(ConfigFile configFile, String path) {
         if (configFile == ConfigFile.SIDEBARS) {
             return sidebarConfig.getBoolean(path);
         } else if (configFile == ConfigFile.MESSAGES) {

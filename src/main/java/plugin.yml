@@ -1,19 +1,19 @@
 name: SimpleSidebar
 author: xFlarinFlint
-version: 0.7.4_RC2
+version: 0.8.0_RC1
 main: com.gmail.flintintoe.SimpleSidebar
 
-depend: []
-softdepend: [Vault, WorldGuard, WorldEdit, PlaceholderAPI]
+depend: [Vault]
+softdepend: [WorldGuard, WorldEdit, PlaceholderAPI]
 
 commands:
   sidebar:
-    description: Sidebar player commands
+    description: Sidebars player commands
     aliases: [sb]
     usage: /sidebar
     permission: simplesidebar
-  sidebaradmin:
-    description: Sidebar admin commands
+  adminsidebar:
+    description: Sidebars admin commands
     aliases: [asidebar, asb]
     usage: /adminsidebar
     permission: simplesidebaradmin
