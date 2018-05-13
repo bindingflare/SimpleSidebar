@@ -5,13 +5,14 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 [See release notes](https://github.com/flintintoe/SimpleSidebar/releases/tag/v0.7.4_RC2)
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.7.5s-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.8.0__pre1-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
-[See changes](https://github.com/flintintoe/SimpleSidebar/commit/f3cabf098c741a5eedb32976fa81a71f74d9b179)
+[See changes](https://github.com/flintintoe/SimpleSidebar/commit/fbb61aa74c0b24f25b0decb1830af409ddb682da) \
+[See all commits](https://github.com/flintintoe/SimpleSidebar/commits)
 
 ## Todo:
-- Test out duplicates allowed feature (Just realised i didnt test that)
-- Add Placeholder API support
+- ~~Test out duplicates allowed feature (Just realised i didnt test that)~~
+- ~~Add Placeholder API support~~
 - Possibly add placeholders.yml
 
 ***
@@ -45,7 +46,7 @@ vMAJOR.MINOR.PATCH + suffix
 \**Changes final does not mean that the feature will stay final in future builds.*
 ***
 ## Planned for future releases
-- Placeholder API support
+- ~~Placeholder API support~~
 - Static/ custom variables support
 - messages.yml
 
