@@ -1,35 +1,42 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report a bug
 
 ---
+<!-- Title does not need to state that this is a bug report, but should summarize what went wrong/ what the bug is -->
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+### Version
+<!-- State the versions of your server environment by replacing the "Text here"-->
+<!-- You do not need to make the "|" match up -->
+| Java | Spigot | Plugin |
+| :--  | :--    | :--    |
+| Text here | Text here | Text here |
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+### Dependencies used
+<!-- State the plugins you are using that SimpleSidebar depends on or uses here. -->
+None
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+### When the bug occurs
+<!-- State when the bug happends here. You can list them out in steps. -->
+1. This is step 1
+2. Then...
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+### Expected output
+<!-- State what you were expected before the bug occured -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+### Error log
+<!-- Copy and paste the error log snippet to replace the text "Text here". -->
+<!-- Make sure there is an empty line between the line with <summary> and ```.-->
+<details>
+  <summary>Spoiler</summary>
+  
+  ```
+  Text here
+  ```
+</details>
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+### Additional remarks
+<!-- Keep empty unless you have something else to say that is important -->
+None
 
-**Additional context**
-Add any other context about the problem here.
+<!-- Comments will only be shown during editting. Make sure any of your information here is not commented (Grayed out) -->
