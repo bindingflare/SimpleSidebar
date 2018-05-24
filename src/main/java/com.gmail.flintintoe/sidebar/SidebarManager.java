@@ -25,6 +25,7 @@ public class SidebarManager {
 
     public void setup() {
         placeholder = new Placeholder(plugin);
+        placeholder.loadLocalPlaceholders();
 
         sidebars = new Sidebars(plugin);
         sidebars.load();
