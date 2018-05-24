@@ -5,16 +5,11 @@ To raise an issue, click the issues tab. To see the wiki, click the wiki tab.
 
 [See release notes](https://github.com/flintintoe/SimpleSidebar/releases/tag/v0.7.4_RC2)
 
-## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.8.0__pre1-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
+## Latest commit build &nbsp; &nbsp; &nbsp; ![1](https://img.shields.io/badge/Commit-v0.8.1b__pre2-orange.svg?style=flat-square&label=Build) ![2](https://img.shields.io/github/last-commit/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=Last%20commit) ![3](https://img.shields.io/circleci/project/github/flintintoe/SimpleSidebar/master.svg?style=flat-square&label=CircleCI) ![4](https://img.shields.io/codacy/grade/ad2a5c3320dd43cbad38ba13a85f8a66/master.svg?style=flat-square&label=Codacy%20grade)
 
-[See changes](https://github.com/flintintoe/SimpleSidebar/commit/fbb61aa74c0b24f25b0decb1830af409ddb682da) \
+[See changes](https://github.com/flintintoe/SimpleSidebar/commit/bfc622f11aeb45e5cae5d9245e0a748555ced9fa) \
+[See changes (2)](https://github.com/flintintoe/SimpleSidebar/commit/cfd41cc2ffbfe6f1c52ba2eba7bd250827bf3d0a) \
 [See all commits](https://github.com/flintintoe/SimpleSidebar/commits)
-
-## Todo:
-- ~~Test out duplicates allowed feature (Just realised i didnt test that)~~
-- ~~Add Placeholder API support~~
-- Possibly add placeholders.yml
-
 ***
 ## News
 ### 2018/MAY/6
@@ -47,8 +42,8 @@ vMAJOR.MINOR.PATCH + suffix
 ***
 ## Planned for future releases
 - ~~Placeholder API support~~
-- Static/ custom variables support
-- messages.yml
+- ~~Static/~~ custom variables ~~support~~
+- ~~messages.yml~~
 
 ## External links
 Spigot resource page: https://www.spigotmc.org/resources/simplesidebar.56344/
