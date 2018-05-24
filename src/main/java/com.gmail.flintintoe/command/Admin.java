@@ -12,15 +12,15 @@ import org.bukkit.entity.Player;
 /**
  * Handles the command "/adminsidebar".
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
-public class AdminCommand implements CommandExecutor {
+public class Admin implements CommandExecutor {
     private Messenger messenger;
-    private CommandOutput output;
+    private Output output;
 
     private Permission permission;
 
-    public AdminCommand(SimpleSidebar plugin) {
+    public Admin(SimpleSidebar plugin) {
         messenger = plugin.getMessenger();
         output = plugin.getCommandOutput();
 
@@ -30,7 +30,7 @@ public class AdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (args.length == 0) {
-            messenger.sendError(sender, "You need at least two arguments for this command");
+            messenger.send(sender, 4);
             return true;
         }
 
@@ -39,7 +39,7 @@ public class AdminCommand implements CommandExecutor {
                 output.reloadPlugin(sender);
                 return true;
             } else {
-                messenger.sendError(sender, "You need at least two arguments for this command");
+                messenger.send(sender,4);
                 return true;
             }
         }
@@ -57,18 +57,18 @@ public class AdminCommand implements CommandExecutor {
                     if (permission.has(sender, "simplesidebaradmin.check")) {
                         output.ofInfo(sender, target);
                     } else {
-                        messenger.sendError(sender, "simplesidebaradmin.check permission required");
+                        messenger.send(sender, 2);
                     }
                     return true;
                 case "remove":
                     if (permission.has(sender, "simplesidebaradmin.set")) {
                         output.ofRemove(sender, target);
                     } else {
-                        messenger.sendError(sender, "simplesidebaradmin.set permission required");
+                        messenger.send(sender, 3);
                     }
                     return true;
                 default:
-                    messenger.send(sender, "Unknown command. Please try again");
+                    messenger.send(sender, 1);
                     return true;
             }
 
@@ -77,16 +77,16 @@ public class AdminCommand implements CommandExecutor {
                 if (permission.has(sender, "simplesidebaradmin.set")) {
                     output.ofQuery(sender, target, args[2]);
                 } else {
-                    messenger.sendError(sender, "simplesidebaradmin.set permission required");
+                    messenger.send(sender,3);
                 }
                 return true;
             } else {
-                messenger.send(sender, "Unknown command. Please try again");
+                messenger.send(sender, 1);
                 return true;
             }
 
         } else {
-            messenger.sendError(sender, "Too many arguments");
+            messenger.send(sender, 3);
             return true;
         }
     }

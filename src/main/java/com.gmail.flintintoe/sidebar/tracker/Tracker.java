@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * Tracks and updates the sidebars of online players in the Spigot server.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 public class Tracker extends BukkitRunnable {
 

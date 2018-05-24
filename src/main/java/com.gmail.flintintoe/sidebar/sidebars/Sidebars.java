@@ -20,25 +20,24 @@ import java.util.List;
 /**
  * Deals with loading, setting sidebars and getting sidebar information.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 public class Sidebars {
-    private SidebarManager sbManager;
     private Config config;
     private Placeholder ph;
 
     private String[] names;
     private String[] headers;
-    private String[][] aliases;
-    private String[][][] sidebars; // {Sidebar index} -> {Entry number} -> {Entry part}
+    private String[][] aliases; // {Sidebar index} -> {Aliases}
+    private String[][][] sidebars; // {Sidebar index} -> {Entry numbers} -> {Entry parts}
     private int sidebarCount = 0;
 
     private final char PLAYER_TAG_SYMBOL = '࿄'; // U+0FC4 - Tibetan Symbol Dril Bu
     private final char TARGET_TAG_SYMBOL = '࿅'; // U+0FC5 - Tibetan Symbol Rdo Rje
-    private final char REMOTE_TAG_SYMBOL = '࿇'; // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
+    private final char LOCAL_TAG_SYMBOL = '࿇'; // U+0FC7 - Tibetan Symbol Rdo Rje Rgya Gram
+    private final char REMOTE_TAG_SYMBOL = '࿈'; // U+0FC8 - Tibetan Symbol Phur Pa
 
     public Sidebars(SimpleSidebar plugin) {
-        sbManager = plugin.getSidebarManager();
         ph = plugin.getSidebarManager().getPlaceholder();
 
         config = plugin.getConfigManager();
@@ -49,7 +48,7 @@ public class Sidebars {
 
     public void load() {
         final char TAG_SYMBOL = '%';
-        final char ALT_TAG_SYMBOL = '࿈'; // U+0FC8 - Tibetan Symbol Phur Pa
+        final char ALT_TAG_SYMBOL = '࿉'; // U+0FC9 - Tibetan Symbol Nor Bu
 
         List<String> names = new ArrayList<>();
         List<String> headers = new ArrayList<>();
@@ -156,7 +155,9 @@ public class Sidebars {
                     if (count % 2 == 0) {
                         sidebars[i][j][count] = part;
                     } else {
-                        if (ph.isKeyword(ph.getKeyword(part))) {
+                        if (ph.isLocalKeyword(part)) {
+                            sidebars[i][j][count] = LOCAL_TAG_SYMBOL + part;
+                        } else if (ph.isKeyword(part)) {
                             List<String> args = ph.getArgs(part);
 
                             // Prevent errors in the following code
@@ -171,7 +172,8 @@ public class Sidebars {
                             } else {
                                 sidebars[i][j][count] = PLAYER_TAG_SYMBOL + part;
                             }
-                        } else {
+                        }
+                        else {
                             sidebars[i][j][count] = REMOTE_TAG_SYMBOL + "%" + part + "%";
                         }
                     }
@@ -226,6 +228,8 @@ public class Sidebars {
                             strB.append(ph.setForTarget(part.substring(1)));
                         } else if (part.charAt(0) == REMOTE_TAG_SYMBOL) {
                             strB.append(ph.setRemote(player, part.substring(1)));
+                        } else if (part.charAt(0) == LOCAL_TAG_SYMBOL) {
+                            strB.append(ph.setLocal(player, part.substring(1)));
                         }
                     }
                 } else {
@@ -281,7 +285,7 @@ public class Sidebars {
         return aliases[sidebarIndex].clone();
     }
 
-    private int getSidebarIndexOf(String sidebarName) {
+    public int getSidebarIndexOf(String sidebarName) {
         for (int i = 0; i < aliases.length; i++) {
             if (names[i].equalsIgnoreCase(sidebarName)) {
                 return i;
@@ -294,55 +298,6 @@ public class Sidebars {
             }
         }
         return -1;
-    }
-
-    // Return values
-    // 0 - No errors
-    // 1 - Query not found, Integer negative
-    // 2 - Cannot set to AFK sidebar
-    // 3 - Index out of bounds
-    // 4 - Unexpected error
-    public int querySidebarIndexOf(String query) {
-        // Check query
-        int sidebarIndex = getSidebarIndexOf(query);
-
-        // Check if query is an String positive
-        if (sidebarIndex == -1) {
-            for (char c : query.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return -1;
-                }
-            }
-        }
-        // Try to set sidebar (For String query)
-        else {
-            // Check if setting AFK sb
-            if (sidebarIndex == getSidebarCount() && !config.isAllowAfkSet()) {
-                return -2;
-            }
-            return sidebarIndex;
-        }
-
-        // sidebarIndex will always be -1 at this point
-
-        try {
-            sidebarIndex = Integer.parseInt(query);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -4;
-        }
-
-        // Set sidebar (For int query)
-        if (sidebarIndex != -1) {
-            if (sidebarIndex == getSidebarCount() - 1 && !config.isAllowAfkSet()) {
-                return -2;
-            } else if (sidebarIndex < -1 || sidebarIndex >= getSidebarCount()) {
-                return -3;
-            } else {
-                return sidebarIndex;
-            }
-        }
-        return -3;
     }
 
     public int getSidebarCount() {

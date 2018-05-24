@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 /**
  * Deals with grabbing the statistics of the Spigot server.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 class Stat {
     private Messenger messageM;

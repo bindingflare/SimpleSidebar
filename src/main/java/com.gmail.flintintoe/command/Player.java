@@ -6,20 +6,19 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * Handles the command "/sidebar".
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
-public class PlayerCommand implements CommandExecutor {
+public class Player implements CommandExecutor {
     private Messenger messenger;
-    private CommandOutput output;
+    private Output output;
 
     private Permission permission;
 
-    public PlayerCommand(SimpleSidebar plugin) {
+    public Player(SimpleSidebar plugin) {
         messenger = plugin.getMessenger();
         output = plugin.getCommandOutput();
 
@@ -28,13 +27,13 @@ public class PlayerCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof org.bukkit.entity.Player) {
 
             if (args.length == 0) {
                 if (permission.has(sender, "simplesidebar.see")) {
-                    output.ofInfo(sender, (Player) sender);
+                    output.ofInfo(sender, (org.bukkit.entity.Player) sender);
                 } else {
-                    messenger.sendError(sender, "simplesidebar.see permission required");
+                    messenger.send(sender, 0);
                 }
                 return true;
 
@@ -44,24 +43,24 @@ public class PlayerCommand implements CommandExecutor {
                         output.ofRemove(sender);
                         return true;
                     } else {
-                        messenger.sendError(sender, "simplesidebar.see permission required");
+                        messenger.send(sender, 0);
                         return true;
                     }
                 }
 
                 if (permission.has(sender, "simplesidebar.use")) {
-                    output.ofQuery(sender, args[0]);
+                    output.ofQuery(sender, (org.bukkit.entity.Player) sender, args[0]);
                 } else {
-                    messenger.sendError(sender, "simplesidebar.see permission required");
+                    messenger.send(sender, 1);
                 }
                 return true;
 
             } else {
-                messenger.sendError(sender, "Too many arguments");
+                messenger.send(sender, 3);
                 return true;
             }
         } else {
-            messenger.sendError(sender, "This command is only for players");
+            messenger.send(sender, 0);
             return true;
         }
     }

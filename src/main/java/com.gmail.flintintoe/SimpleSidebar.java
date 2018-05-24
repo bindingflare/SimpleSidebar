@@ -1,8 +1,8 @@
 package com.gmail.flintintoe;
 
-import com.gmail.flintintoe.command.AdminCommand;
-import com.gmail.flintintoe.command.CommandOutput;
-import com.gmail.flintintoe.command.PlayerCommand;
+import com.gmail.flintintoe.command.Admin;
+import com.gmail.flintintoe.command.Output;
+import com.gmail.flintintoe.command.Player;
 import com.gmail.flintintoe.config.Config;
 import com.gmail.flintintoe.event.PlayerEvent;
 import com.gmail.flintintoe.message.Messenger;
@@ -39,13 +39,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  * SOFTWARE.
  *
  * @author xFlarinFlint (Flarin)
- * @version v0.8.0_RC1
+ * @version v0.8.0_pre1
  */
 public class SimpleSidebar extends JavaPlugin {
 
     private Messenger messenger;
     private Config config;
-    private CommandOutput output;
+    private Output output;
 
     private Economy economy;
     private Permission permission;
@@ -60,10 +60,12 @@ public class SimpleSidebar extends JavaPlugin {
      */
     @Override
     public void onEnable() {
-        messenger = new Messenger();
+        messenger = new Messenger(this);
 
         config = new Config(this);
         config.setup();
+
+        messenger.loadMessages();
 
         Dependency dependency = new Dependency(this);
 
@@ -83,9 +85,9 @@ public class SimpleSidebar extends JavaPlugin {
         sbManager.setup();
 
         // Commands (Including command output manager)
-        output = new CommandOutput(this);
-        getCommand("sidebar").setExecutor(new PlayerCommand(this));
-        getCommand("adminsidebar").setExecutor((new AdminCommand(this)));
+        output = new Output(this);
+        getCommand("sidebar").setExecutor(new Player(this));
+        getCommand("adminsidebar").setExecutor((new Admin(this)));
 
         // Events
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
@@ -140,12 +142,12 @@ public class SimpleSidebar extends JavaPlugin {
     }
 
     /**
-     * Gets an instance of CommandOutput.
+     * Gets an instance of Output.
      *
-     * @return An instance of CommandOutput
-     * @see    CommandOutput
+     * @return An instance of Output
+     * @see    Output
      */
-    public CommandOutput getCommandOutput() {
+    public Output getCommandOutput() {
         return output;
     }
 

@@ -9,7 +9,7 @@ import com.gmail.flintintoe.sidebar.tracker.Tracker;
 /**
  * Manages the sidebars of the Spigot server with the help of the class PlayerEvent.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  * @see   PlayerEvent
  */
 public class SidebarManager {

@@ -6,7 +6,40 @@
 # Simple Sidebars - by xFlarinFlint (flintintoe or Flarin)
 
 # Edit messages sent by this plugin here.
-messages_version: 1.0
+messages_version: 1.2
 
 messages:
-- "This feature is coming soon..."
+# Checking your sidebar
+- "Your sidebar is: %sidebar.name\n    Index: %sidebar.index%\n    Aliases: %sidebar.aliases%"
+# Checking a player's sidebar
+- "%target%'s sidebar is: %sidebar.name%\n    Index: %sidebar.index%\n    Aliases: %sidebar.aliases%"
+# Setting your sidebar
+- "Set your sidebar to %sidebar.name% (Index: %sidebar.index%)"
+# Setting a player's sidebar
+- "Set %target.name%'s sidebar to %sidebar.name% (Index: %sidebar.index%)"
+# Notification on being set a sidebar by another player/ console
+- "Your sidebar has been set to %sidebar.name% (Index: %sidebar.index%)"
+# A permission is required
+- "%permission.node% required"
+# This command is only for players
+- "This command is only for players"
+# Unknown command
+- "Unknown command"
+# Unknown error occurred
+- "An unknown error occurred"
+# Not enough arguments
+- "Not enough arguments!"
+# Too many arguments
+- "Too many arguments!"
+# You have no sidebar set to check sidebar
+- "You do not have a sidebar set"
+# Player has no sidebar set to check sidebar
+- "%target.name% does not have a sidebar set"
+# Sidebar was not found
+- "Sidebar query with the specified name does not exist"
+# Sidebar out of bounds
+- "The sidebar index is out of bounds"
+# You cannot set to AFK sidebar
+- "You cannot set your sidebar to the AFK sidebar"
+# You cannot set your sidebar to the AFK sidebar
+- "You cannot set %target.name%'s sidebar to the AFK sidebar"

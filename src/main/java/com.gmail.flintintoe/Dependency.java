@@ -10,7 +10,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 /**
  * Manages the dependencies of this plugin.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 class Dependency {
     private SimpleSidebar plugin;

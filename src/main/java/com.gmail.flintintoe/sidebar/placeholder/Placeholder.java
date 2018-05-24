@@ -1,12 +1,16 @@
 package com.gmail.flintintoe.sidebar.placeholder;
 
 import com.gmail.flintintoe.SimpleSidebar;
+import com.gmail.flintintoe.config.Config;
+import com.gmail.flintintoe.config.ConfigFile;
 import com.gmail.flintintoe.sidebar.SidebarManager;
 import com.google.common.base.Splitter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -14,13 +18,16 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Deals with getting the values of different placeholders defined by this plugin and externally.
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 public class Placeholder {
+    private Config config;
     private SidebarManager manager;
     private Economy economy;
 
@@ -31,15 +38,54 @@ public class Placeholder {
     private final String[] PLAYER_PLACEHOLDERS = {"player", "x", "y", "z", "balance", "timezone", "afktime",
             "afktimeleft", "datetime", "region", "stat", "mstat", "estat", };
     private final String[] TARGET_PLACEHOLDERS = {"balance", "x", "y", "z", "region"};
+    private String[] LOCAL_PLACEHOLDERS;
+    private String[][] LOCAL_PLACEHOLDER_VALUES;
 
     private final String TAG_DIVIDER = ".";
 
     public Placeholder(SimpleSidebar plugin) {
+        config = plugin.getConfigManager();
         economy = plugin.getEconomy();
         manager = plugin.getSidebarManager();
 
         region = new Region(plugin.getwGPlugin());
         stat = new Stat(plugin);
+    }
+
+    public void loadLocalPlaceholders() {
+        FileConfiguration configFile = config.getPlaceholderConfig();
+
+        Set<String> tags = configFile.getKeys(false);
+
+        LOCAL_PLACEHOLDERS = new String[tags.size()];
+        LOCAL_PLACEHOLDER_VALUES = new String[tags.size()][];
+
+        // For each tag...
+        int tagCount = 0;
+        for(String tag : tags) {
+            LOCAL_PLACEHOLDERS[tagCount] = tag;
+
+            ConfigurationSection section = configFile.getConfigurationSection(tag);
+
+            // For single constant placeholder
+            if (section.contains("value")) {
+                LOCAL_PLACEHOLDER_VALUES[tagCount] = new String[1];
+                LOCAL_PLACEHOLDER_VALUES[tagCount][0] = section.getString("value");
+            }
+            // For multiple constants placeholder
+            else if (section.contains("values")) {
+                List<String> values = section.getStringList("values");
+
+                LOCAL_PLACEHOLDER_VALUES[tagCount] = new String[values.size()];
+
+                int valueCount = 0;
+                for (String value : values) {
+                    valueCount++;
+                    LOCAL_PLACEHOLDER_VALUES[tagCount][valueCount] = value;
+                }
+            }
+        }
+
     }
 
     public String set(Player player, String tag) {
@@ -174,15 +220,30 @@ public class Placeholder {
         return wordWithPh;
     }
 
-    // TODO custom placeholders
-    public String setRemote(Player player, String tag) {
+    public String setLocal(Player player, String tag) {
         String wordWithPh = "";
 
+        for (int i = 0; i < LOCAL_PLACEHOLDERS.length; i++) {
+            if (LOCAL_PLACEHOLDERS[i].equals(tag)) {
+                if (LOCAL_PLACEHOLDER_VALUES[i].length == 1) {
+                    wordWithPh = LOCAL_PLACEHOLDER_VALUES[i][0];
+                } else {
+                    Random random = new Random();
+
+                    int index = random.nextInt(LOCAL_PLACEHOLDER_VALUES[i].length);
+                    wordWithPh = LOCAL_PLACEHOLDER_VALUES[i][index];
+                }
+            }
+        }
+        return wordWithPh;
+    }
+
+    public String setRemote(Player player, String tag) {
         return PlaceholderAPI.setPlaceholders(player, tag);
 
     }
 
-    public String getKeyword(String tag) {
+    private String getKeyword(String tag) {
         String property = tag;
 
         if (tag.contains(TAG_DIVIDER)) {
@@ -209,8 +270,20 @@ public class Placeholder {
 //        return word.indexOf(0) == '%';
 //    }
 
-    public boolean isKeyword(String word) {
-        String keyword = getKeyword(word);
+    public boolean isLocalKeyword(String tag) {
+        String keyword = getKeyword(tag);
+
+        for (String localKeyword:LOCAL_PLACEHOLDERS) {
+            if (localKeyword.equals(keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isKeyword(String tag) {
+        String keyword = getKeyword(tag);
 
         for (String playerPh : PLAYER_PLACEHOLDERS) {
             // Compare the keyword of word with available keywords

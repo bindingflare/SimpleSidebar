@@ -14,7 +14,7 @@ import org.bukkit.event.player.*;
 /**
  * Handles the command "/adminsidebar".
  *
- * @since v0.8.0_RC1
+ * @since v0.8.0_pre1
  */
 public class PlayerEvent implements Listener {
     private Sidebars sidebars;

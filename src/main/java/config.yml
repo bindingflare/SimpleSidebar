@@ -8,7 +8,7 @@
 # Edit plugin configurations here.
 
 # Please do not change this value to avoid unexpected errors
-config_version: 1.4
+config_version: 1.5
 
 
 # Allow admins to bypass the allow_change_afk (if allow_change_afk is set to false)

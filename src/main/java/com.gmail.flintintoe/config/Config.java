@@ -2,10 +2,12 @@ package com.gmail.flintintoe.config;
 
 import com.gmail.flintintoe.SimpleSidebar;
 import com.gmail.flintintoe.message.Messenger;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
@@ -32,7 +34,7 @@ public class Config {
     /**
      * Manages the configuration files used by this plugin.
      *
-     * @since v0.8.0_RC1
+     * @since v0.8.0_pre1
      */
     public Config(SimpleSidebar plugin) {
         this.plugin = plugin;
@@ -114,16 +116,16 @@ public class Config {
 
     private void checkConfigFiles() {
         // Using rudimentary CONFIG checking for now
-        if (configConfig.getDouble("config_version") != 1.4) {
+        if (configConfig.getDouble("config_version") != 1.5) {
             messenger.send("Old config.yml detected");
         }
         if (sidebarConfig.getDouble("sidebars_version") != 1.1) {
             messenger.send("Old sidebars.yml detected");
         }
-        if (messageConfig.getDouble("messages_version") != 1.0) {
+        if (messageConfig.getDouble("messages_version") != 1.2) {
             messenger.send("Old messages.yml detected");
         }
-        if (placeholderConfig.getDouble("placeholders_version") != 1.0) {
+        if (placeholderConfig.getDouble("placeholders_version") != 1.1) {
             messenger.send("Old placeholders.yml detected");
         }
     }
@@ -223,6 +225,10 @@ public class Config {
         }
 
         return null;
+    }
+
+    public FileConfiguration getPlaceholderConfig() {
+        return placeholderConfig;
     }
 
     public boolean isSetOnLogin() {
